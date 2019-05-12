@@ -2,8 +2,9 @@
 #include "app.h"
 
 
-App::App()
+App::App(AppSetting setting)
 {
+  mSetting = setting;
 }
 
 App::~App()
@@ -12,8 +13,8 @@ App::~App()
 
 void App::run()
 {
-  sf::RenderWindow window(sf::VideoMode(600, 400), "Kitty Maker");
-  window.setFramerateLimit(15);
+  sf::RenderWindow window(sf::VideoMode(mSetting.windowWidth , mSetting.windowHeight), mSetting.windowTitle);
+  window.setFramerateLimit(mSetting.frameRate);
 
   while (window.isOpen())
   {
