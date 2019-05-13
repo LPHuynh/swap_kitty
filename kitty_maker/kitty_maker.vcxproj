@@ -143,12 +143,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="eyes.cpp" />
+    <ClCompile Include="hair.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="weapon.cpp" />
+    <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="eyes.h" />
+    <ClInclude Include="hair.h" />
     <ClInclude Include="weapon.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
