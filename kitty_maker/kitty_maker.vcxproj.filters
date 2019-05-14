@@ -33,6 +33,9 @@
     <ClCompile Include="eyes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="siphashrng.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h">
@@ -48,6 +51,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="eyes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="siple.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="siphashrng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

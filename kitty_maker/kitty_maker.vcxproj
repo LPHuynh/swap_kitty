@@ -146,6 +146,7 @@
     <ClCompile Include="eyes.cpp" />
     <ClCompile Include="hair.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="siphashrng.cpp" />
     <ClCompile Include="weapon.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
@@ -153,6 +154,8 @@
     <ClInclude Include="app.h" />
     <ClInclude Include="eyes.h" />
     <ClInclude Include="hair.h" />
+    <ClInclude Include="siphashrng.h" />
+    <ClInclude Include="siple.hpp" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
