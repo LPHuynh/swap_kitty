@@ -605,7 +605,7 @@ void Weapon::loadAbility()
   prototype.bonusStat.Mag = 0;
   prototype.bonusStat.Acc = 0;
   prototype.bonusStat.Cri = 0;
-  prototype.attribute = WeaponAttribute::none;
+  prototype.attribute = World::Attribute::none;
 
   WeaponAbility ability;
 
@@ -615,7 +615,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 0;
   ability.bonusDice.roll = 0;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::none;
+  prototype.attribute = World::Attribute::none;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -624,7 +624,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::fire;
+  prototype.attribute = World::Attribute::fire;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -633,7 +633,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::water;
+  prototype.attribute = World::Attribute::water;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -642,7 +642,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::water;
+  prototype.attribute = World::Attribute::water;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -651,7 +651,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::air;
+  prototype.attribute = World::Attribute::air;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -660,7 +660,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 8;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::lightning;
+  prototype.attribute = World::Attribute::lightning;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -669,7 +669,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 12;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::machine;
+  prototype.attribute = World::Attribute::machine;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -678,7 +678,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 4;
   ability.bonusDice.roll = 4;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::poison;
+  prototype.attribute = World::Attribute::poison;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -687,7 +687,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 1;
   ability.bonusDice.roll = 16;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::chaos;
+  prototype.attribute = World::Attribute::chaos;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -696,7 +696,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 3;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::holy;
+  prototype.attribute = World::Attribute::holy;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -705,7 +705,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 3;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = WeaponAttribute::dark;
+  prototype.attribute = World::Attribute::dark;
   mAbilities.push_back(ability);
 }
 

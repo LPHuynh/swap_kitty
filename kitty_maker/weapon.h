@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "world.h"
 
 class Weapon
 {
@@ -10,7 +11,6 @@ public:
   ~Weapon();
 private:
   enum class WeaponType { sword, axe, blunt, stave, polearm };
-  enum class WeaponAttribute { none, fire, water, earth, air, lightning, machine, poison, chaos, holy, dark };
 
   struct Dice
   {
@@ -60,7 +60,7 @@ private:
     uint16_t costMultplier;
     Dice bonusDice;
     Stat bonusStat;
-    WeaponAttribute attribute;
+    World::Attribute attribute;
   };
   struct WeaponStatBonus
   {
