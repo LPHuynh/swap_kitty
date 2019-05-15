@@ -6,7 +6,7 @@ int main()
   AppSetting setting;
   setting.windowHeight = 400;
   setting.windowWidth = 600;
-  setting.windowTitle = "Kitty Maker";
+  setting.windowTitle = "Swap Kitty";
   setting.frameRate = 15;
   setting.rulesetVersion = 1;
 
