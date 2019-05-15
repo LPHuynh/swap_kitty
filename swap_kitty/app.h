@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <SFML/Graphics.hpp>
+#include "world.h"
 
 
 class App
@@ -19,12 +21,14 @@ public:
     uint16_t walletPort;
   };
 
-  App(AppSetting);
+  App();
   ~App();
+  bool init(AppSetting setting);
 
   void run();
 
 private:
   AppSetting mSetting;
+  World mWorld;
 };
 

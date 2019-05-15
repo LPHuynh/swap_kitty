@@ -23,8 +23,11 @@ int main()
 
   inFile.close();
 
-  App app(setting);
-  app.run();
+  App app;
+  if (app.init(setting))
+  {
+    app.run();
+  }
 
   return 0;
 }

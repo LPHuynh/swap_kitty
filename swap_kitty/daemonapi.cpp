@@ -5,15 +5,20 @@
 #include "windows.h"
 
 
-DaemonAPI::DaemonAPI(std::string daemonHost, uint16_t daemonPort)
+DaemonAPI::DaemonAPI()
 {
-  mDaemonJsonHttp = "http://" + daemonHost + ":" + std::to_string(daemonPort) + "/json_rpc";
+  mDaemonJsonHttp = "http://127.0.0.1:19950/json_rpc";
   mHeader.add("Content-Type: application/json");
-
 }
 
 DaemonAPI::~DaemonAPI()
 {
+}
+
+bool DaemonAPI::init(std::string daemonHost, uint16_t daemonPort)
+{
+  mDaemonJsonHttp = "http://" + daemonHost + ":" + std::to_string(daemonPort) + "/json_rpc";
+  return true;
 }
 
 int64_t DaemonAPI::getBlockCount()
@@ -49,7 +54,7 @@ int64_t DaemonAPI::getBlockCount()
   return httpReponse["result"]["count"];
 }
 
-std::string DaemonAPI::getBlockHash(int64_t height)
+std::string DaemonAPI::getBlockHash(uint64_t height)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);

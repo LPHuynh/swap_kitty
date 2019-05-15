@@ -5,15 +5,26 @@
 #include "windows.h"
 
 
-WalletAPI::WalletAPI(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort)
+WalletAPI::WalletAPI()
 {
-  mWalletPort = walletPort;
-  mWalletJsonHttp = "http://127.0.0.1:" + std::to_string(walletPort) + "/json_rpc";
   mHeader.add("Content-Type: application/json");
 
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
   ZeroMemory(&pi, sizeof(pi));
+}
+
+WalletAPI::~WalletAPI()
+{
+  // Close the RPC Wallet
+  CloseHandle(pi.hProcess);
+  CloseHandle(pi.hThread);
+}
+
+bool WalletAPI::init(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort)
+{
+  mWalletPort = walletPort;
+  mWalletJsonHttp = "http://127.0.0.1:" + std::to_string(walletPort) + "/json_rpc";
 
   std::string startRPCWalletCommand = "swap\\swap-wallet-rpc.exe --daemon-address " + daemonHost + ":" + std::to_string(daemonPort) + " --rpc-bind-port " + std::to_string(mWalletPort) + " --disable-rpc-login --wallet-dir swap\\wallet";
   char command[1024];
@@ -24,14 +35,9 @@ WalletAPI::WalletAPI(std::string daemonHost, uint16_t daemonPort, uint16_t walle
   if (!CreateProcess(NULL, command, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
   {
     printf("CreateProcess failed (%d).\n", GetLastError());
+    return false;
   }
-}
-
-WalletAPI::~WalletAPI()
-{
-  // Close the RPC Wallet
-  CloseHandle(pi.hProcess);
-  CloseHandle(pi.hThread);
+  return true;
 }
 
 bool WalletAPI::createWallet(std::string walletName, std::string password, std::string language)

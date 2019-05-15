@@ -8,11 +8,12 @@
 class DaemonAPI
 {
 public:
-  DaemonAPI(std::string daemonHost, uint16_t daemonPort);
+  DaemonAPI();
   ~DaemonAPI();
+  bool init(std::string daemonHost, uint16_t daemonPort);
 
   int64_t getBlockCount();
-  std::string getBlockHash(int64_t height);
+  std::string getBlockHash(uint64_t height);
 
 private:
   std::string mDaemonJsonHttp;

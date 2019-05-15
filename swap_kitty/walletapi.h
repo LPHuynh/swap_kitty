@@ -8,8 +8,9 @@
 class WalletAPI
 {
 public:
-  WalletAPI(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort);
+  WalletAPI();
   ~WalletAPI();
+  bool init(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort);
 
   bool createWallet(std::string walletName, std::string password, std::string language);
   bool openWallet(std::string walletName, std::string password);

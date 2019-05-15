@@ -1,15 +1,22 @@
 #include "app.h"
 
-#include <SFML/Graphics.hpp>
 
-
-App::App(AppSetting setting)
+App::App()
 {
-  mSetting = setting;
 }
 
 App::~App()
 {
+}
+
+bool App::init(AppSetting setting)
+{
+  mSetting = setting;
+  if (!mWorld.init(setting.daemonHost, setting.daemonPort, setting.walletPort))
+  {
+    return false;
+  }
+  return true;
 }
 
 void App::run()
