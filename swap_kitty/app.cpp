@@ -1,5 +1,6 @@
-#include <SFML/Graphics.hpp>
 #include "app.h"
+
+#include <SFML/Graphics.hpp>
 
 
 App::App(AppSetting setting)
