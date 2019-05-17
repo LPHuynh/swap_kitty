@@ -37,6 +37,8 @@ public:
   World::Element randomizeElement(const std::string& seed);
   World::Element randomizePlayerElement(const std::string& seed);
 
+  int16_t elementAttackBonus(Element attackerElement, std::vector<Element> defenderElement);
+
   static Dice addDice(const std::vector<Dice>& die);
   static Stat addStat(const std::vector<Stat>& stats);
 

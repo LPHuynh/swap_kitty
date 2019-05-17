@@ -34,6 +34,64 @@ World::Element World::randomizePlayerElement(const std::string& seed)
   return Element(mSiphashRNG.getRandomNumber(seed + "playerelement__", 1, 6));
 }
 
+int16_t World::elementAttackBonus(Element attackerElement, std::vector<Element> defenderElement)
+{
+  int16_t damageBonus = 0;
+
+  for (auto & element : defenderElement) {
+    if (attackerElement == Element::fire && (element == Element::air || element == Element::poison))
+    { 
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::water && (element == Element::fire || element == Element::machine))
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::earth && (element == Element::water || element == Element::lightning))
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::air && (element == Element::earth || element == Element::chaos))
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::lightning && element == Element::water)
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::holy && element == Element::dark)
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::dark && element == Element::holy)
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::machine && element == Element::fire)
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::machine && element == Element::machine)
+    {
+      damageBonus -= 25;
+    }
+    else if (attackerElement == Element::poison && element == Element::air)
+    {
+      damageBonus += 25;
+    }
+    else if (attackerElement == Element::poison && element == Element::poison)
+    {
+      damageBonus -= 25;
+    }
+    else if (attackerElement == Element::chaos && (element == Element::earth && element == Element::chaos))
+    {
+      damageBonus += 25;
+    }
+  }
+
+  return damageBonus;
+}
+
 World::Dice World::addDice(const std::vector<Dice>& die)
 {
   Dice combinedDice;
