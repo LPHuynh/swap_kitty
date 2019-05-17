@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="job.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="character.cpp" />
     <ClCompile Include="cosmetic.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="job.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="cosmetic.h" />
