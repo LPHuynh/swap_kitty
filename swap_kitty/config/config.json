@@ -1,0 +1,13 @@
+{
+  "config":
+  {
+    "character": "",
+    "password": "x",
+    "daemonhost": "node.pocketwhale.info",
+    "daemonport": 19950,
+    "walletport": 20050,
+    "restoreheight": 1000000,
+    "priority": 1,
+    "framerate": 15
+  }
+}

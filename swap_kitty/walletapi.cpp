@@ -177,7 +177,7 @@ std::string WalletAPI::getMnemonicSeed()
   nlohmann::json httpReponse;
   httpReponse = nlohmann::json::parse(str.str());
 
-  return httpReponse["result"]["key"];
+  return httpReponse["result"]["key"].get<std::string>();
 }
 
 bool WalletAPI::stopWallet()
@@ -271,7 +271,7 @@ std::string WalletAPI::getAddress()
   nlohmann::json httpReponse;
   httpReponse = nlohmann::json::parse(str.str());
 
-  return httpReponse["result"]["address"];
+  return httpReponse["result"]["address"].get<std::string>();
 }
 
 int64_t WalletAPI::getBlockHeight()
@@ -306,7 +306,7 @@ int64_t WalletAPI::getBlockHeight()
   return httpReponse["result"]["height"];
 }
 
-int64_t WalletAPI::getBalance(bool isReturnUnlocked)
+WalletAPI::Balance WalletAPI::getBalance()
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -330,16 +330,124 @@ int64_t WalletAPI::getBalance(bool isReturnUnlocked)
   {
     curl::curlcpp_traceback errors = error.get_traceback();
     error.print_traceback();
-    return 0;
+    Balance balance;
+    balance.totalBalance = 0;
+    balance.unlockedBalance = 0;
   }
 
   nlohmann::json httpReponse;
   httpReponse = nlohmann::json::parse(str.str());
 
-  if (isReturnUnlocked)
+  Balance balance;
+  balance.totalBalance = httpReponse["result"]["balance"];
+  balance.unlockedBalance = httpReponse["result"]["unlocked_balance"];
+
+  return balance;
+}
+
+WalletAPI::WithdrawlReceipt WalletAPI::transfer(std::string walletAddress, std::string paymentID, uint64_t amount, uint16_t priority, uint16_t mixin)
+{
+  std::ostringstream str;
+  curl::curl_ios<std::ostringstream> writer(str);
+  curl::curl_easy easy(writer);
+
+  nlohmann::json destination;
+  destination["address"] = walletAddress;
+  destination["amount"] = amount;
+
+  nlohmann::json httpPost;
+  httpPost["id"] = "0";
+  httpPost["jsonrpc"] = "2.0";
+  httpPost["method"] = "transfer";
+  httpPost["params"]["destinations"] = { destination };
+  httpPost["params"]["payment_id"] = paymentID;
+  httpPost["params"]["mixin"] = mixin;
+  httpPost["params"]["priority"] = priority;
+  
+
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_URL, mWalletJsonHttp));
+  easy.add(curl::curl_pair<CURLoption, curl::curl_header>(CURLOPT_HTTPHEADER, mHeader));
+  easy.add<CURLOPT_SSL_VERIFYPEER>(false);
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_POSTFIELDS, httpPost.dump()));
+
+  try
   {
-    return httpReponse["result"]["unlocked_balance"];
+    easy.perform();
+  }
+  catch (curl::curl_easy_exception error)
+  {
+    curl::curlcpp_traceback errors = error.get_traceback();
+    error.print_traceback();
   }
 
-  return httpReponse["result"]["balance"];
+  nlohmann::json httpReponse;
+  httpReponse = nlohmann::json::parse(str.str());
+
+  WalletAPI::WithdrawlReceipt receipt;
+
+  if (!httpReponse["result"]["tx_hash"].is_null())
+  {
+    receipt.txHash = httpReponse["result"]["tx_hash"].get<std::string>();
+    receipt.txFee = httpReponse["result"]["fee"];
+    receipt.isSuccess = true;
+  }
+  else
+  {
+    receipt.txHash = "";
+    receipt.txFee = 0;
+    receipt.isSuccess = false;
+  }
+
+  return receipt;
+}
+
+WalletAPI::WithdrawlReceipt WalletAPI::sweepAll(std::string walletAddress, std::string paymentID, uint16_t priority, uint16_t mixin)
+{
+  std::ostringstream str;
+  curl::curl_ios<std::ostringstream> writer(str);
+  curl::curl_easy easy(writer);
+
+  nlohmann::json httpPost;
+  httpPost["id"] = "0";
+  httpPost["jsonrpc"] = "2.0";
+  httpPost["method"] = "sweep_all";
+  httpPost["params"]["address "] = walletAddress;
+  httpPost["params"]["payment_id"] = paymentID;
+  httpPost["params"]["mixin"] = mixin;
+  httpPost["params"]["priority"] = priority;
+
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_URL, mWalletJsonHttp));
+  easy.add(curl::curl_pair<CURLoption, curl::curl_header>(CURLOPT_HTTPHEADER, mHeader));
+  easy.add<CURLOPT_SSL_VERIFYPEER>(false);
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_POSTFIELDS, httpPost.dump()));
+
+  try
+  {
+    easy.perform();
+  }
+  catch (curl::curl_easy_exception error)
+  {
+    curl::curlcpp_traceback errors = error.get_traceback();
+    error.print_traceback();
+  }
+
+  nlohmann::json httpReponse;
+  httpReponse = nlohmann::json::parse(str.str());
+
+  WalletAPI::WithdrawlReceipt receipt;
+
+  if (!httpReponse["result"]["tx_hash"].is_null())
+  {
+    receipt.txHash = httpReponse["result"]["tx_hash"].get<std::string>();
+    receipt.txFee = httpReponse["result"]["fee"];
+    receipt.isSuccess = true;
+  }
+  else
+  {
+    receipt.txHash = "";
+    receipt.txFee = 0;
+    receipt.isSuccess = false;
+  }
+
+  return receipt;
 }

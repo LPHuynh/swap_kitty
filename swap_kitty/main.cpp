@@ -22,6 +22,7 @@ int main()
   setting.daemonPort = jsonDatabase["config"]["daemonport"];
   setting.walletPort = jsonDatabase["config"]["walletport"];
   setting.restoreHeight = jsonDatabase["config"]["restoreheight"];
+  setting.priority = jsonDatabase["config"]["priority"];
   setting.frameRate = jsonDatabase["config"]["framerate"];
 
   inFile.close();

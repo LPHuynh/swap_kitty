@@ -21,6 +21,7 @@ public:
     uint16_t daemonPort;
     uint16_t walletPort;
     uint64_t restoreHeight;
+    uint16_t priority;
     uint16_t frameRate;
   };
 
