@@ -23,6 +23,7 @@ public:
     int64_t price;
     int16_t nutrient;
     int16_t quench;
+    int16_t stamina;
     World::Stat bonusStat;
   };
 

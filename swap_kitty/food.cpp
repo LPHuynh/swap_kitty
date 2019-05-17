@@ -28,7 +28,7 @@ Food::FoodItem Food::randomizeFish(std::string seed, int64_t maxCost)
 
 Food::FoodItem Food::randomizeJunk(std::string seed)
 {
-  return mRawOther.at(mSiphashRNG.getRandomNumber(seed + "junk__", 1, 5));
+  return mRawOther.at(mSiphashRNG.getRandomNumber(seed + "junk__", 1, 6));
 }
 
 Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem& rawFood)
@@ -47,7 +47,7 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Jelly";
       foodItem.price *= 2;
-      foodItem.nutrient *= 2;
+      foodItem.nutrient *= 1;
       foodItem.quench += 10;
       foodItem.bonusStat.Mag += 1;
     }
@@ -55,7 +55,7 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Pudding";
       foodItem.price *= 3;
-      foodItem.nutrient *= 3;
+      foodItem.nutrient *= 2;
       foodItem.bonusStat.Per += 1;
       foodItem.bonusStat.Mag += 1;
     }
@@ -63,7 +63,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Pie";
       foodItem.price *= 4;
-      foodItem.nutrient *= 4;
+      foodItem.nutrient *= 2;
+      foodItem.stamina += 25;
       foodItem.bonusStat.Per += 1;
       foodItem.bonusStat.Mag += 2;
     }
@@ -71,8 +72,9 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Sherbert";
       foodItem.price *= 5;
-      foodItem.nutrient *= 5;
+      foodItem.nutrient *= 3;
       foodItem.quench += 20;
+      foodItem.stamina += 50;
       foodItem.bonusStat.Per += 2;
       foodItem.bonusStat.Mag += 2;
     }
@@ -80,8 +82,9 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Ice Cream";
       foodItem.price *= 6;
-      foodItem.nutrient *= 6;
+      foodItem.nutrient *= 3;
       foodItem.quench += 20;
+      foodItem.stamina += 100;
       foodItem.bonusStat.Per += 2;
       foodItem.bonusStat.Mag += 3;
     }
@@ -92,14 +95,14 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Salad";
       foodItem.price *= 2;
-      foodItem.nutrient *= 2;
+      foodItem.nutrient *= 1;
       foodItem.bonusStat.Lrn += 1;
     }
     if (foodItem.dishLevel == 2)
     {
       foodItem.nameCooked = foodItem.nameRaw + " Roll";
       foodItem.price *= 3;
-      foodItem.nutrient *= 3;
+      foodItem.nutrient *= 2;
       foodItem.bonusStat.Wil += 1;
       foodItem.bonusStat.Lrn += 1;
     }
@@ -107,7 +110,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = "Baked " + foodItem.nameRaw;
       foodItem.price *= 4;
-      foodItem.nutrient *= 4;
+      foodItem.nutrient *= 2;
+      foodItem.stamina += 25;
       foodItem.bonusStat.Wil += 1;
       foodItem.bonusStat.Lrn += 2;
     }
@@ -115,8 +119,9 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = "Creme of " + foodItem.nameRaw;
       foodItem.price *= 5;
-      foodItem.nutrient *= 5;
+      foodItem.nutrient *= 3;
       foodItem.quench += 30;
+      foodItem.stamina += 59;
       foodItem.bonusStat.Wil += 2;
       foodItem.bonusStat.Lrn += 2;
     }
@@ -124,7 +129,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Ratatouille";
       foodItem.price *= 6;
-      foodItem.nutrient *= 6;
+      foodItem.nutrient *= 3;
+      foodItem.stamina += 100;
       foodItem.bonusStat.Wil += 2;
       foodItem.bonusStat.Lrn += 3;
     }
@@ -135,14 +141,14 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = "Fried " + foodItem.nameRaw;
       foodItem.price *= 2;
-      foodItem.nutrient *= 2;
+      foodItem.nutrient *= 1;
       foodItem.bonusStat.Dex += 1;
     }
     if (foodItem.dishLevel == 2)
     {
       foodItem.nameCooked = foodItem.nameRaw + " Soup";
       foodItem.price *= 3;
-      foodItem.nutrient *= 3;
+      foodItem.nutrient *= 2;
       foodItem.quench += 30;
       foodItem.bonusStat.Per += 1;
       foodItem.bonusStat.Dex += 1;
@@ -151,7 +157,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = "Grilled " + foodItem.nameRaw;
       foodItem.price *= 4;
-      foodItem.nutrient *= 4;
+      foodItem.nutrient *= 2;
+      foodItem.stamina += 25;
       foodItem.bonusStat.Per += 1;
       foodItem.bonusStat.Dex += 2;
     }
@@ -159,7 +166,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Tempura";
       foodItem.price *= 5;
-      foodItem.nutrient *= 5;
+      foodItem.nutrient *= 3;
+      foodItem.stamina += 50;
       foodItem.bonusStat.Per += 2;
       foodItem.bonusStat.Dex += 2;
     }
@@ -167,7 +175,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Sushi";
       foodItem.price *= 6;
-      foodItem.nutrient *= 6;
+      foodItem.nutrient *= 3;
+      foodItem.stamina += 100;
       foodItem.bonusStat.Per += 2;
       foodItem.bonusStat.Dex += 3;
     }
@@ -179,14 +188,14 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = "Roasted  " + foodItem.nameRaw;
       foodItem.price *= 2;
-      foodItem.nutrient *= 2;
+      foodItem.nutrient *= 1;
       foodItem.bonusStat.Str += 1;
     }
     if (foodItem.dishLevel == 2)
     {
       foodItem.nameCooked = foodItem.nameRaw + " Stew";
       foodItem.price *= 3;
-      foodItem.nutrient *= 3;
+      foodItem.nutrient *= 2;
       foodItem.quench += 30;
       foodItem.bonusStat.Con += 1;
       foodItem.bonusStat.Str += 1;
@@ -195,7 +204,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Cutlet";
       foodItem.price *= 4;
-      foodItem.nutrient *= 4;
+      foodItem.nutrient *= 2;
+      foodItem.stamina += 25;
       foodItem.bonusStat.Con += 1;
       foodItem.bonusStat.Str += 2;
     }
@@ -203,7 +213,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Burger";
       foodItem.price *= 5;
-      foodItem.nutrient *= 5;
+      foodItem.nutrient *= 3;
+      foodItem.stamina += 50;
       foodItem.bonusStat.Con += 2;
       foodItem.bonusStat.Str += 2;
     }
@@ -211,7 +222,8 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
     {
       foodItem.nameCooked = foodItem.nameRaw + " Steak";
       foodItem.price *= 6;
-      foodItem.nutrient *= 6;
+      foodItem.nutrient *= 3;
+      foodItem.stamina += 100;
       foodItem.bonusStat.Con += 2;
       foodItem.bonusStat.Str += 3;
     }
@@ -246,6 +258,7 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
       foodItem.nameCooked = "Croissant";
       foodItem.price *= 4;
       foodItem.nutrient *= 4;
+      foodItem.stamina += 25;
       foodItem.bonusStat.Str += 1;
       foodItem.bonusStat.Con += 2;
       foodItem.bonusStat.Dex += 2;
@@ -258,6 +271,7 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
       foodItem.nameCooked = "Cinnamon Roll";
       foodItem.price *= 5;
       foodItem.nutrient *= 5;
+      foodItem.stamina += 50;
       foodItem.bonusStat.Str += 1;
       foodItem.bonusStat.Con += 2;
       foodItem.bonusStat.Dex += 2;
@@ -271,6 +285,7 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
       foodItem.nameCooked = "Melonpan";
       foodItem.price *= 6;
       foodItem.nutrient *= 6;
+      foodItem.stamina += 100;
       foodItem.bonusStat.Str += 2;
       foodItem.bonusStat.Con += 2;
       foodItem.bonusStat.Dex += 2;
@@ -295,6 +310,7 @@ void Food::loadRawFood()
   prototype.price = 100;
   prototype.nutrient = 100;
   prototype.quench = 100;
+  prototype.stamina = 0;
   prototype.bonusStat.Str = 0;
   prototype.bonusStat.Con = 0;
   prototype.bonusStat.Dex = 0;
@@ -547,8 +563,8 @@ void Food::loadRawFood()
   rawFood.nameRaw = "Flour";
   rawFood.nameCooked = rawFood.nameRaw;
   prototype.type = FoodType::flour;
-  rawFood.price = 150;
-  rawFood.nutrient = 150;
+  rawFood.price = 100;
+  rawFood.nutrient = 75;
   rawFood.quench = 0;
   mRawOther.push_back(rawFood);
 
@@ -580,6 +596,7 @@ void Food::loadRawFood()
   rawFood.price = 7500;
   rawFood.nutrient = 500;
   rawFood.quench = 0;
+  rawFood.stamina = 300;
   mRawOther.push_back(rawFood);
 
   rawFood = prototype;
@@ -599,6 +616,16 @@ void Food::loadRawFood()
   prototype.dishLevel = 99;
   rawFood.price = 1500;
   rawFood.nutrient = 200;
+  rawFood.quench = 0;
+  mRawOther.push_back(rawFood);
+
+  rawFood = prototype;
+  rawFood.nameRaw = "Instant Ramen";
+  rawFood.nameCooked = rawFood.nameRaw;
+  prototype.type = FoodType::junk;
+  prototype.dishLevel = 99;
+  rawFood.price = 2000;
+  rawFood.nutrient = 500;
   rawFood.quench = 0;
   mRawOther.push_back(rawFood);
 }
