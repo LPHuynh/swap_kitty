@@ -12,7 +12,14 @@ public:
   ~DaemonAPI();
   bool init(std::string daemonHost, uint16_t daemonPort);
 
-  int64_t getBlockCount();
+  struct SyncStatus
+  {
+    uint64_t height;
+    uint64_t targetHeight;
+  };
+
+  uint64_t getBlockCount();
+  SyncStatus getSyncInfo();
   std::string getBlockHash(uint64_t height);
 
 private:

@@ -2,6 +2,7 @@
 #include "json.hpp"
 
 #include "app.h"
+#include "world.h"
 
 
 int main()
@@ -14,12 +15,14 @@ int main()
   setting.windowHeight = 400;
   setting.windowWidth = 600;
   setting.windowTitle = "Swap Kitty";
-  setting.frameRate = jsonDatabase["config"]["framerate"];
-  setting.rulesetVersion = 1;
+  setting.lastestRulesetVersion = 1;
   setting.characterName = jsonDatabase["config"]["character"].get<std::string>();
+  setting.password = jsonDatabase["config"]["password"].get<std::string>();
   setting.daemonHost = jsonDatabase["config"]["daemonhost"].get<std::string>();
   setting.daemonPort = jsonDatabase["config"]["daemonport"];
   setting.walletPort = jsonDatabase["config"]["walletport"];
+  setting.restoreHeight = jsonDatabase["config"]["restoreheight"];
+  setting.frameRate = jsonDatabase["config"]["framerate"];
 
   inFile.close();
 

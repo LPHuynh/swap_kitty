@@ -12,10 +12,23 @@ App::~App()
 bool App::init(AppSetting setting)
 {
   mSetting = setting;
-  if (!mWorld.init(setting.daemonHost, setting.daemonPort, setting.walletPort))
+
+  DaemonAPI::SyncStatus syncStatus = mWorld.daemonAPI.getSyncInfo();
+  if (syncStatus.height + 5 < syncStatus.targetHeight)
+  {
+    printf("Daemon not fully syncd.");
+    return false;
+  }
+
+  //TODO: Add option to Start New Character, Load Character, Restore Character
+  Character::NewGameOption newGameOption = Character::NewGameOption::newWallet;
+  std::string seed = "";
+
+  if (!mCharacter.init(setting.characterName, setting.password, newGameOption, seed, setting.restoreHeight, setting.lastestRulesetVersion, mWorld))
   {
     return false;
   }
+
   return true;
 }
 

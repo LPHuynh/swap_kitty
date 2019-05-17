@@ -1,5 +1,7 @@
 #include "walletapi.h"
 
+#include <thread>
+#include <chrono>
 #include "curl_easy.h"
 #include "curl_exception.h"
 #include "windows.h"
@@ -37,6 +39,9 @@ bool WalletAPI::init(std::string daemonHost, uint16_t daemonPort, uint16_t walle
     printf("CreateProcess failed (%d).\n", GetLastError());
     return false;
   }
+
+  std::this_thread::sleep_for(std::chrono::seconds(5)); // The wallet takes a few second before it can accept any rpc commands
+
   return true;
 }
 
@@ -325,6 +330,7 @@ int64_t WalletAPI::getBalance(bool isReturnUnlocked)
   {
     curl::curlcpp_traceback errors = error.get_traceback();
     error.print_traceback();
+    return 0;
   }
 
   nlohmann::json httpReponse;

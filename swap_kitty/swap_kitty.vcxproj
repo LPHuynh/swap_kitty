@@ -147,9 +147,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="character.cpp" />
+    <ClCompile Include="cosmetic.cpp" />
     <ClCompile Include="daemonapi.cpp" />
-    <ClCompile Include="eyes.cpp" />
-    <ClCompile Include="hair.cpp" />
+    <ClCompile Include="food.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="siphashrng.cpp" />
     <ClCompile Include="walletapi.cpp" />
@@ -158,9 +159,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="app.h" />
+    <ClInclude Include="character.h" />
+    <ClInclude Include="cosmetic.h" />
     <ClInclude Include="daemonapi.h" />
-    <ClInclude Include="eyes.h" />
-    <ClInclude Include="hair.h" />
+    <ClInclude Include="food.h" />
     <ClInclude Include="siphashrng.h" />
     <ClInclude Include="walletapi.h" />
     <ClInclude Include="weapon.h" />

@@ -3,6 +3,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "world.h"
+#include "character.h"
 
 
 class App
@@ -13,12 +14,14 @@ public:
     uint16_t windowWidth;
     uint16_t windowHeight;
     std::string windowTitle;
-    uint16_t frameRate;
-    uint16_t rulesetVersion;
+    uint16_t lastestRulesetVersion;
     std::string characterName;
+    std::string password;
     std::string daemonHost;
     uint16_t daemonPort;
     uint16_t walletPort;
+    uint64_t restoreHeight;
+    uint16_t frameRate;
   };
 
   App();
@@ -30,5 +33,6 @@ public:
 private:
   AppSetting mSetting;
   World mWorld;
+  Character mCharacter;
 };
 

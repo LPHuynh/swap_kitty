@@ -14,12 +14,79 @@ Weapon::~Weapon()
 {
 }
 
+Weapon::WeaponItem Weapon::randomizeWeapon(std::string seed, int64_t maxCost)
+{
+  WeaponType type = WeaponType(0); 
+  WeaponBase base = mSword.at(0);
+  WeaponMaterial material = mMaterials.at(0);
+  WeaponQuality quality = mQualities.at(0);
+  WeaponAbility ability = mAbilities.at(0);
+  WeaponStatBonus statBonus = mStatBonuses.at(0);
+
+  type = WeaponType(mSiphashRNG.getRandomNumber(seed + "weapon__0", 0, 4));
+
+  switch (type)
+  {
+  case WeaponType::sword: base = mSword.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::axe: base = mAxe.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::bludgeon: base = mBludgeon.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::stave: base = mStave.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::polearm: base = mPolearm.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  }
+
+  material = mMaterials.at(mSiphashRNG.getRandomNumber(seed + "weapon__2", 0, 11));
+
+  int16_t maxQuality = mSiphashRNG.getRandomNumber(seed + "weapon__3", 0, 5);
+  quality = mQualities.at(mSiphashRNG.getRandomNumber(seed + "weapon__4", 0, maxQuality));
+
+  if (mSiphashRNG.rollDie(seed + "weapon__5", 1, 6) == 6)
+  {
+    ability = mAbilities.at(mSiphashRNG.getRandomNumber(seed + "weapon__6", 1, 10));
+  }
+  if (mSiphashRNG.rollDie(seed + "weapon__7", 1, 10) == 6)
+  {
+    statBonus = mStatBonuses.at(mSiphashRNG.getRandomNumber(seed + "weapon__8", 1, 7));
+  }
+
+  int64_t weaponCost = base.baseCost * material.costMultplier * quality.costMultplier * ability.costMultplier * statBonus.costMultplier;
+
+  if (weaponCost > maxCost)
+  {
+    ability = mAbilities.at(0);
+    weaponCost = base.baseCost * material.costMultplier * quality.costMultplier * ability.costMultplier * statBonus.costMultplier;
+  }
+  if (weaponCost > maxCost)
+  {
+    statBonus = mStatBonuses.at(0);
+    weaponCost = base.baseCost * material.costMultplier * quality.costMultplier * ability.costMultplier * statBonus.costMultplier;
+  }
+  if (weaponCost > maxCost && quality.costMultplier > 25)
+  {
+    quality = mQualities.at(2);
+  }
+  if (weaponCost > maxCost && material.costMultplier > 20)
+  {
+    material = mMaterials.at(5);
+  }
+
+  WeaponItem weaponItem;
+
+  weaponItem.name = quality.name + " " + statBonus.name + " " + material.name + " " + base.name + " " + ability.name;
+  weaponItem.type = type;
+  weaponItem.price = base.baseCost * quality.costMultplier * statBonus.costMultplier * material.costMultplier * ability.costMultplier;
+  weaponItem.baseDice = World::addDice({ base.bonusDice, quality.bonusDice, statBonus.bonusDice, material.bonusDice });
+  weaponItem.bonusStat = World::addStat({ base.bonusStat, quality.bonusStat, statBonus.bonusStat, material.bonusStat });
+  weaponItem.abilityDice = ability.bonusDice;
+  weaponItem.attribute = ability.attribute;
+
+  return weaponItem;
+}
+
 void Weapon::loadWeapon()
 {
-  //New Weapons should always be introduced at the end of this list.
-  //Ruleset v1: slot 0-23
+  //New Weapons should always be introduced at the end of their corresponding type list.
 
-  WeaponItem prototype;
+  WeaponBase prototype;
 
   prototype.name = "weapon";
   prototype.type = WeaponType::sword;
@@ -37,8 +104,9 @@ void Weapon::loadWeapon()
   prototype.bonusStat.Acc = 0;
   prototype.bonusStat.Cri = 0;
 
-  WeaponItem weapon;
+  WeaponBase weapon;
 
+  //Ruleset v1: sword slot 0-4
   weapon = prototype;
   weapon.name = "Kitchen Knife";
   weapon.type = WeaponType::sword;
@@ -49,7 +117,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Lrn = 10;
   weapon.bonusStat.Acc = -5;
   weapon.bonusStat.Cri = 15;
-  mWeapons.push_back(weapon);
+  mSword.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Dagger";
@@ -60,7 +128,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 15;
   weapon.bonusStat.Acc = 0;
   weapon.bonusStat.Cri = 10;
-  mWeapons.push_back(weapon);
+  mSword.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Long Sword";
@@ -72,7 +140,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 5;
   weapon.bonusStat.Acc = 5;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mSword.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Katana";
@@ -84,7 +152,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 15;
   weapon.bonusStat.Acc = 5;
   weapon.bonusStat.Cri = 5;
-  mWeapons.push_back(weapon);
+  mSword.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Rapier";
@@ -95,8 +163,9 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 20;
   weapon.bonusStat.Acc = 0;
   weapon.bonusStat.Cri = 10;
-  mWeapons.push_back(weapon);
+  mSword.push_back(weapon);
 
+  //Ruleset v1: axe slot 0-3
   weapon = prototype;
   weapon.name = "Hatchet";
   weapon.type = WeaponType::axe;
@@ -107,7 +176,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 5;
   weapon.bonusStat.Acc = -5;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mAxe.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Tomahawk";
@@ -120,7 +189,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Con = 15;
   weapon.bonusStat.Acc = -5;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mAxe.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Battle Axe";
@@ -132,7 +201,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Str = 25;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mAxe.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Dane Axe";
@@ -145,11 +214,12 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Con = 5;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mAxe.push_back(weapon);
 
+  //Ruleset v1: bludgeon slot 0-4
   weapon = prototype;
   weapon.name = "Club";
-  weapon.type = WeaponType::blunt;
+  weapon.type = WeaponType::bludgeon;
   weapon.baseCost = 8;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 16;
@@ -158,11 +228,11 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Con = 15;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mBludgeon.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Mace";
-  weapon.type = WeaponType::blunt;
+  weapon.type = WeaponType::bludgeon;
   weapon.baseCost = 12;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 18;
@@ -170,11 +240,11 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Wil = 25;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mBludgeon.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Hammer";
-  weapon.type = WeaponType::blunt;
+  weapon.type = WeaponType::bludgeon;
   weapon.baseCost = 12;
   weapon.bonusDice.face = 1;
   weapon.bonusDice.roll = 32;
@@ -183,11 +253,11 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Wil = 15;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mBludgeon.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Flail";
-  weapon.type = WeaponType::blunt;
+  weapon.type = WeaponType::bludgeon;
   weapon.baseCost = 13;
   weapon.bonusDice.face = 4;
   weapon.bonusDice.roll = 14;
@@ -195,11 +265,11 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 10;
   weapon.bonusStat.Acc = -15;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mBludgeon.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Warhammer";
-  weapon.type = WeaponType::blunt;
+  weapon.type = WeaponType::bludgeon;
   weapon.baseCost = 15;
   weapon.bonusDice.face = 1;
   weapon.bonusDice.roll = 54;
@@ -207,8 +277,9 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Con = 5;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mBludgeon.push_back(weapon);
 
+  //Ruleset v1: stave slot 0-3
   weapon = prototype;
   weapon.name = "Walking Stick";
   weapon.type = WeaponType::stave;
@@ -219,7 +290,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Mag = 10;
   weapon.bonusStat.Acc = -10;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mStave.push_back(weapon);
   
   weapon = prototype;
   weapon.name = "Stave";
@@ -230,7 +301,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Mag = 35;
   weapon.bonusStat.Acc = -5;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mStave.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Long Stave";
@@ -242,7 +313,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Mag = 25;
   weapon.bonusStat.Acc = -5;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mStave.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Magic Stave";
@@ -253,8 +324,9 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Mag = 55;
   weapon.bonusStat.Acc = -15;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mStave.push_back(weapon);
 
+  //Ruleset v1: polearm slot 0-5
   weapon = prototype;
   weapon.name = "Spear";
   weapon.type = WeaponType::polearm;
@@ -264,7 +336,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 15;
   weapon.bonusStat.Acc = 0;
   weapon.bonusStat.Cri = 15;
-  mWeapons.push_back(weapon);
+  mPolearm.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Trident";
@@ -275,7 +347,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 20;
   weapon.bonusStat.Acc = 0;
   weapon.bonusStat.Cri = 10;
-  mWeapons.push_back(weapon);
+  mPolearm.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Harpoon";
@@ -287,7 +359,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Lrn = 10;
   weapon.bonusStat.Acc = 5;
   weapon.bonusStat.Cri = 15;
-  mWeapons.push_back(weapon);
+  mPolearm.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Lance";
@@ -299,7 +371,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 10;
   weapon.bonusStat.Acc = 10;
   weapon.bonusStat.Cri = 5;
-  mWeapons.push_back(weapon);
+  mPolearm.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "Nginata";
@@ -311,7 +383,7 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 18;
   weapon.bonusStat.Acc = 15;
   weapon.bonusStat.Cri = 0;
-  mWeapons.push_back(weapon);
+  mPolearm.push_back(weapon);
 
   weapon = prototype;
   weapon.name = "War Scythe";
@@ -323,13 +395,13 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Dex = 1;
   weapon.bonusStat.Acc = 0;
   weapon.bonusStat.Cri = 15;
-  mWeapons.push_back(weapon);
+  mPolearm.push_back(weapon);
 }
 
 void Weapon::loadMaterial()
 {
-//New Materials should always be introduced at the end of this list.
-//Ruleset v1: slot 0-11
+  //New Materials should always be introduced at the end of this list.
+  //Ruleset v1: slot 0-11
 
   WeaponMaterial prototype;
 
@@ -448,7 +520,7 @@ void Weapon::loadMaterial()
   material = prototype;
   material.name = "Gold";
   material.artifactName = "Golden";
-  material.costMultplier = 20;
+  material.costMultplier = 21;
   material.bonusDice.face = 2;
   material.bonusDice.roll = -4;
   material.bonusDice.plus = 2;
@@ -605,7 +677,7 @@ void Weapon::loadAbility()
   prototype.bonusStat.Mag = 0;
   prototype.bonusStat.Acc = 0;
   prototype.bonusStat.Cri = 0;
-  prototype.attribute = World::Attribute::none;
+  prototype.attribute = World::Element::none;
 
   WeaponAbility ability;
 
@@ -615,7 +687,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 0;
   ability.bonusDice.roll = 0;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::none;
+  prototype.attribute = World::Element::none;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -624,7 +696,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::fire;
+  prototype.attribute = World::Element::fire;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -633,7 +705,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::water;
+  prototype.attribute = World::Element::water;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -642,7 +714,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::water;
+  prototype.attribute = World::Element::water;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -651,7 +723,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::air;
+  prototype.attribute = World::Element::air;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -660,7 +732,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 8;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::lightning;
+  prototype.attribute = World::Element::lightning;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -669,7 +741,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 2;
   ability.bonusDice.roll = 12;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::machine;
+  prototype.attribute = World::Element::machine;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -678,7 +750,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 4;
   ability.bonusDice.roll = 4;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::poison;
+  prototype.attribute = World::Element::poison;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -687,7 +759,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 1;
   ability.bonusDice.roll = 16;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::chaos;
+  prototype.attribute = World::Element::chaos;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -696,7 +768,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 3;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::holy;
+  prototype.attribute = World::Element::holy;
   mAbilities.push_back(ability);
 
   ability = prototype;
@@ -705,13 +777,13 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 3;
   ability.bonusDice.roll = 6;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Attribute::dark;
+  prototype.attribute = World::Element::dark;
   mAbilities.push_back(ability);
 }
 
 void Weapon::loadStatBonus()
 {
-  //New Ability should always be introduced at the end of this list.
+  //New StatBonus Ability should always be introduced at the end of this list.
   //Ruleset v1: slot 0-7
 
   WeaponStatBonus prototype;

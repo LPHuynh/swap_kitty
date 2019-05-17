@@ -3,71 +3,68 @@
 #include <string>
 #include <vector>
 #include "world.h"
+#include "siphashrng.h"
+
 
 class Weapon
 {
 public:
   Weapon();
   ~Weapon();
-private:
-  enum class WeaponType { sword, axe, blunt, stave, polearm };
 
-  struct Dice
-  {
-    int16_t roll;
-    int16_t face;
-    int16_t plus;
-  };
-  struct Stat
-  {
-    int16_t Str;
-    int16_t Con;
-    int16_t Dex;
-    int16_t Per;
-    int16_t Lrn;
-    int16_t Wil;
-    int16_t Mag;
-    int16_t Chr;
-    int16_t Acc;
-    int16_t Cri;
-  };
+  enum WeaponType { sword, axe, bludgeon, stave, polearm };
+
   struct WeaponItem
   {
     std::string name;
     WeaponType type;
-    uint16_t baseCost;
-    Dice bonusDice;
-    Stat bonusStat;
+    int64_t price;
+    World::Dice baseDice;
+    World::Stat bonusStat;
+    World::Dice abilityDice;
+    World::Element attribute;
+  };
+
+  WeaponItem randomizeWeapon(std::string seed, int64_t maxCost);
+
+private:
+  struct WeaponBase
+  {
+    std::string name;
+    WeaponType type;
+    int16_t baseCost;
+    World::Dice bonusDice;
+    World::Stat bonusStat;
   };
   struct WeaponMaterial
   {
     std::string name;
     std::string artifactName;
-    uint16_t costMultplier;
-    Dice bonusDice;
-    Stat bonusStat;
+    int16_t costMultplier;
+    World::Dice bonusDice;
+    World::Stat bonusStat;
   };
   struct WeaponQuality
   {
     std::string name;
-    uint16_t costMultplier;
-    Dice bonusDice;
-    Stat bonusStat;
+    int16_t costMultplier;
+    World::Dice bonusDice;
+    World::Stat bonusStat;
   };
   struct WeaponAbility
   {
     std::string name;
-    uint16_t costMultplier;
-    Dice bonusDice;
-    Stat bonusStat;
-    World::Attribute attribute;
+    int16_t costMultplier;
+    World::Dice bonusDice;
+    World::Stat bonusStat;
+    World::Element attribute;
   };
   struct WeaponStatBonus
   {
     std::string name;
-    uint16_t costMultplier;
-    Dice bonusDice;
-    Stat bonusStat;
+    int16_t costMultplier;
+    World::Dice bonusDice;
+    World::Stat bonusStat;
   };
 
   void loadWeapon();
@@ -76,10 +73,16 @@ private:
   void loadAbility();
   void loadStatBonus();
 
-  std::vector<WeaponItem> mWeapons;
+  std::vector<WeaponBase> mSword;
+  std::vector<WeaponBase> mAxe;
+  std::vector<WeaponBase> mBludgeon;
+  std::vector<WeaponBase> mStave;
+  std::vector<WeaponBase> mPolearm;
   std::vector<WeaponMaterial> mMaterials;
   std::vector<WeaponQuality> mQualities;
   std::vector<WeaponAbility> mAbilities;
   std::vector<WeaponStatBonus> mStatBonuses;
+
+  SiphashRNG mSiphashRNG;
 };
 
