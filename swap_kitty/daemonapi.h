@@ -10,7 +10,7 @@ class DaemonAPI
 public:
   DaemonAPI();
   ~DaemonAPI();
-  bool init(std::string daemonHost, uint16_t daemonPort);
+  bool init(const std::string& daemonHost, uint16_t daemonPort);
 
   struct SyncStatus
   {

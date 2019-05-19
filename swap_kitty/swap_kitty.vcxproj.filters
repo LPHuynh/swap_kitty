@@ -27,9 +27,6 @@
     <ClCompile Include="world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="siphashrng.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="walletapi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,9 +54,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="siphashrng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="walletapi.h">

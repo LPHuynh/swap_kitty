@@ -1,7 +1,7 @@
 #include "walletapi.h"
 
-#include <thread>
 #include <chrono>
+#include <thread>
 #include "curl_easy.h"
 #include "curl_exception.h"
 #include "windows.h"
@@ -23,7 +23,7 @@ WalletAPI::~WalletAPI()
   CloseHandle(pi.hThread);
 }
 
-bool WalletAPI::init(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort)
+bool WalletAPI::init(const std::string& daemonHost, uint16_t daemonPort, uint16_t walletPort)
 {
   mWalletPort = walletPort;
   mWalletJsonHttp = "http://127.0.0.1:" + std::to_string(walletPort) + "/json_rpc";
@@ -45,7 +45,7 @@ bool WalletAPI::init(std::string daemonHost, uint16_t daemonPort, uint16_t walle
   return true;
 }
 
-bool WalletAPI::createWallet(std::string walletName, std::string password, std::string language)
+bool WalletAPI::createWallet(const std::string& walletName, const std::string& password, const std::string& language)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -78,7 +78,7 @@ bool WalletAPI::createWallet(std::string walletName, std::string password, std::
   return true;
 }
 
-bool WalletAPI::openWallet(std::string walletName, std::string password)
+bool WalletAPI::openWallet(const std::string& walletName, const std::string& password)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -110,7 +110,7 @@ bool WalletAPI::openWallet(std::string walletName, std::string password)
   return true;
 }
 
-bool WalletAPI::restoreWallet(std::string walletName, std::string password, std::string seed, std::string language, uint64_t restoreHeight)
+bool WalletAPI::restoreWallet(const std::string& walletName, const std::string& password, const std::string& seed, const std::string& language, uint64_t restoreHeight)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -345,7 +345,7 @@ WalletAPI::Balance WalletAPI::getBalance()
   return balance;
 }
 
-WalletAPI::WithdrawlReceipt WalletAPI::transfer(std::string walletAddress, std::string paymentID, uint64_t amount, uint16_t priority, uint16_t mixin)
+WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -401,7 +401,7 @@ WalletAPI::WithdrawlReceipt WalletAPI::transfer(std::string walletAddress, std::
   return receipt;
 }
 
-WalletAPI::WithdrawlReceipt WalletAPI::sweepAll(std::string walletAddress, std::string paymentID, uint16_t priority, uint16_t mixin)
+WalletAPI::WithdrawlReceipt WalletAPI::sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);

@@ -1,11 +1,9 @@
 #pragma once
 
-#include <string>
-#include "world.h"
 #include "cosmetic.h"
 #include "food.h"
 #include "weapon.h"
-#include "siphashrng.h"
+#include "world.h"
 
 
 class Character
@@ -13,12 +11,7 @@ class Character
 public:
   Character();
   ~Character();
-
-  enum NewGameOption { newWallet, loadWallet, restoreWallet };
-
-  bool init(std::string characterName, std::string password, NewGameOption newGameOption, std::string seed, uint64_t restoreHeight, uint16_t latestRulesetVersion, World& world);
-
-  void createNewCharacter(uint16_t rulesetVersion);
+  void init(const std::string& walletAddress, World& world);
 
   Cosmetic cosmetic;
 
@@ -35,10 +28,10 @@ public:
   std::string favouriteVegatable;
   std::string favouriteJunkFood;
 
+  int64_t money;
+
 private:
   Weapon mWeapon;
   Food mFood;
-  World mWorld;
-  SiphashRNG mSiphashRNG;
 };
 

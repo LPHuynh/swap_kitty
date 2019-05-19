@@ -9,10 +9,8 @@ Cosmetic::~Cosmetic()
 {
 }
 
-void Cosmetic::init(World::Element firstElement, World::Element secondElement, std::string seed, World& world)
+void Cosmetic::init(World::Element firstElement, World::Element secondElement, const std::string& seed)
 {
-  mWorld = world;
-
   naturalHairColour = generateNaturalHairColour(firstElement, secondElement);
   naturalEyeColour = generateNaturalEyeColour(firstElement);
   naturalSkinTone = generateNaturalSkinTone(secondElement);
@@ -26,6 +24,9 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, s
 
   species = "Catgirl";
   gender = "Female";
+  age = 10;
+  weight = 28 + World::rollDie(seed + "weight__", 1, 6);
+  height = 128 + World::rollDie(seed + "height__", 1, 6);
 }
 
 std::string Cosmetic::generateNaturalHairColour(World::Element firstElement, World::Element secondElement)
@@ -143,21 +144,18 @@ int16_t Cosmetic::generateNaturalSkinTone(World::Element element)
   }
 }
 
-std::string Cosmetic::randomizeHairStyle(std::string seed)
+std::string Cosmetic::randomizeHairStyle(const std::string& seed)
 {
-  seed += "hairstyle__";
   return "Fluffy";
 }
 
-std::string Cosmetic::randomizeTailStyle(std::string seed)
+std::string Cosmetic::randomizeTailStyle(const std::string& seed)
 {
-  seed += "tailstyle__";
   return "Short";
 }
 
-std::string Cosmetic::randomizeEyeStyle(std::string seed)
+std::string Cosmetic::randomizeEyeStyle(const std::string& seed)
 {
-  seed += "eyestyle__";
   return "Large Round";
 }
 

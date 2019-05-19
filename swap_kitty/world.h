@@ -1,8 +1,12 @@
 #pragma once
 
-#include "siphashrng.h"
-#include "daemonapi.h"
-#include "walletapi.h"
+#include <chrono>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <thread>
+#include <vector>
 
 
 class World
@@ -10,9 +14,8 @@ class World
 public:
   World();
   ~World();
-  bool init(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort);
 
-  enum Element { none, fire, water, earth, air, lightning, holy, dark, machine, poison, chaos };
+  enum class Element { normal, fire, water, earth, air, lightning, holy, dark, machine, poison, chaos };
 
   struct Dice
   {
@@ -66,19 +69,13 @@ public:
     int16_t choas;
   };
 
-  World::Element randomizeElement(const std::string& seed);
-  World::Element randomizePlayerElement(const std::string& seed);
-
-  int16_t elementAttackBonus(Element attackerElement, std::vector<Element> defenderElement);
-
+  static int16_t calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement);
   static Dice addDice(const std::vector<Dice>& die);
   static Stat addStat(const std::vector<Stat>& stats);
-
-  DaemonAPI daemonAPI;
-  WalletAPI walletAPI;
+  static int16_t rollDie(const std::string& seed, int16_t dice, int16_t face);
+  static int16_t getRandomNumber(const std::string& seed, int16_t minNumber, int16_t maxNumber);
 
   uint16_t currentRulesetVersion;
-
-private:
-  SiphashRNG mSiphashRNG;
+  uint64_t startingBlock;
+  uint64_t currentScanHeight;
 };

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include "world.h"
-#include "siphashrng.h"
 
 
 class Weapon
@@ -12,7 +9,7 @@ public:
   Weapon();
   ~Weapon();
 
-  enum WeaponType { sword, axe, bludgeon, stave, polearm };
+  enum class WeaponType { sword, axe, bludgeon, stave, polearm };
 
   struct WeaponItem
   {
@@ -25,7 +22,7 @@ public:
     World::Element attribute;
   };
 
-  WeaponItem randomizeWeapon(std::string seed, int64_t maxCost);
+  WeaponItem randomizeWeapon(const std::string& seed, int64_t maxCost);
 
 private:
   struct WeaponBase
@@ -82,7 +79,5 @@ private:
   std::vector<WeaponQuality> mQualities;
   std::vector<WeaponAbility> mAbilities;
   std::vector<WeaponStatBonus> mStatBonuses;
-
-  SiphashRNG mSiphashRNG;
 };
 

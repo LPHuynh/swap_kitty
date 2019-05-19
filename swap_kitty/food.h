@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include "world.h"
-#include "siphashrng.h"
 
 
 class Food
@@ -12,7 +9,7 @@ public:
   Food();
   ~Food();
 
-  enum FoodType { fruit, vegatable, fish, corpse, flour, junk };
+  enum class FoodType { fruit, vegatable, fish, corpse, flour, junk };
 
   struct FoodItem
   {
@@ -27,11 +24,10 @@ public:
     World::Stat bonusStat;
   };
 
-  FoodItem randomizeFruit(std::string seed);
-  FoodItem randomizeVegatable(std::string seed);
-  FoodItem randomizeFish(std::string seed, int64_t maxCost);
-  FoodItem randomizeJunk(std::string seed);
-
+  FoodItem randomizeFruit(const std::string& seed);
+  FoodItem randomizeVegatable(const std::string& seed);
+  FoodItem randomizeFish(const std::string& seed, int64_t maxCost);
+  FoodItem randomizeJunk(const std::string& seed);
   FoodItem randomizeCookedFood(const std::string& seed, const FoodItem& rawFood);
 
 private:
@@ -41,6 +37,4 @@ private:
   std::vector<FoodItem> mRawOther;
 
   void loadRawFood();
-
-  SiphashRNG mSiphashRNG;
 };

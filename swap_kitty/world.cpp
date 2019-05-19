@@ -1,42 +1,22 @@
 #include "world.h"
 
+#include "siple.hpp"
+
 
 World::World()
 {
+  currentRulesetVersion = 1;
+  startingBlock = 0;
+  currentScanHeight = 0;
 }
 
 World::~World()
 {
 }
 
-bool World::init(std::string daemonHost, uint16_t daemonPort, uint16_t walletPort)
+int16_t World::calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement)
 {
-  currentRulesetVersion = 1;
-
-  if (!daemonAPI.init(daemonHost, daemonPort))
-  {
-    return false;
-  }
-  if (!walletAPI.init(daemonHost, daemonPort, walletPort))
-  {
-    return false;
-  }
-  return true;
-}
-
-World::Element World::randomizeElement(const std::string& seed)
-{
-  return Element(mSiphashRNG.getRandomNumber(seed + "element__", 0, 10));
-}
-
-World::Element World::randomizePlayerElement(const std::string& seed)
-{
-  return Element(mSiphashRNG.getRandomNumber(seed + "playerelement__", 1, 6));
-}
-
-int16_t World::elementAttackBonus(Element attackerElement, std::vector<Element> defenderElement)
-{
-  int16_t damageBonus = 0;
+  int16_t damageBonus = 100;
 
   for (auto & element : defenderElement) {
     if (attackerElement == Element::fire && (element == Element::air || element == Element::poison))
@@ -71,21 +51,21 @@ int16_t World::elementAttackBonus(Element attackerElement, std::vector<Element> 
     {
       damageBonus += 25;
     }
-    else if (attackerElement == Element::machine && element == Element::machine)
-    {
-      damageBonus -= 25;
-    }
     else if (attackerElement == Element::poison && element == Element::air)
     {
       damageBonus += 25;
     }
     else if (attackerElement == Element::poison && element == Element::poison)
     {
-      damageBonus -= 25;
+      damageBonus -= 15;
     }
     else if (attackerElement == Element::chaos && (element == Element::earth && element == Element::chaos))
     {
       damageBonus += 25;
+    }
+    if (attackerElement == element)
+    {
+      damageBonus -= 25;
     }
   }
 
@@ -138,4 +118,21 @@ World::Stat World::addStat(const std::vector<Stat>& stats)
   }
 
   return combinedStat;
+}
+
+int16_t World::rollDie(const std::string& seed, int16_t numOfDie, int16_t numOfFaces)
+{
+  int16_t result = 0;
+
+  for (int i = 0; i < numOfDie; i++)
+  {
+    result += getRandomNumber(seed + "dice__" + std::to_string(i), 1, numOfFaces);
+  }
+
+  return result;
+}
+
+int16_t World::getRandomNumber(const std::string& seed, int16_t minNumber, int16_t maxNumber)
+{
+  return (siphash24(&seed, seed.length()) % (maxNumber - minNumber + 1)) + minNumber;
 }

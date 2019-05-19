@@ -14,7 +14,7 @@ Weapon::~Weapon()
 {
 }
 
-Weapon::WeaponItem Weapon::randomizeWeapon(std::string seed, int64_t maxCost)
+Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxCost)
 {
   WeaponType type = WeaponType(0); 
   WeaponBase base = mSword.at(0);
@@ -23,29 +23,29 @@ Weapon::WeaponItem Weapon::randomizeWeapon(std::string seed, int64_t maxCost)
   WeaponAbility ability = mAbilities.at(0);
   WeaponStatBonus statBonus = mStatBonuses.at(0);
 
-  type = WeaponType(mSiphashRNG.getRandomNumber(seed + "weapon__0", 0, 4));
+  type = WeaponType(World::getRandomNumber(seed + "weapon__0", 0, 4));
 
   switch (type)
   {
-  case WeaponType::sword: base = mSword.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::axe: base = mAxe.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::bludgeon: base = mBludgeon.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::stave: base = mStave.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::polearm: base = mPolearm.at(mSiphashRNG.getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::sword: base = mSword.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::axe: base = mAxe.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::bludgeon: base = mBludgeon.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::stave: base = mStave.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::polearm: base = mPolearm.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
   }
 
-  material = mMaterials.at(mSiphashRNG.getRandomNumber(seed + "weapon__2", 0, 11));
+  material = mMaterials.at(World::getRandomNumber(seed + "weapon__2", 0, 11));
 
-  int16_t maxQuality = mSiphashRNG.getRandomNumber(seed + "weapon__3", 0, 5);
-  quality = mQualities.at(mSiphashRNG.getRandomNumber(seed + "weapon__4", 0, maxQuality));
+  int16_t maxQuality = World::getRandomNumber(seed + "weapon__3", 0, 5);
+  quality = mQualities.at(World::getRandomNumber(seed + "weapon__4", 0, maxQuality));
 
-  if (mSiphashRNG.rollDie(seed + "weapon__5", 1, 6) == 6)
+  if (World::rollDie(seed + "weapon__5", 1, 6) == 6)
   {
-    ability = mAbilities.at(mSiphashRNG.getRandomNumber(seed + "weapon__6", 1, 10));
+    ability = mAbilities.at(World::getRandomNumber(seed + "weapon__6", 1, 10));
   }
-  if (mSiphashRNG.rollDie(seed + "weapon__7", 1, 10) == 6)
+  if (World::rollDie(seed + "weapon__7", 1, 10) == 6)
   {
-    statBonus = mStatBonuses.at(mSiphashRNG.getRandomNumber(seed + "weapon__8", 1, 7));
+    statBonus = mStatBonuses.at(World::getRandomNumber(seed + "weapon__8", 1, 7));
   }
 
   int64_t weaponCost = base.baseCost * material.costMultplier * quality.costMultplier * ability.costMultplier * statBonus.costMultplier;
@@ -677,7 +677,7 @@ void Weapon::loadAbility()
   prototype.bonusStat.Mag = 0;
   prototype.bonusStat.Acc = 0;
   prototype.bonusStat.Cri = 0;
-  prototype.attribute = World::Element::none;
+  prototype.attribute = World::Element::normal;
 
   WeaponAbility ability;
 
@@ -687,7 +687,7 @@ void Weapon::loadAbility()
   ability.bonusDice.face = 0;
   ability.bonusDice.roll = 0;
   ability.bonusDice.plus = 0;
-  prototype.attribute = World::Element::none;
+  prototype.attribute = World::Element::normal;
   mAbilities.push_back(ability);
 
   ability = prototype;

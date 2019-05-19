@@ -1,13 +1,19 @@
 {
-  "config":
-  {
-    "character": "",
-    "password": "x",
-    "daemonhost": "node.pocketwhale.info",
-    "daemonport": 19950,
-    "walletport": 20050,
-    "restoreheight": 1000000,
-    "priority": 1,
-    "framerate": 15
+  "config": {
+    "character": {
+      "name": ""
+    },
+    "daemon": {
+      "host": "node.pocketwhale.info",
+      "port": 19950
+    },
+    "game": {
+      "framerate": 15
+    },
+    "wallet": {
+      "port": 20050,
+      "restoreheight": 1000000,
+      "txpriority": 1
+    }
   }
 }

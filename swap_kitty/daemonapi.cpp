@@ -15,7 +15,7 @@ DaemonAPI::~DaemonAPI()
 {
 }
 
-bool DaemonAPI::init(std::string daemonHost, uint16_t daemonPort)
+bool DaemonAPI::init(const std::string& daemonHost, uint16_t daemonPort)
 {
   mDaemonJsonHttp = "http://" + daemonHost + ":" + std::to_string(daemonPort) + "/json_rpc";
   return true;

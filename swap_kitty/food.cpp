@@ -1,7 +1,6 @@
 #include "food.h"
 
 
-
 Food::Food()
 {
   loadRawFood();
@@ -11,24 +10,24 @@ Food::~Food()
 {
 }
 
-Food::FoodItem Food::randomizeFruit(std::string seed)
+Food::FoodItem Food::randomizeFruit(const std::string& seed)
 {
-  return mRawFruits.at(mSiphashRNG.getRandomNumber(seed + "fruit__", 0, 7));
+  return mRawFruits.at(World::getRandomNumber(seed + "fruit__", 0, 7));
 }
 
-Food::FoodItem Food::randomizeVegatable(std::string seed)
+Food::FoodItem Food::randomizeVegatable(const std::string& seed)
 {
-  return mRawVegatables.at(mSiphashRNG.getRandomNumber(seed + "vegatable__", 0, 4));
+  return mRawVegatables.at(World::getRandomNumber(seed + "vegatable__", 0, 4));
 }
 
-Food::FoodItem Food::randomizeFish(std::string seed, int64_t maxCost)
+Food::FoodItem Food::randomizeFish(const std::string& seed, int64_t maxCost)
 {
-  return mRawFish.at(mSiphashRNG.getRandomNumber(seed + "fish__", 0, 7));
+  return mRawFish.at(World::getRandomNumber(seed + "fish__", 0, 7));
 }
 
-Food::FoodItem Food::randomizeJunk(std::string seed)
+Food::FoodItem Food::randomizeJunk(const std::string& seed)
 {
-  return mRawOther.at(mSiphashRNG.getRandomNumber(seed + "junk__", 1, 6));
+  return mRawOther.at(World::getRandomNumber(seed + "junk__", 1, 6));
 }
 
 Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem& rawFood)
@@ -39,7 +38,7 @@ Food::FoodItem Food::randomizeCookedFood(const std::string& seed, const FoodItem
   }
 
   FoodItem foodItem = rawFood;
-  foodItem.dishLevel = mSiphashRNG.getRandomNumber(seed + "cookfood__", 1, 5);
+  foodItem.dishLevel = World::getRandomNumber(seed + "cookfood__", 1, 5);
 
   if (foodItem.type == FoodType::fruit)
   {

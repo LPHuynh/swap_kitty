@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include "world.h"
 
 
@@ -11,7 +9,7 @@ public:
   Job();
   ~Job();
 
-  enum ActivityType { domestic, entertainment, agriculture, heavyIndustry};
+  enum class ActivityType { domestic, entertainment, agriculture, heavyIndustry};
 
   struct Activity
   {

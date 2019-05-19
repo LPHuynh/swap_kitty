@@ -91,11 +91,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;sfml-graphics.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\TGUI-0.8\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;tgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,11 +104,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;sfml-graphics.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\TGUI-0.8\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;tgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,13 +119,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;sfml-graphics.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\TGUI-0.8\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;tgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,13 +136,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;sfml-graphics.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\TGUI-0.8\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl_imp.lib;curlcpp.lib;sfml-graphics.lib;sfml-window.lib;sfml-audio.lib;sfml-network.lib;sfml-system.lib;tgui.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,7 +153,6 @@
     <ClCompile Include="daemonapi.cpp" />
     <ClCompile Include="food.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="siphashrng.cpp" />
     <ClCompile Include="walletapi.cpp" />
     <ClCompile Include="weapon.cpp" />
     <ClCompile Include="world.cpp" />
@@ -165,7 +164,6 @@
     <ClInclude Include="cosmetic.h" />
     <ClInclude Include="daemonapi.h" />
     <ClInclude Include="food.h" />
-    <ClInclude Include="siphashrng.h" />
     <ClInclude Include="walletapi.h" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="world.h" />
