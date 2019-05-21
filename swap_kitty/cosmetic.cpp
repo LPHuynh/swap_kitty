@@ -9,7 +9,7 @@ Cosmetic::~Cosmetic()
 {
 }
 
-void Cosmetic::init(World::Element firstElement, World::Element secondElement, const std::string& seed)
+void Cosmetic::init(World::Element firstElement, World::Element secondElement, const std::string& seed, World& world)
 {
   naturalHairColour = generateNaturalHairColour(firstElement, secondElement);
   naturalEyeColour = generateNaturalEyeColour(firstElement);
@@ -25,8 +25,8 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, c
   species = "Catgirl";
   gender = "Female";
   age = 10;
-  weight = 28 + World::rollDie(seed + "weight__", 1, 6);
-  height = 128 + World::rollDie(seed + "height__", 1, 6);
+  weight = 28 + world.rollDie(seed, 1, 6);
+  height = 128 + world.rollDie(seed, 1, 6);
 }
 
 std::string Cosmetic::generateNaturalHairColour(World::Element firstElement, World::Element secondElement)

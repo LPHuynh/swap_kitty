@@ -8,11 +8,13 @@ class Weapon
 public:
   Weapon();
   ~Weapon();
+  void init(World& world);
 
   enum class WeaponType { sword, axe, bludgeon, stave, polearm };
 
   struct WeaponItem
   {
+    uint16_t id;
     std::string name;
     WeaponType type;
     int64_t price;
@@ -25,6 +27,8 @@ public:
   WeaponItem randomizeWeapon(const std::string& seed, int64_t maxCost);
 
 private:
+  World mWorld;
+
   struct WeaponBase
   {
     std::string name;

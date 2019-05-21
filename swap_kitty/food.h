@@ -8,11 +8,13 @@ class Food
 public:
   Food();
   ~Food();
+  void init(World& world);
 
   enum class FoodType { fruit, vegatable, fish, corpse, flour, junk };
 
   struct FoodItem
   {
+    uint16_t id;
     std::string nameRaw;
     std::string nameCooked;
     FoodType type;
@@ -24,17 +26,18 @@ public:
     World::Stat bonusStat;
   };
 
-  FoodItem randomizeFruit(const std::string& seed);
-  FoodItem randomizeVegatable(const std::string& seed);
-  FoodItem randomizeFish(const std::string& seed, int64_t maxCost);
-  FoodItem randomizeJunk(const std::string& seed);
-  FoodItem randomizeCookedFood(const std::string& seed, const FoodItem& rawFood);
+  FoodItem randomizeRawFood(const std::string& seed, Food::FoodType foodType);
+  void randomizeCookedFood(const std::string& seed, FoodItem& rawFood);
 
 private:
+  World mWorld;
+
+  void loadRawFood();
+
   std::vector<FoodItem> mRawFruits;
   std::vector<FoodItem> mRawVegatables;
   std::vector<FoodItem> mRawFish;
-  std::vector<FoodItem> mRawOther;
-
-  void loadRawFood();
+  std::vector<FoodItem> mRawCorpse;
+  FoodItem mRawFlour;
+  std::vector<FoodItem> mRawJunk;
 };

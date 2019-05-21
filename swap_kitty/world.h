@@ -1,9 +1,14 @@
 #pragma once
 
+#include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <map>
+#include <mutex>
+#include <queue>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -16,6 +21,8 @@ public:
   ~World();
 
   enum class Element { normal, fire, water, earth, air, lightning, holy, dark, machine, poison, chaos };
+  enum class ItemType { weapon, dress, food, potion, book, toy, gift };
+  enum class ItemAction { buy, use, sell, discard };
 
   struct Dice
   {
@@ -69,13 +76,21 @@ public:
     int16_t choas;
   };
 
-  static int16_t calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement);
-  static Dice addDice(const std::vector<Dice>& die);
-  static Stat addStat(const std::vector<Stat>& stats);
-  static int16_t rollDie(const std::string& seed, int16_t dice, int16_t face);
-  static int16_t getRandomNumber(const std::string& seed, int16_t minNumber, int16_t maxNumber);
+  int16_t calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement);
+  Dice addDice(const std::vector<Dice>& die);
+  Stat addStat(const std::vector<Stat>& stats);
+  uint16_t rollDie(const std::string& seed, uint16_t dice, uint16_t face);
+  uint16_t getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);
+  uint16_t generateID();
+  void freeID(uint16_t id);
+  std::string generateNonce();
 
   uint16_t currentRulesetVersion;
-  uint64_t startingBlock;
-  uint64_t currentScanHeight;
+  uint64_t startingHeight;
+  uint64_t currentWorldHeight;
+  uint16_t localTimeOffset;
+private:
+  uint16_t mIDCounter;
+  uint16_t mNonceCounter;
+  std::queue<uint16_t> mRecoveredID;
 };

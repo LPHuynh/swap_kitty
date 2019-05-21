@@ -1,7 +1,8 @@
 {
   "config": {
     "character": {
-      "name": ""
+      "name": "",
+      "signingkey": ""
     },
     "daemon": {
       "host": "node.pocketwhale.info",
@@ -11,8 +12,10 @@
       "framerate": 15
     },
     "wallet": {
+      "mixin": 10,
       "port": 20050,
       "restoreheight": 1000000,
+      "txamount": 10000,
       "txpriority": 1
     }
   }

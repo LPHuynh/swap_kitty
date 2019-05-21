@@ -9,24 +9,25 @@ Character::~Character()
 {
 }
 
-void Character::init(const std::string& walletAddress, World& world)
+void Character::init(const std::string& blockHash, World& world, const std::string& characterName)
 {
+  name = characterName;
   money = 100000;
 
-  primaryElement = World::Element(World::getRandomNumber(walletAddress + "playerelement__0", 1 , 6));
-  secondaryElement = World::Element(World::getRandomNumber(walletAddress + "playerelement__1", 1, 6));
+  primaryElement = World::Element(world.getRandomNumber(blockHash, 1 , 6));
+  secondaryElement = World::Element(world.getRandomNumber(blockHash, 1, 6));
 
-  cosmetic.init(primaryElement, secondaryElement, walletAddress);
-
-  equipedWeapon = mWeapon.randomizeWeapon(walletAddress, 500000);
-  favouriteWeaponType = equipedWeapon.type;
+  cosmetic.init(primaryElement, secondaryElement, blockHash, world);
+  weaponInventory.push_back(std::make_pair(world.generateID(), weapon.randomizeWeapon(blockHash, 500000)));
+  equipedWeapon = weaponInventory.at(0).first;
+  favouriteWeaponType = weaponInventory.at(0).second.type;
   favouriteFoodType = Food::FoodType::fish;
 
-  Food::FoodItem fruitDish = mFood.randomizeCookedFood(walletAddress, mFood.randomizeFruit(walletAddress));
-
+  Food::FoodItem fruitDish = food.randomizeRawFood(blockHash, Food::FoodType::fruit);
+  food.randomizeCookedFood(blockHash, fruitDish);
   favouriteFruit = fruitDish.nameRaw;
   favouriteFruitDish = fruitDish.nameCooked;
   favouriteFruitDishLevel = fruitDish.dishLevel;
-  favouriteVegatable = mFood.randomizeVegatable(walletAddress).nameRaw;
-  favouriteJunkFood = mFood.randomizeJunk(walletAddress).nameRaw;
+  favouriteVegatable = food.randomizeRawFood(blockHash, Food::FoodType::vegatable).nameRaw;
+  favouriteJunkFood = food.randomizeRawFood(blockHash, Food::FoodType::junk).nameRaw;
 }

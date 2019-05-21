@@ -13,12 +13,16 @@ App::App()
   mSetting.windowWidth = 600;
   mSetting.windowTitle = "Swap Kitty";
   mSetting.lastestRulesetVersion = 1;
+  mSetting.isBetaVersion = false;
   mSetting.characterName = jsonDatabase["config"]["character"]["name"].get<std::string>();
+  mSetting.signingKey = jsonDatabase["config"]["character"]["signingkey"].get<std::string>();
   mSetting.daemonHost = jsonDatabase["config"]["daemon"]["host"].get<std::string>();
   mSetting.daemonPort = jsonDatabase["config"]["daemon"]["port"];
   mSetting.walletPort = jsonDatabase["config"]["wallet"]["port"];
   mSetting.restoreHeight = jsonDatabase["config"]["wallet"]["restoreheight"];
+  mSetting.txAmount = jsonDatabase["config"]["wallet"]["txamount"];
   mSetting.txPriority = jsonDatabase["config"]["wallet"]["txpriority"];
+  mSetting.mixin = jsonDatabase["config"]["wallet"]["mixin"];
   mSetting.frameRate = jsonDatabase["config"]["game"]["framerate"];
 
   inFile.close();
@@ -56,11 +60,14 @@ App::~App()
   nlohmann::json jsonDatabase;
 
   jsonDatabase["config"]["character"]["name"] = mSetting.characterName;
+  jsonDatabase["config"]["character"]["signingkey"] = mSetting.signingKey;
   jsonDatabase["config"]["daemon"]["host"] = mSetting.daemonHost;
   jsonDatabase["config"]["daemon"]["port"] = mSetting.daemonPort;
   jsonDatabase["config"]["wallet"]["port"] = mSetting.walletPort;
   jsonDatabase["config"]["wallet"]["restoreheight"] = mSetting.restoreHeight;
+  jsonDatabase["config"]["wallet"]["txamount"] = mSetting.txAmount;
   jsonDatabase["config"]["wallet"]["txpriority"] = mSetting.txPriority;
+  jsonDatabase["config"]["wallet"]["mixin"] = mSetting.mixin;
   jsonDatabase["config"]["game"]["framerate"] = mSetting.frameRate;
 
   std::ofstream outFile("config.json");
@@ -72,8 +79,6 @@ App::~App()
 
 void App::run()
 {
-  sf::Clock clock;
-
   while (mWindow.isOpen())
   {
     sf::Event event;
@@ -97,23 +102,44 @@ void App::run()
     }
     else if (gameState == GameState::loading)
     {
-      //TODO: loading screen
-
-      if (clock.getElapsedTime().asSeconds() > 5)
+      if (mClock.getElapsedTime().asSeconds() > 5)
       {
-        clock.restart();
+        mClock.restart();
         uint64_t daemonHeight = mDaemonAPI.getBlockCount();
         uint64_t walletHeight = mWalletAPI.getBlockHeight();
 
         if (daemonHeight > walletHeight)
         {
-          std::cout << "Waiting for wallet to fully sync. Current Daemon Height: " << daemonHeight << ". Current Wallet Height: " << walletHeight;
+          mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
         }
         else
         {
-          //TODO: Scan for command; if no command detected create a new character
-          //Else quick-process events in separate thread
-          //gameState = GameState::mainGame;
+          if (mCommandProcessor.scanForCharacterCreationCommand())
+          {
+            mGui.get<tgui::Label>("LabelWalletHeight")->setText("Processing Graphics and Events...");
+            
+            //Process Commands in own Thread, while displaying and loading graphics
+            std::thread t1(&App::mRunTurns, this);
+            std::thread t2(&App::mLoadGraphics, this);
+
+            while (!t1.joinable() && !t2.joinable())
+            {
+              //Display Graphics
+            }            
+
+            t1.join();
+            t2.join();
+            ////
+
+            mGui.removeAllWidgets();
+            mLoadMainScreen();
+            gameState = GameState::mainGame;
+          }
+          else
+          {
+            //TODO show dialog explaining the game with button for character creation
+            mCommandProcessor.submitCharacterCreationCommand(mSetting.characterName);
+          }
         }
       }
     }
@@ -135,7 +161,6 @@ void App::startGame()
     if (!mWalletAPI.createWallet(characterName, password, "English"))
     {
       std::cout << "Error Creating wallet.\n";
-      std::this_thread::sleep_for(std::chrono::seconds(5));
       gameState = GameState::exit;
     }
   }
@@ -144,7 +169,6 @@ void App::startGame()
     if (!mWalletAPI.openWallet(characterName, password))
     {
       std::cout << "Error opening wallet.\n";
-      std::this_thread::sleep_for(std::chrono::seconds(5));
       gameState = GameState::exit;
     }
   }
@@ -153,14 +177,32 @@ void App::startGame()
     if (!mWalletAPI.restoreWallet(characterName, password, seed, "English", mSetting.restoreHeight))
     {
       std::cout << "Error restoring wallet.\n";
-      std::this_thread::sleep_for(std::chrono::seconds(5));
       gameState = GameState::exit;
     }
   }
   mSetting.characterName = characterName;
   gameState = GameState::loading;
-  std::this_thread::sleep_for(std::chrono::seconds(5));
   mGui.removeAllWidgets();
+  mLoadLoadingScreen();
+  mCommandProcessor.init(mDaemonAPI, mWalletAPI, mWorld, mCharacter, mSetting.signingKey, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
+  mClock.restart();
+}
+
+void App::mRunTurns()
+{
+  uint64_t topHeight = mDaemonAPI.getBlockCount();
+  mCommandProcessor.scanForCommands();
+  while (mWorld.currentWorldHeight < topHeight)
+  {
+    //Process Event;
+    mCommandProcessor.processCommand();
+    mWorld.currentWorldHeight++;
+  }
+}
+
+void App::mLoadGraphics()
+{
+  //TODO
 }
 
 void App::mDisplayNewGameSubWindow()
@@ -201,5 +243,14 @@ void App::mLoadTitleScreen()
   mGui.get<tgui::Button>("ButtonExitGame")->connect("pressed", [&]() { mWindow.close(); });
   mGui.get<tgui::Button>("ButtonStartWallet")->connect("pressed", &App::startGame, this);
   mGui.get<tgui::Button>("ButtonCancelWallet")->connect("pressed", [&]() { newGameOption = NewGameOption::waiting; });
-  mGui.get<tgui::EditBox>("EditBoxCharacterName")->setDefaultText(mSetting.characterName);
+  mGui.get<tgui::EditBox>("EditBoxCharacterName")->setText(mSetting.characterName);
+}
+
+void App::mLoadLoadingScreen()
+{
+  mGui.loadWidgetsFromFile("gui/loadingscreen.gui");
+}
+
+void App::mLoadMainScreen()
+{
 }

@@ -6,8 +6,9 @@
 World::World()
 {
   currentRulesetVersion = 1;
-  startingBlock = 0;
-  currentScanHeight = 0;
+  startingHeight = 0;
+  mIDCounter = 0;
+  localTimeOffset = 0;
 }
 
 World::~World()
@@ -18,7 +19,7 @@ int16_t World::calculateElementAttackBonus(Element attackerElement, const std::v
 {
   int16_t damageBonus = 100;
 
-  for (auto & element : defenderElement) {
+  for (auto& element : defenderElement) {
     if (attackerElement == Element::fire && (element == Element::air || element == Element::poison))
     { 
       damageBonus += 25;
@@ -79,7 +80,7 @@ World::Dice World::addDice(const std::vector<Dice>& die)
   combinedDice.face = 0;
   combinedDice.plus = 0;
 
-  for (auto & element : die) 
+  for (auto& element : die) 
   {
     combinedDice.roll += element.roll;
     combinedDice.face += element.face;
@@ -103,7 +104,7 @@ World::Stat World::addStat(const std::vector<Stat>& stats)
   combinedStat.Acc = 0;
   combinedStat.Cri = 0;
 
-  for (auto & element : stats)
+  for (auto& element : stats)
   {
     combinedStat.Str += element.Str;
     combinedStat.Con += element.Con;
@@ -120,19 +121,49 @@ World::Stat World::addStat(const std::vector<Stat>& stats)
   return combinedStat;
 }
 
-int16_t World::rollDie(const std::string& seed, int16_t numOfDie, int16_t numOfFaces)
+uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t numOfFaces)
 {
   int16_t result = 0;
 
   for (int i = 0; i < numOfDie; i++)
   {
-    result += getRandomNumber(seed + "dice__" + std::to_string(i), 1, numOfFaces);
+    result += getRandomNumber(seed, 1, numOfFaces);
   }
 
   return result;
 }
 
-int16_t World::getRandomNumber(const std::string& seed, int16_t minNumber, int16_t maxNumber)
+uint16_t World::getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
+  seed += generateNonce();
   return (siphash24(&seed, seed.length()) % (maxNumber - minNumber + 1)) + minNumber;
+}
+
+uint16_t World::generateID()
+{
+  uint16_t id;
+
+  if (mRecoveredID.empty())
+  {
+    id = mIDCounter;
+    mIDCounter++;    
+  }
+  else
+  {
+    id = mRecoveredID.front();
+    mRecoveredID.pop();
+  }
+
+  return id;
+}
+
+void World::freeID(uint16_t id)
+{
+  mRecoveredID.push(id);
+}
+
+std::string World::generateNonce()
+{
+  mNonceCounter++;
+  return std::to_string(mNonceCounter);
 }

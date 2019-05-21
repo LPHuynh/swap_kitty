@@ -1,4 +1,11 @@
 Renderer.1 {
+    backgroundcolor = transparent;
+    bordercolor = #3C3C3C;
+    borders = (0, 0, 0, 0);
+    textcolor = #3C3C3C;
+}
+
+Renderer.2 {
     backgroundcolor = #F5F5F5;
     backgroundcolordisabled = #E6E6E6;
     backgroundcolordown = #EBEBEB;
@@ -18,13 +25,6 @@ Renderer.1 {
     texturedown = None;
     texturefocused = None;
     texturehover = None;
-}
-
-Renderer.2 {
-    backgroundcolor = transparent;
-    bordercolor = #3C3C3C;
-    borders = (0, 0, 0, 0);
-    textcolor = #3C3C3C;
 }
 
 Renderer.3 {
@@ -101,7 +101,7 @@ ChildWindow.ChildWindowNewWallet {
     Position = (20, 20);
     Size = (370, 217.5);
     TitleAlignment = Center;
-    TitleButtons = Close;
+    TitleButtons = None;
     Visible = false;
 
     Renderer {
@@ -161,7 +161,7 @@ textcolorhover = rgba(255, 255, 255, 235);
         Size = (113.2, 18);
         Text = "Character Name:";
         TextSize = 13;
-        renderer = &2;
+        renderer = &1;
     }
 
     Label.LabelPassword {
@@ -171,7 +171,7 @@ textcolorhover = rgba(255, 255, 255, 235);
         Size = (70.2, 18);
         Text = "Password:";
         TextSize = 13;
-        renderer = &2;
+        renderer = &1;
     }
 
     EditBox.EditBoxPassword {
@@ -190,11 +190,10 @@ textcolorhover = rgba(255, 255, 255, 235);
         Text = "Mnemonic Seed";
         TextSize = 13;
         Visible = false;
-        renderer = &2;
+        renderer = &1;
     }
 
     EditBox.EditBoxSeed {
-        PasswordCharacter = "*";
         Position = (30, 140);
         Size = (310, 22);
         TextSize = 13;
@@ -205,9 +204,9 @@ textcolorhover = rgba(255, 255, 255, 235);
     Button.ButtonStartWallet {
         Position = (210, 175.111);
         Size = (130, 26.8889);
-        Text = "Start Game";
+        Text = "Start Wallet";
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonCancelWallet {
@@ -215,6 +214,6 @@ textcolorhover = rgba(255, 255, 255, 235);
         Size = (130, 26.8889);
         Text = Cancal;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 }

@@ -8,7 +8,7 @@ class Cosmetic
 public:
   Cosmetic();
   ~Cosmetic();
-  void init(World::Element firstElement, World::Element secondElement, const std::string& seed);
+  void init(World::Element firstElement, World::Element secondElement, const std::string& seed, World& world);
 
   std::string generateNaturalHairColour(World::Element firstElement, World::Element secondElement);
   std::string generateNaturalEyeColour(World::Element element);

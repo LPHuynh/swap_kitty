@@ -21,6 +21,7 @@ WalletAPI::~WalletAPI()
   // Close the RPC Wallet
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
+  std::this_thread::sleep_for(std::chrono::seconds(5));
 }
 
 bool WalletAPI::init(const std::string& daemonHost, uint16_t daemonPort, uint16_t walletPort)
@@ -39,8 +40,6 @@ bool WalletAPI::init(const std::string& daemonHost, uint16_t daemonPort, uint16_
     printf("CreateProcess failed (%d).\n", GetLastError());
     return false;
   }
-
-  std::this_thread::sleep_for(std::chrono::seconds(5)); // The wallet takes a few second before it can accept any rpc commands
 
   return true;
 }
@@ -345,6 +344,55 @@ WalletAPI::Balance WalletAPI::getBalance()
   return balance;
 }
 
+std::vector<WalletAPI::PaymentID> WalletAPI::getIncomingPaymentID(uint64_t minHeight, uint64_t maxHeight)
+{
+  std::ostringstream str;
+  curl::curl_ios<std::ostringstream> writer(str);
+  curl::curl_easy easy(writer);
+
+  nlohmann::json httpPost;
+  httpPost["id"] = "0";
+  httpPost["jsonrpc"] = "2.0";
+  httpPost["method"] = "get_transfers";
+  httpPost["params"]["in"] = true;
+  httpPost["params"]["filter_by_height"] = true;
+  httpPost["params"]["min_height"] = minHeight;
+  httpPost["params"]["max_height"] = maxHeight;
+
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_URL, mWalletJsonHttp));
+  easy.add(curl::curl_pair<CURLoption, curl::curl_header>(CURLOPT_HTTPHEADER, mHeader));
+  easy.add<CURLOPT_SSL_VERIFYPEER>(false);
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_POSTFIELDS, httpPost.dump()));
+
+  try
+  {
+    easy.perform();
+  }
+  catch (curl::curl_easy_exception error)
+  {
+    curl::curlcpp_traceback errors = error.get_traceback();
+    error.print_traceback();
+  }
+
+  nlohmann::json httpReponse;
+  httpReponse = nlohmann::json::parse(str.str());
+
+  std::vector<PaymentID> result;
+
+  if (!httpReponse["result"]["in"].is_null())
+  {
+    for (auto& element : httpReponse["result"]["in"])
+    {
+      PaymentID paymentID;
+      paymentID.height = element["height"];
+      paymentID.paymentID = element["payment_id"].get<std::string>();
+      result.push_back(paymentID);
+    }
+  }
+
+  return result;
+}
+
 WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin)
 {
   std::ostringstream str;
@@ -363,7 +411,6 @@ WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress
   httpPost["params"]["payment_id"] = paymentID;
   httpPost["params"]["mixin"] = mixin;
   httpPost["params"]["priority"] = priority;
-  
 
   easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_URL, mWalletJsonHttp));
   easy.add(curl::curl_pair<CURLoption, curl::curl_header>(CURLOPT_HTTPHEADER, mHeader));

@@ -14,6 +14,11 @@ Weapon::~Weapon()
 {
 }
 
+void Weapon::init(World& world)
+{
+  mWorld = world;
+}
+
 Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxCost)
 {
   WeaponType type = WeaponType(0); 
@@ -23,29 +28,29 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
   WeaponAbility ability = mAbilities.at(0);
   WeaponStatBonus statBonus = mStatBonuses.at(0);
 
-  type = WeaponType(World::getRandomNumber(seed + "weapon__0", 0, 4));
+  type = WeaponType(mWorld.getRandomNumber(seed, 0, 4));
 
   switch (type)
   {
-  case WeaponType::sword: base = mSword.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::axe: base = mAxe.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::bludgeon: base = mBludgeon.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::stave: base = mStave.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
-  case WeaponType::polearm: base = mPolearm.at(World::getRandomNumber(seed + "weapon__1", 0, 4)); break;
+  case WeaponType::sword: base = mSword.at(mWorld.getRandomNumber(seed, 0, 4)); break;
+  case WeaponType::axe: base = mAxe.at(mWorld.getRandomNumber(seed, 0, 4)); break;
+  case WeaponType::bludgeon: base = mBludgeon.at(mWorld.getRandomNumber(seed, 0, 4)); break;
+  case WeaponType::stave: base = mStave.at(mWorld.getRandomNumber(seed, 0, 4)); break;
+  case WeaponType::polearm: base = mPolearm.at(mWorld.getRandomNumber(seed, 0, 4)); break;
   }
 
-  material = mMaterials.at(World::getRandomNumber(seed + "weapon__2", 0, 11));
+  material = mMaterials.at(mWorld.getRandomNumber(seed, 0, 11));
 
-  int16_t maxQuality = World::getRandomNumber(seed + "weapon__3", 0, 5);
-  quality = mQualities.at(World::getRandomNumber(seed + "weapon__4", 0, maxQuality));
+  int16_t maxQuality = mWorld.getRandomNumber(seed, 0, 5);
+  quality = mQualities.at(mWorld.getRandomNumber(seed, 0, maxQuality));
 
-  if (World::rollDie(seed + "weapon__5", 1, 6) == 6)
+  if (mWorld.rollDie(seed, 1, 6) == 6)
   {
-    ability = mAbilities.at(World::getRandomNumber(seed + "weapon__6", 1, 10));
+    ability = mAbilities.at(mWorld.getRandomNumber(seed, 1, 10));
   }
-  if (World::rollDie(seed + "weapon__7", 1, 10) == 6)
+  if (mWorld.rollDie(seed, 1, 10) == 6)
   {
-    statBonus = mStatBonuses.at(World::getRandomNumber(seed + "weapon__8", 1, 7));
+    statBonus = mStatBonuses.at(mWorld.getRandomNumber(seed, 1, 7));
   }
 
   int64_t weaponCost = base.baseCost * material.costMultplier * quality.costMultplier * ability.costMultplier * statBonus.costMultplier;
@@ -71,11 +76,12 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
 
   WeaponItem weaponItem;
 
+  weaponItem.id = mWorld.generateID();
   weaponItem.name = quality.name + " " + statBonus.name + " " + material.name + " " + base.name + " " + ability.name;
   weaponItem.type = type;
   weaponItem.price = base.baseCost * quality.costMultplier * statBonus.costMultplier * material.costMultplier * ability.costMultplier;
-  weaponItem.baseDice = World::addDice({ base.bonusDice, quality.bonusDice, statBonus.bonusDice, material.bonusDice });
-  weaponItem.bonusStat = World::addStat({ base.bonusStat, quality.bonusStat, statBonus.bonusStat, material.bonusStat });
+  weaponItem.baseDice = mWorld.addDice({ base.bonusDice, quality.bonusDice, statBonus.bonusDice, material.bonusDice });
+  weaponItem.bonusStat = mWorld.addStat({ base.bonusStat, quality.bonusStat, statBonus.bonusStat, material.bonusStat });
   weaponItem.abilityDice = ability.bonusDice;
   weaponItem.attribute = ability.attribute;
 
