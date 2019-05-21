@@ -4,24 +4,29 @@
 #include <thread>
 #include "curl_easy.h"
 #include "curl_exception.h"
+#ifdef _WIN32
 #include "windows.h"
-
+#endif
 
 WalletAPI::WalletAPI()
 {
   mHeader.add("Content-Type: application/json");
-
+#ifdef _WIN32
+  // Launch the RPC Wallet executable
   ZeroMemory(&si, sizeof(si));
   si.cb = sizeof(si);
   ZeroMemory(&pi, sizeof(pi));
+#endif
 }
 
 WalletAPI::~WalletAPI()
 {
-  // Close the RPC Wallet
+#ifdef _WIN32
+  // Close the RPC Wallet executable
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
   std::this_thread::sleep_for(std::chrono::seconds(5));
+#endif
 }
 
 bool WalletAPI::init(const std::string& daemonHost, uint16_t daemonPort, uint16_t walletPort)

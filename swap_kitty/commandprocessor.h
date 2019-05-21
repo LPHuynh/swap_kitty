@@ -26,6 +26,7 @@ public:
   void submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8], uint64_t expiryHeight);
   bool scanForCharacterCreationCommand();
   void scanForCommands();
+  bool static sortCommand(Command i, Command j);
   void processCommand();
 
   std::string convertCommandToHex(const CommandProcessor::Command& commandPackage);

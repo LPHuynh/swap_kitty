@@ -219,47 +219,65 @@ void CommandProcessor::scanForCommands()
   mCurrentScanHeight++;
 }
 
+bool CommandProcessor::sortCommand(Command i, Command j)
+{
+  return (i.param.substr(60, 4) < j.param.substr(60, 4));
+}
+
 void CommandProcessor::processCommand()
 {
   if (mCommandQueue.front().first == mWorld.currentWorldHeight)
   {
-    Command command = mCommandQueue.front().second;
-    mCommandQueue.pop();
+    std::deque<Command> commands;
 
-    if (command.commandCode == "NC" && !mIsCharacterLoaded)
+    while (mCommandQueue.front().first == mWorld.currentWorldHeight)
     {
-      mCharacter.init(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), mWorld, convertHexToString(command.param.substr(0, 44)));
-      mWorld.localTimeOffset = std::stoi(command.param.substr(44, 4), 0, 16);
-      mIsCharacterLoaded = true;
+      commands.push_back(mCommandQueue.front().second);
+      mCommandQueue.pop();
     }
-    else if (command.commandCode == "RC")
+
+    //if more than 1 commands are on the same block, process them in alphabetical order of their security hash
+    std::sort(commands.begin(), commands.end(), sortCommand);
+
+    while (!commands.empty())
     {
-      if (mLastTimeResyncRequest < mWorld.currentWorldHeight + 40320)
+      if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
-        mWorld.localTimeOffset = std::stoi(command.param.substr(44, 4), 0, 16);
+        mCharacter.init(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), mWorld, convertHexToString(commands.front().param.substr(0, 44)));
+        mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
+        mIsCharacterLoaded = true;
       }
-      else
+      else if (commands.front().commandCode == "RC")
       {
-        std::cout << "Time Resync Request Denied. Command already processed recently.";
+        if (mLastTimeResyncRequest < mWorld.currentWorldHeight + 40320)
+        {
+          mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
+        }
+        else
+        {
+          std::cout << "Time Resync Request Denied. Command already processed recently.";
+        }
       }
-    }
-    else if (command.commandCode == "AS")
-    {
-    }
-    else if (command.commandCode == "AB")
-    {
-    }
-    else if (command.commandCode == "BI")
-    {
-    }
-    else if (command.commandCode == "UI")
-    {
-    }
-    else if (command.commandCode == "SI")
-    {
-    }
-    else if (command.commandCode == "DI")
-    {
+      else if (commands.front().commandCode == "AS")
+      {
+      }
+      else if (commands.front().commandCode == "AB")
+      {
+      }
+      else if (commands.front().commandCode == "BI")
+      {
+      }
+      else if (commands.front().commandCode == "UI")
+      {
+      }
+      else if (commands.front().commandCode == "SI")
+      {
+      }
+      else if (commands.front().commandCode == "DI")
+      {
+      }
+
+      commands.pop_front();
     }
   }  
 }

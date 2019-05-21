@@ -47,8 +47,10 @@ public:
   WithdrawlReceipt sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin);
 
 private:
+#ifdef _WIN32
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
+#endif
   uint16_t mWalletPort;
   std::string mWalletJsonHttp;
   curl::curl_header mHeader;
