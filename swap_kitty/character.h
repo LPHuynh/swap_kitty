@@ -4,8 +4,9 @@
 #include "cosmetic.h"
 #include "dress.h"
 #include "food.h"
-#include "gift.h"
+#include "job.h"
 #include "potion.h"
+#include "toy.h"
 #include "weapon.h"
 #include "world.h"
 
@@ -34,7 +35,7 @@ public:
     int16_t satiation;
     int16_t quench;
     int16_t toxicity;
-    int16_t refinement;
+    int16_t domesticated;
     int16_t cleaniness;
     int16_t happiness;
     int16_t obidence;
@@ -48,9 +49,6 @@ public:
     int16_t libraryLevel;
     int16_t bedroomLevel;
   };
-
-  void generateStartingStats(const std::string& blockHash);
-  void generateStartingItems(const std::string& blockHash);
 
   Profile profile;
   World::Stat stats;
@@ -66,7 +64,9 @@ public:
   std::vector<std::pair <uint16_t, Food::FoodItem>> foodInventory;
   std::vector<std::pair <uint16_t, Potion::PotionItem>> potionInventory;
   std::vector<std::pair <uint16_t, Book::BookItem>> bookInventory;
-  std::vector<std::pair <uint16_t, Gift::GiftItem>> GiftInventory;
+  std::vector<std::pair <uint16_t, Toy::ToyItem>>ToyInventory;
+  
+  uint8_t dailySchedule[24];
 
   Weapon::WeaponType favouriteWeaponType;
   Food::FoodType favouriteFoodType;
@@ -75,14 +75,22 @@ public:
   int16_t favouriteFruitDishLevel;
   std::string favouriteVegatable;
   std::string favouriteJunkFood;
+  Job::ActivityType favouriteActivityType;
+
+  std::string fluffText;
 
   Weapon weapon;
   Dress dress;
   Food food;
   Potion potion;
   Book book;
-  Gift gift;
+  Toy toy;
+  Job job;
 private:
   World mWorld;
+
+  void generateStartingStats(const std::string& blockHash);
+  void generateStartingItems(const std::string& blockHash);
+  void generateFluffText();
 };
 

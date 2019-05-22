@@ -21,7 +21,7 @@ public:
   ~World();
 
   enum class Element { normal, fire, water, earth, air, lightning, holy, dark, machine, poison, chaos };
-  enum class ItemType { weapon, dress, food, potion, book, gift };
+  enum class ItemType { weapon, dress, food, potion, book, toy };
   enum class ItemAction { buy, use, sell, discard };
 
   struct Dice

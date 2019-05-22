@@ -149,7 +149,7 @@
     <ClCompile Include="book.cpp" />
     <ClCompile Include="commandprocessor.cpp" />
     <ClCompile Include="dress.cpp" />
-    <ClCompile Include="gift.cpp" />
+    <ClCompile Include="toy.cpp" />
     <ClCompile Include="job.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="character.cpp" />
@@ -166,7 +166,7 @@
     <ClInclude Include="book.h" />
     <ClInclude Include="commandprocessor.h" />
     <ClInclude Include="dress.h" />
-    <ClInclude Include="gift.h" />
+    <ClInclude Include="toy.h" />
     <ClInclude Include="job.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="character.h" />

@@ -7,7 +7,7 @@ World::World()
 {
   currentRulesetVersion = 1;
   startingHeight = 0;
-  mIDCounter = 0;
+  mIDCounter = 1; //0 is used to indicate non-existing items
   localTimeOffset = 0;
 }
 

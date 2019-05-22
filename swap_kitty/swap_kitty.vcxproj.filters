@@ -57,7 +57,7 @@
     <ClCompile Include="book.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gift.cpp">
+    <ClCompile Include="toy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,7 +101,7 @@
     <ClInclude Include="book.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gift.h">
+    <ClInclude Include="toy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

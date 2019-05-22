@@ -81,16 +81,16 @@ void CommandProcessor::submitResyncGameClock(uint16_t offset)
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitAssignScheduleCommand(uint16_t activity[12])
+void CommandProcessor::submitAssignScheduleCommand(uint16_t activity[24])
 {
-  //Specification(Param): (2 byte Daily Activities)x12.
+  //Specification(Param): (1 byte Daily Activities)x24.
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
   command.commandCode = "AS";
   command.param = "";
 
-  for (int i = 0; i < 12; i++)
+  for (int i = 0; i < 24; i++)
   {
     command.param += convertIntToHex(activity[i]);
   }
@@ -243,6 +243,7 @@ void CommandProcessor::processCommand()
       {
         mCharacter.init(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), mWorld, convertHexToString(commands.front().param.substr(0, 44)));
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
+        mWorld.startingHeight = mWorld.currentWorldHeight;
         mIsCharacterLoaded = true;
       }
       else if (commands.front().commandCode == "RC")
@@ -379,7 +380,7 @@ uint8_t CommandProcessor::lookupItemTable(World::ItemType itemType)
   case World::ItemType::food: return 2; 
   case World::ItemType::potion: return 3;
   case World::ItemType::book: return 4;
-  case World::ItemType::gift: return 5;
+  case World::ItemType::toy: return 5;
   default: std::cout << "Item Lookup error\n"; return uint8_t(-1);
   }
 }

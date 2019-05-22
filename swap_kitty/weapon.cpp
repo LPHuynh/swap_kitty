@@ -33,10 +33,10 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
   switch (type)
   {
   case WeaponType::sword: base = mSword.at(mWorld.getRandomNumber(seed, 0, 4)); break;
-  case WeaponType::axe: base = mAxe.at(mWorld.getRandomNumber(seed, 0, 4)); break;
+  case WeaponType::axe: base = mAxe.at(mWorld.getRandomNumber(seed, 0, 3)); break;
   case WeaponType::bludgeon: base = mBludgeon.at(mWorld.getRandomNumber(seed, 0, 4)); break;
-  case WeaponType::stave: base = mStave.at(mWorld.getRandomNumber(seed, 0, 4)); break;
-  case WeaponType::polearm: base = mPolearm.at(mWorld.getRandomNumber(seed, 0, 4)); break;
+  case WeaponType::stave: base = mStave.at(mWorld.getRandomNumber(seed, 0, 6)); break;
+  case WeaponType::polearm: base = mPolearm.at(mWorld.getRandomNumber(seed, 0, 5)); break;
   }
 
   material = mMaterials.at(mWorld.getRandomNumber(seed, 0, 11));
@@ -278,19 +278,54 @@ void Weapon::loadWeapon()
   weapon.bonusStat.Cri = 0;
   mBludgeon.push_back(weapon);
 
-  //Ruleset v1: stave slot 0-3
+  //Ruleset v1: stave slot 0-6
   weapon = prototype;
   weapon.name = "Walking Stick";
   weapon.type = WeaponType::stave;
   weapon.baseCost = 6;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 12;
-  weapon.bonusStat.Wil = 20;
+  weapon.bonusStat.Wil = 3000;
+  weapon.bonusStat.Acc = -1000;
+  weapon.bonusStat.Cri = 0;
+  mStave.push_back(weapon);
+
+  weapon = prototype;
+  weapon.name = "Twig";
+  weapon.type = WeaponType::stave;
+  weapon.baseCost = 7;
+  weapon.bonusDice.face = 3;
+  weapon.bonusDice.roll = 10;
+  weapon.bonusStat.Wil = 2000;
   weapon.bonusStat.Mag = 1000;
   weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mStave.push_back(weapon);
+
+  weapon = prototype;
+  weapon.name = "Tree Branch";
+  weapon.type = WeaponType::stave;
+  weapon.baseCost = 7;
+  weapon.bonusDice.face = 3;
+  weapon.bonusDice.roll = 12;
+  weapon.bonusStat.Wil = 1500;
+  weapon.bonusStat.Mag = 1500;
+  weapon.bonusStat.Acc = -500;
+  weapon.bonusStat.Cri = 0;
+  mStave.push_back(weapon);
   
+  weapon = prototype;
+  weapon.name = "Broom";
+  weapon.type = WeaponType::stave;
+  weapon.baseCost = 8;
+  weapon.bonusDice.face = 3;
+  weapon.bonusDice.roll = 12;
+  weapon.bonusStat.Wil = 2000;
+  weapon.bonusStat.Mag = 1500;
+  weapon.bonusStat.Acc = -500;
+  weapon.bonusStat.Cri = 0;
+  mStave.push_back(weapon);
+
   weapon = prototype;
   weapon.name = "Stave";
   weapon.type = WeaponType::stave;

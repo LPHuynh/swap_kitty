@@ -10,11 +10,25 @@ Job::~Job()
 {
 }
 
+uint8_t Job::getActivityID(const std::string& name)
+{
+  for (auto& element : mActivity)
+  {
+    if (element.name == name)
+    {
+      return element.id;
+    }
+  }
+  return 0;
+}
+
 void Job::loadActivity()
 {
   Activity prototype;
 
-  prototype.activityName =  "";
+  prototype.name =  "";
+  prototype.isDayActivity = true;
+  prototype.isNightActivity = false;
   prototype.payment = 0;
   prototype.activityType = ActivityType::domestic;
   prototype.workLevel = 0;
@@ -25,9 +39,10 @@ void Job::loadActivity()
 
   Activity activity;
 
-  // Ruleset v1: activity slot 0 - 22
+  // Ruleset v1: activity slot 0 - 23
   activity = prototype;
-  activity.activityName = "Cooking";
+  activity.name = "Cooking";
+  activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::domestic;
   activity.workLevel = 1;
@@ -40,7 +55,8 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Cleaning";
+  activity.name = "Cleaning";
+  activity.isNightActivity = true;
   activity.payment = 1;
   activity.activityType = ActivityType::domestic;
   activity.workLevel = 1;
@@ -53,7 +69,8 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Read Book";
+  activity.name = "Read Book";
+  activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::domestic;
   activity.workLevel = 0;
@@ -65,7 +82,8 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Play";
+  activity.name = "Play";
+  activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::domestic;
   activity.workLevel = 0;
@@ -78,7 +96,29 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Sleep";
+  activity.name = "Bath";
+  activity.isNightActivity = true;
+  activity.payment = 0;
+  activity.activityType = ActivityType::domestic;
+  activity.workLevel = 0;
+  activity.workStat.Wil = 0;
+  activity.staminaUsed = 5;
+  activity.quenchUsed = 5;
+  mActivity.push_back(activity);
+
+  activity = prototype;
+  activity.name = "Nap";
+  activity.payment = 0;
+  activity.activityType = ActivityType::domestic;
+  activity.workLevel = 0;
+  activity.workStat.Wil = 60;
+  activity.staminaUsed = 5;
+  activity.quenchUsed = 5;
+  mActivity.push_back(activity);
+
+  activity = prototype;
+  activity.name = "Sleep";
+  activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::domestic;
   activity.workLevel = 0;
@@ -88,7 +128,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Waitress";
+  activity.name = "Waitress";
   activity.payment = 120;
   activity.workLevel = 2;
   activity.activityType = ActivityType::domestic;
@@ -101,7 +141,9 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Bar Tending";
+  activity.name = "Bar Tending";
+  activity.isDayActivity = false;
+  activity.isNightActivity = true;
   activity.payment = 140;
   activity.workLevel = 2;
   activity.activityType = ActivityType::domestic;
@@ -114,7 +156,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Maid";
+  activity.name = "Maid";
   activity.payment = 200;
   activity.workLevel = 3;
   activity.activityType = ActivityType::domestic;
@@ -127,7 +169,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Street Artist";
+  activity.name = "Street Artist";
   activity.payment = 80;
   activity.workLevel = 1;
   activity.activityType = ActivityType::entertainment;
@@ -139,7 +181,8 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Dancer";
+  activity.name = "Dancer";
+  activity.isNightActivity = true;
   activity.payment = 160;
   activity.workLevel = 2;
   activity.activityType = ActivityType::entertainment;
@@ -152,7 +195,8 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Magician";
+  activity.name = "Magician";
+  activity.isNightActivity = true;
   activity.payment = 190;
   activity.workLevel = 2;
   activity.activityType = ActivityType::entertainment;
@@ -165,7 +209,8 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Singer";
+  activity.name = "Singer";
+  activity.isNightActivity = true;
   activity.payment = 250;
   activity.workLevel = 3;
   activity.activityType = ActivityType::entertainment;
@@ -178,7 +223,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Fishing";
+  activity.name = "Fishing";
   activity.payment = 0;
   activity.workLevel = 1;
   activity.activityType = ActivityType::agriculture;
@@ -191,7 +236,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Gathering";
+  activity.name = "Gathering";
   activity.payment = 0;
   activity.workLevel = 1;
   activity.activityType = ActivityType::agriculture;
@@ -204,7 +249,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Industrial Fishing";
+  activity.name = "Industrial Fishing";
   activity.payment = 150;
   activity.workLevel = 2;
   activity.activityType = ActivityType::agriculture;
@@ -217,7 +262,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Farm";
+  activity.name = "Farm";
   activity.payment = 150;
   activity.workLevel = 2;
   activity.activityType = ActivityType::agriculture;
@@ -230,7 +275,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Butcher";
+  activity.name = "Butcher";
   activity.payment = 140;
   activity.workLevel = 2;
   activity.activityType = ActivityType::agriculture;
@@ -243,7 +288,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Hunting";
+  activity.name = "Hunting";
   activity.payment = 200;
   activity.workLevel = 3;
   activity.activityType = ActivityType::agriculture;
@@ -256,7 +301,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Wood Cutting";
+  activity.name = "Wood Cutting";
   activity.payment = 170;
   activity.workLevel = 1;
   activity.activityType = ActivityType::heavyIndustry;
@@ -269,7 +314,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Mining";
+  activity.name = "Mining";
   activity.payment = 270;
   activity.workLevel = 1;
   activity.activityType = ActivityType::heavyIndustry;
@@ -282,7 +327,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Black Smithing";
+  activity.name = "Black Smithing";
   activity.payment = 210;
   activity.workLevel = 2;
   activity.activityType = ActivityType::heavyIndustry;
@@ -295,7 +340,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Ship Wright";
+  activity.name = "Ship Wright";
   activity.payment = 220;
   activity.workLevel = 2;
   activity.activityType = ActivityType::heavyIndustry;
@@ -308,7 +353,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.activityName = "Iron Smelting";
+  activity.name = "Iron Smelting";
   activity.payment = 280;
   activity.workLevel = 3;
   activity.activityType = ActivityType::heavyIndustry;
@@ -319,4 +364,11 @@ void Job::loadActivity()
   activity.staminaUsed = 25;
   activity.quenchUsed = 25;
   mActivity.push_back(activity);
+
+  uint8_t i = 0;
+  for (auto& element : mActivity)
+  {
+    element.id = i;
+    i++;
+  }
 }

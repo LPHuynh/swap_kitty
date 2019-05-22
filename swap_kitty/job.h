@@ -13,7 +13,10 @@ public:
 
   struct Activity
   {
-    std::string activityName;
+    std::string name;
+    uint8_t id;
+    bool isDayActivity;
+    bool isNightActivity;
     int16_t payment;
     ActivityType activityType;
     int16_t workLevel;
@@ -22,6 +25,8 @@ public:
     int16_t staminaUsed;
     int16_t quenchUsed;
   };
+
+  uint8_t getActivityID(const std::string& name);
 
 private:
   void loadActivity();
