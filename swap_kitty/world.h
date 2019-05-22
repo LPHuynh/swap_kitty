@@ -21,7 +21,7 @@ public:
   ~World();
 
   enum class Element { normal, fire, water, earth, air, lightning, holy, dark, machine, poison, chaos };
-  enum class ItemType { weapon, dress, food, potion, book, toy, gift };
+  enum class ItemType { weapon, dress, food, potion, book, gift };
   enum class ItemAction { buy, use, sell, discard };
 
   struct Dice
@@ -79,6 +79,7 @@ public:
   int16_t calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement);
   Dice addDice(const std::vector<Dice>& die);
   Stat addStat(const std::vector<Stat>& stats);
+  Skill addSkill(const std::vector<Skill>& skills);
   uint16_t rollDie(const std::string& seed, uint16_t dice, uint16_t face);
   uint16_t getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);
   uint16_t generateID();

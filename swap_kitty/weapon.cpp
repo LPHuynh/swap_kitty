@@ -85,6 +85,7 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
   weaponItem.abilityDice = ability.bonusDice;
   weaponItem.attribute = ability.attribute;
 
+  weaponItem.id = mWorld.generateID();
   return weaponItem;
 }
 
@@ -100,15 +101,7 @@ void Weapon::loadWeapon()
   prototype.bonusDice.face = 4;
   prototype.bonusDice.roll = 12;
   prototype.bonusDice.plus = 0;
-  prototype.bonusStat.Str = 0;
-  prototype.bonusStat.Con = 0;
-  prototype.bonusStat.Dex = 0;
-  prototype.bonusStat.Per = 0;
-  prototype.bonusStat.Lrn = 0;
-  prototype.bonusStat.Wil = 0;
-  prototype.bonusStat.Mag = 0;
-  prototype.bonusStat.Acc = 0;
-  prototype.bonusStat.Cri = 0;
+  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
   WeaponBase weapon;
 
@@ -119,10 +112,10 @@ void Weapon::loadWeapon()
   weapon.baseCost = 8;
   weapon.bonusDice.face = 9;
   weapon.bonusDice.roll = 5;
-  weapon.bonusStat.Dex = 5;
-  weapon.bonusStat.Lrn = 10;
-  weapon.bonusStat.Acc = -5;
-  weapon.bonusStat.Cri = 15;
+  weapon.bonusStat.Dex = 500;
+  weapon.bonusStat.Lrn = 1000;
+  weapon.bonusStat.Acc = -500;
+  weapon.bonusStat.Cri = 1500;
   mSword.push_back(weapon);
 
   weapon = prototype;
@@ -131,9 +124,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 11;
   weapon.bonusDice.face = 8;
   weapon.bonusDice.roll = 6;
-  weapon.bonusStat.Dex = 15;
+  weapon.bonusStat.Dex = 1500;
   weapon.bonusStat.Acc = 0;
-  weapon.bonusStat.Cri = 10;
+  weapon.bonusStat.Cri = 1000;
   mSword.push_back(weapon);
 
   weapon = prototype;
@@ -143,8 +136,8 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 4;
   weapon.bonusDice.roll = 14;
   weapon.bonusStat.Str = 10;
-  weapon.bonusStat.Dex = 5;
-  weapon.bonusStat.Acc = 5;
+  weapon.bonusStat.Dex = 500;
+  weapon.bonusStat.Acc = 500;
   weapon.bonusStat.Cri = 0;
   mSword.push_back(weapon);
 
@@ -155,9 +148,9 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 6;
   weapon.bonusDice.roll = 9;
   weapon.bonusStat.Str = 5;
-  weapon.bonusStat.Dex = 15;
-  weapon.bonusStat.Acc = 5;
-  weapon.bonusStat.Cri = 5;
+  weapon.bonusStat.Dex = 1500;
+  weapon.bonusStat.Acc = 500;
+  weapon.bonusStat.Cri = 500;
   mSword.push_back(weapon);
 
   weapon = prototype;
@@ -166,9 +159,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 15;
   weapon.bonusDice.face = 2;
   weapon.bonusDice.roll = 28;
-  weapon.bonusStat.Dex = 20;
+  weapon.bonusStat.Dex = 2000;
   weapon.bonusStat.Acc = 0;
-  weapon.bonusStat.Cri = 10;
+  weapon.bonusStat.Cri = 1000;
   mSword.push_back(weapon);
 
   //Ruleset v1: axe slot 0-3
@@ -178,9 +171,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 12;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 18;
-  weapon.bonusStat.Str = 15;
-  weapon.bonusStat.Dex = 5;
-  weapon.bonusStat.Acc = -5;
+  weapon.bonusStat.Str = 1500;
+  weapon.bonusStat.Dex = 500;
+  weapon.bonusStat.Acc = -500;
   weapon.bonusStat.Cri = 0;
   mAxe.push_back(weapon);
 
@@ -191,9 +184,9 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 18;
   weapon.bonusDice.plus = 2;
-  weapon.bonusStat.Str = 5;
-  weapon.bonusStat.Con = 15;
-  weapon.bonusStat.Acc = -5;
+  weapon.bonusStat.Str = 500;
+  weapon.bonusStat.Con = 1500;
+  weapon.bonusStat.Acc = -500;
   weapon.bonusStat.Cri = 0;
   mAxe.push_back(weapon);
 
@@ -204,8 +197,8 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 14;
   weapon.bonusDice.plus = 4;
-  weapon.bonusStat.Str = 25;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Str = 2500;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mAxe.push_back(weapon);
 
@@ -216,9 +209,9 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 18;
   weapon.bonusDice.plus = 2;
-  weapon.bonusStat.Str = 15;
-  weapon.bonusStat.Con = 5;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Str = 1500;
+  weapon.bonusStat.Con = 500;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mAxe.push_back(weapon);
 
@@ -230,9 +223,9 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 16;
   weapon.bonusDice.plus = 2;
-  weapon.bonusStat.Str = 10;
-  weapon.bonusStat.Con = 15;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Str = 1000;
+  weapon.bonusStat.Con = 1500;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mBludgeon.push_back(weapon);
 
@@ -243,8 +236,8 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 18;
   weapon.bonusDice.plus = 2;
-  weapon.bonusStat.Wil = 25;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Wil = 2500;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mBludgeon.push_back(weapon);
 
@@ -255,9 +248,9 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 1;
   weapon.bonusDice.roll = 32;
   weapon.bonusDice.plus = 10;
-  weapon.bonusStat.Con = 5;
-  weapon.bonusStat.Wil = 15;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Con = 500;
+  weapon.bonusStat.Wil = 1500;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mBludgeon.push_back(weapon);
 
@@ -267,9 +260,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 13;
   weapon.bonusDice.face = 4;
   weapon.bonusDice.roll = 14;
-  weapon.bonusStat.Con = 15;
-  weapon.bonusStat.Dex = 10;
-  weapon.bonusStat.Acc = -15;
+  weapon.bonusStat.Con = 1500;
+  weapon.bonusStat.Dex = 1000;
+  weapon.bonusStat.Acc = -1500;
   weapon.bonusStat.Cri = 0;
   mBludgeon.push_back(weapon);
 
@@ -279,9 +272,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 15;
   weapon.bonusDice.face = 1;
   weapon.bonusDice.roll = 54;
-  weapon.bonusStat.Str = 15;
-  weapon.bonusStat.Con = 5;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Str = 1500;
+  weapon.bonusStat.Con = 500;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mBludgeon.push_back(weapon);
 
@@ -293,8 +286,8 @@ void Weapon::loadWeapon()
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 12;
   weapon.bonusStat.Wil = 20;
-  weapon.bonusStat.Mag = 10;
-  weapon.bonusStat.Acc = -10;
+  weapon.bonusStat.Mag = 1000;
+  weapon.bonusStat.Acc = -1000;
   weapon.bonusStat.Cri = 0;
   mStave.push_back(weapon);
   
@@ -304,8 +297,8 @@ void Weapon::loadWeapon()
   weapon.baseCost = 16;
   weapon.bonusDice.face = 2;
   weapon.bonusDice.roll = 18;
-  weapon.bonusStat.Mag = 35;
-  weapon.bonusStat.Acc = -5;
+  weapon.bonusStat.Mag = 3500;
+  weapon.bonusStat.Acc = -500;
   weapon.bonusStat.Cri = 0;
   mStave.push_back(weapon);
 
@@ -315,9 +308,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 18;
   weapon.bonusDice.face = 2;
   weapon.bonusDice.roll = 20;
-  weapon.bonusStat.Wil = 10;
-  weapon.bonusStat.Mag = 25;
-  weapon.bonusStat.Acc = -5;
+  weapon.bonusStat.Wil = 1000;
+  weapon.bonusStat.Mag = 2500;
+  weapon.bonusStat.Acc = -500;
   weapon.bonusStat.Cri = 0;
   mStave.push_back(weapon);
 
@@ -327,8 +320,8 @@ void Weapon::loadWeapon()
   weapon.baseCost = 20;
   weapon.bonusDice.face = 2;
   weapon.bonusDice.roll = 15;
-  weapon.bonusStat.Mag = 55;
-  weapon.bonusStat.Acc = -15;
+  weapon.bonusStat.Mag = 5500;
+  weapon.bonusStat.Acc = -1500;
   weapon.bonusStat.Cri = 0;
   mStave.push_back(weapon);
 
@@ -339,9 +332,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 11;
   weapon.bonusDice.face = 2;
   weapon.bonusDice.roll = 24;
-  weapon.bonusStat.Dex = 15;
+  weapon.bonusStat.Dex = 1500;
   weapon.bonusStat.Acc = 0;
-  weapon.bonusStat.Cri = 15;
+  weapon.bonusStat.Cri = 1500;
   mPolearm.push_back(weapon);
 
   weapon = prototype;
@@ -350,9 +343,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 12;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 18;
-  weapon.bonusStat.Dex = 20;
+  weapon.bonusStat.Dex = 2000;
   weapon.bonusStat.Acc = 0;
-  weapon.bonusStat.Cri = 10;
+  weapon.bonusStat.Cri = 1000;
   mPolearm.push_back(weapon);
 
   weapon = prototype;
@@ -361,10 +354,10 @@ void Weapon::loadWeapon()
   weapon.baseCost = 12;
   weapon.bonusDice.face = 2;
   weapon.bonusDice.roll = 26;
-  weapon.bonusStat.Per = 15;
-  weapon.bonusStat.Lrn = 10;
-  weapon.bonusStat.Acc = 5;
-  weapon.bonusStat.Cri = 15;
+  weapon.bonusStat.Per = 1500;
+  weapon.bonusStat.Lrn = 1000;
+  weapon.bonusStat.Acc = 500;
+  weapon.bonusStat.Cri = 1500;
   mPolearm.push_back(weapon);
 
   weapon = prototype;
@@ -373,10 +366,10 @@ void Weapon::loadWeapon()
   weapon.baseCost = 13;
   weapon.bonusDice.face = 1;
   weapon.bonusDice.roll = 44;
-  weapon.bonusStat.Str = 15;
-  weapon.bonusStat.Dex = 10;
-  weapon.bonusStat.Acc = 10;
-  weapon.bonusStat.Cri = 5;
+  weapon.bonusStat.Str = 1500;
+  weapon.bonusStat.Dex = 1000;
+  weapon.bonusStat.Acc = 1000;
+  weapon.bonusStat.Cri = 500;
   mPolearm.push_back(weapon);
 
   weapon = prototype;
@@ -385,9 +378,9 @@ void Weapon::loadWeapon()
   weapon.baseCost = 15;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 20;
-  weapon.bonusStat.Str = 4;
-  weapon.bonusStat.Dex = 18;
-  weapon.bonusStat.Acc = 15;
+  weapon.bonusStat.Str = 400;
+  weapon.bonusStat.Dex = 1800;
+  weapon.bonusStat.Acc = 1500;
   weapon.bonusStat.Cri = 0;
   mPolearm.push_back(weapon);
 
@@ -397,10 +390,10 @@ void Weapon::loadWeapon()
   weapon.baseCost = 16;
   weapon.bonusDice.face = 3;
   weapon.bonusDice.roll = 22;
-  weapon.bonusStat.Str = 14;
-  weapon.bonusStat.Dex = 1;
+  weapon.bonusStat.Str = 1400;
+  weapon.bonusStat.Dex = 100;
   weapon.bonusStat.Acc = 0;
-  weapon.bonusStat.Cri = 15;
+  weapon.bonusStat.Cri = 1500;
   mPolearm.push_back(weapon);
 }
 
@@ -417,15 +410,7 @@ void Weapon::loadMaterial()
   prototype.bonusDice.face = 4;
   prototype.bonusDice.roll = 12;
   prototype.bonusDice.plus = 0;
-  prototype.bonusStat.Str = 0;
-  prototype.bonusStat.Con = 0;
-  prototype.bonusStat.Dex = 0;
-  prototype.bonusStat.Per = 0;
-  prototype.bonusStat.Lrn = 0;
-  prototype.bonusStat.Wil = 0;
-  prototype.bonusStat.Mag = 0;
-  prototype.bonusStat.Acc = 0;
-  prototype.bonusStat.Cri = 0;
+  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
   WeaponMaterial material;
 
@@ -436,9 +421,9 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 0;
   material.bonusDice.roll = -2;
   material.bonusDice.plus = -2;
-  material.bonusStat.Lrn = 5;
-  material.bonusStat.Acc = 10;
-  material.bonusStat.Cri = -10;
+  material.bonusStat.Lrn = 500;
+  material.bonusStat.Acc = 1000;
+  material.bonusStat.Cri = -1000;
   mMaterials.push_back(material);
 
   material = prototype;
@@ -447,8 +432,8 @@ void Weapon::loadMaterial()
   material.costMultplier = 9;
   material.bonusDice.face = 0;
   material.bonusDice.roll = -3;
-  material.bonusStat.Lrn = 5;
-  material.bonusStat.Acc = 10;
+  material.bonusStat.Lrn = 500;
+  material.bonusStat.Acc = 1000;
   material.bonusStat.Cri = 0;
   mMaterials.push_back(material);
 
@@ -459,8 +444,8 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 0;
   material.bonusDice.roll = -1;
   material.bonusDice.plus = 1;
-  material.bonusStat.Mag = 5;
-  material.bonusStat.Acc = 10;
+  material.bonusStat.Mag = 500;
+  material.bonusStat.Acc = 1000;
   material.bonusStat.Cri = 10;
   mMaterials.push_back(material);
 
@@ -471,9 +456,9 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 1;
   material.bonusDice.roll = -2;
   material.bonusDice.plus = -2;
-  material.bonusStat.Wil = 5;
-  material.bonusStat.Acc = 5;
-  material.bonusStat.Cri = 10;
+  material.bonusStat.Wil = 500;
+  material.bonusStat.Acc = 500;
+  material.bonusStat.Cri = 1000;
   mMaterials.push_back(material);
 
   material = prototype;
@@ -482,8 +467,8 @@ void Weapon::loadMaterial()
   material.costMultplier = 11;
   material.bonusDice.face = 0;
   material.bonusDice.roll = 1;
-  material.bonusStat.Dex = 5;
-  material.bonusStat.Acc = 10;
+  material.bonusStat.Dex = 500;
+  material.bonusStat.Acc = 1000;
   material.bonusStat.Cri = 0;
   mMaterials.push_back(material);
 
@@ -494,7 +479,7 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 0;
   material.bonusDice.roll = 2;
   material.bonusDice.plus = 1;
-  material.bonusStat.Str = 5;
+  material.bonusStat.Str = 500;
   material.bonusStat.Acc = 0;
   material.bonusStat.Cri = 0;
   mMaterials.push_back(material);
@@ -506,9 +491,9 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 0;
   material.bonusDice.roll = 4;
   material.bonusDice.plus = -4;
-  material.bonusStat.Dex = 15;
-  material.bonusStat.Acc = 15;
-  material.bonusStat.Cri = 15;
+  material.bonusStat.Dex = 1500;
+  material.bonusStat.Acc = 1500;
+  material.bonusStat.Cri = 1500;
   mMaterials.push_back(material);
 
   material = prototype;
@@ -518,8 +503,8 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 1;
   material.bonusDice.roll = 0;
   material.bonusDice.plus = +2;
-  material.bonusStat.Con = 10;
-  material.bonusStat.Acc = -5;
+  material.bonusStat.Con = 1000;
+  material.bonusStat.Acc = -500;
   material.bonusStat.Cri = 0;
   mMaterials.push_back(material);
 
@@ -530,8 +515,8 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 2;
   material.bonusDice.roll = -4;
   material.bonusDice.plus = 2;
-  material.bonusStat.Str = 10;
-  material.bonusStat.Acc = -10;
+  material.bonusStat.Str = 1000;
+  material.bonusStat.Acc = -1000;
   material.bonusStat.Cri = 0;
   mMaterials.push_back(material);
 
@@ -542,9 +527,9 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 0;
   material.bonusDice.roll = 6;
   material.bonusDice.plus = 6;
-  material.bonusStat.Con = 5;
+  material.bonusStat.Con = 500;
   material.bonusStat.Acc = 0;
-  material.bonusStat.Cri = 10;
+  material.bonusStat.Cri = 1000;
   mMaterials.push_back(material);
 
   material = prototype;
@@ -554,9 +539,9 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 0;
   material.bonusDice.roll = 14;
   material.bonusDice.plus = 2;
-  material.bonusStat.Mag = 10;
-  material.bonusStat.Acc = 5;
-  material.bonusStat.Cri = 5;
+  material.bonusStat.Mag = 1000;
+  material.bonusStat.Acc = 500;
+  material.bonusStat.Cri = 500;
   mMaterials.push_back(material);
 
   material = prototype;
@@ -566,9 +551,9 @@ void Weapon::loadMaterial()
   material.bonusDice.face = 2;
   material.bonusDice.roll = 2;
   material.bonusDice.plus = 4;
-  material.bonusStat.Con = 10;
-  material.bonusStat.Acc = -10;
-  material.bonusStat.Cri = 10;
+  material.bonusStat.Con = 1000;
+  material.bonusStat.Acc = -1000;
+  material.bonusStat.Cri = 1000;
   mMaterials.push_back(material);
 }
 
@@ -581,15 +566,7 @@ void Weapon::loadQuality()
   prototype.bonusDice.face = 4;
   prototype.bonusDice.roll = 12;
   prototype.bonusDice.plus = 0;
-  prototype.bonusStat.Str = 0;
-  prototype.bonusStat.Con = 0;
-  prototype.bonusStat.Dex = 0;
-  prototype.bonusStat.Per = 0;
-  prototype.bonusStat.Lrn = 0;
-  prototype.bonusStat.Wil = 0;
-  prototype.bonusStat.Mag = 0;
-  prototype.bonusStat.Acc = 0;
-  prototype.bonusStat.Cri = 0;
+  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
   WeaponQuality quality;
 
@@ -599,9 +576,9 @@ void Weapon::loadQuality()
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = -3;
   quality.bonusDice.plus = -2;
-  quality.bonusStat.Lrn = 5;
-  quality.bonusStat.Acc = -10;
-  quality.bonusStat.Cri = -10;
+  quality.bonusStat.Lrn = 500;
+  quality.bonusStat.Acc = -1000;
+  quality.bonusStat.Cri = -1000;
   mQualities.push_back(quality);
 
   quality = prototype;
@@ -610,8 +587,8 @@ void Weapon::loadQuality()
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = -2;
   quality.bonusDice.plus = -1;
-  quality.bonusStat.Acc = -5;
-  quality.bonusStat.Cri = -5;
+  quality.bonusStat.Acc = -500;
+  quality.bonusStat.Cri = -500;
   mQualities.push_back(quality);
 
   quality = prototype;
@@ -629,9 +606,9 @@ void Weapon::loadQuality()
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = 1;
   quality.bonusDice.plus = 1;
-  quality.bonusStat.Wil = 5;
-  quality.bonusStat.Acc = 5;
-  quality.bonusStat.Cri = 5;
+  quality.bonusStat.Wil = 500;
+  quality.bonusStat.Acc = 500;
+  quality.bonusStat.Cri = 500;
   mQualities.push_back(quality);
 
   quality = prototype;
@@ -640,11 +617,11 @@ void Weapon::loadQuality()
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = 1;
   quality.bonusDice.plus = 1;
-  quality.bonusStat.Wil = 5;
-  quality.bonusStat.Chr = 5;
-  quality.bonusStat.Mag = 5;
-  quality.bonusStat.Acc = 5;
-  quality.bonusStat.Cri = 10;
+  quality.bonusStat.Wil = 500;
+  quality.bonusStat.Chr = 500;
+  quality.bonusStat.Mag = 500;
+  quality.bonusStat.Acc = 500;
+  quality.bonusStat.Cri = 1000;
   mQualities.push_back(quality);
 
   quality = prototype;
@@ -653,12 +630,12 @@ void Weapon::loadQuality()
   quality.bonusDice.face = 1;
   quality.bonusDice.roll = 3;
   quality.bonusDice.plus = 5;
-  quality.bonusStat.Lrn = 5;
-  quality.bonusStat.Wil = 5;
-  quality.bonusStat.Chr = 5;
-  quality.bonusStat.Mag = 5;
-  quality.bonusStat.Acc = 10;
-  quality.bonusStat.Cri = 10;
+  quality.bonusStat.Lrn = 500;
+  quality.bonusStat.Wil = 500;
+  quality.bonusStat.Chr = 500;
+  quality.bonusStat.Mag = 500;
+  quality.bonusStat.Acc = 1000;
+  quality.bonusStat.Cri = 1000;
   mQualities.push_back(quality);
 }
 
@@ -674,15 +651,7 @@ void Weapon::loadAbility()
   prototype.bonusDice.face = 2;
   prototype.bonusDice.roll = 6;
   prototype.bonusDice.plus = 0;
-  prototype.bonusStat.Str = 0;
-  prototype.bonusStat.Con = 0;
-  prototype.bonusStat.Dex = 0;
-  prototype.bonusStat.Per = 0;
-  prototype.bonusStat.Lrn = 0;
-  prototype.bonusStat.Wil = 0;
-  prototype.bonusStat.Mag = 0;
-  prototype.bonusStat.Acc = 0;
-  prototype.bonusStat.Cri = 0;
+  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
   prototype.attribute = World::Element::normal;
 
   WeaponAbility ability;
@@ -799,15 +768,7 @@ void Weapon::loadStatBonus()
   prototype.bonusDice.face = 0;
   prototype.bonusDice.roll = 0;
   prototype.bonusDice.plus = 1;
-  prototype.bonusStat.Str = 0;
-  prototype.bonusStat.Con = 0;
-  prototype.bonusStat.Dex = 0;
-  prototype.bonusStat.Per = 0;
-  prototype.bonusStat.Lrn = 0;
-  prototype.bonusStat.Wil = 0;
-  prototype.bonusStat.Mag = 0;
-  prototype.bonusStat.Acc = 0;
-  prototype.bonusStat.Cri = 0;
+  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
   WeaponStatBonus statBonus;
 
@@ -819,42 +780,42 @@ void Weapon::loadStatBonus()
   statBonus = prototype;
   statBonus.name = "Crushing";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Str = 20;
+  statBonus.bonusStat.Str = 2000;
   mStatBonuses.push_back(statBonus);
 
   statBonus = prototype;
   statBonus.name = "Mighty";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Con = 20;
+  statBonus.bonusStat.Con = 2000;
   mStatBonuses.push_back(statBonus);
 
   statBonus = prototype;
   statBonus.name = "Dancing";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Dex = 20;
+  statBonus.bonusStat.Dex = 2000;
   mStatBonuses.push_back(statBonus);
 
   statBonus = prototype;
   statBonus.name = "Conspicuous";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Per = 20;
+  statBonus.bonusStat.Per = 2000;
   mStatBonuses.push_back(statBonus);
 
   statBonus = prototype;
   statBonus.name = "Trustworthy";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Lrn = 20;
+  statBonus.bonusStat.Lrn = 2000;
   mStatBonuses.push_back(statBonus);
 
   statBonus = prototype;
   statBonus.name = "Glowing";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Wil = 20;
+  statBonus.bonusStat.Wil = 2000;
   mStatBonuses.push_back(statBonus);
 
   statBonus = prototype;
   statBonus.name = "Magical";
   statBonus.costMultplier = 12;
-  statBonus.bonusStat.Mag = 20;
+  statBonus.bonusStat.Mag = 2000;
   mStatBonuses.push_back(statBonus);
 }

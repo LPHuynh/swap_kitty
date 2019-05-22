@@ -146,7 +146,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="book.cpp" />
     <ClCompile Include="commandprocessor.cpp" />
+    <ClCompile Include="dress.cpp" />
+    <ClCompile Include="gift.cpp" />
     <ClCompile Include="job.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="character.cpp" />
@@ -154,18 +157,23 @@
     <ClCompile Include="daemonapi.cpp" />
     <ClCompile Include="food.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="potion.cpp" />
     <ClCompile Include="walletapi.cpp" />
     <ClCompile Include="weapon.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="book.h" />
     <ClInclude Include="commandprocessor.h" />
+    <ClInclude Include="dress.h" />
+    <ClInclude Include="gift.h" />
     <ClInclude Include="job.h" />
     <ClInclude Include="app.h" />
     <ClInclude Include="character.h" />
     <ClInclude Include="cosmetic.h" />
     <ClInclude Include="daemonapi.h" />
     <ClInclude Include="food.h" />
+    <ClInclude Include="potion.h" />
     <ClInclude Include="walletapi.h" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="world.h" />

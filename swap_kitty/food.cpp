@@ -16,9 +16,7 @@ void Food::init(World& world)
 }
 
 Food::FoodItem Food::randomizeRawFood(const std::string& seed, Food::FoodType foodType)
-{
-  //enum class FoodType { fruit, vegatable, fish, corpse, flour, junk };
-  
+{  
   FoodItem food;
 
   switch (foodType)
@@ -33,13 +31,16 @@ Food::FoodItem Food::randomizeRawFood(const std::string& seed, Food::FoodType fo
     food = mRawFish.at(mWorld.getRandomNumber(seed, 0, 7));
     break;
   case Food::FoodType::corpse:
-    food = mRawCorpse.at(mWorld.getRandomNumber(seed, 0, 2));
+    food = mRawCorpse.at(mWorld.getRandomNumber(seed, 3, 5));
     break;
   case Food::FoodType::flour: 
     food = mRawFlour;
     break;
   case Food::FoodType::junk:
     food = mRawJunk.at(mWorld.getRandomNumber(seed, 0, 5));
+    break;
+  case Food::FoodType::vermin:
+    food = mRawCorpse.at(mWorld.getRandomNumber(seed, 0, 2));
     break;
   }
 
@@ -317,6 +318,67 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
   }
 }
 
+Food::FoodItem Food::generateRawFood(const std::string & name)
+{
+  Food::FoodItem food;
+
+  for (auto& element : mRawFruits)
+  {
+    if (element.nameRaw == name)
+    {
+      food = element;
+      food.id = mWorld.generateID();
+      return food;
+    }
+  }
+  for (auto& element : mRawVegatables)
+  {
+    if (element.nameRaw == name)
+    {
+      food = element;
+      food.id = mWorld.generateID();
+      return food;
+    }
+  }
+  for (auto& element : mRawFish)
+  {
+    if (element.nameRaw == name)
+    {
+      food = element;
+      food.id = mWorld.generateID();
+      return food;
+    }
+  }
+  for (auto& element : mRawCorpse)
+  {
+    if (element.nameRaw == name)
+    {
+      food = element;
+      food.id = mWorld.generateID();
+      return food;
+    }
+  }
+  if (mRawFlour.nameRaw == name)
+  {
+    food = mRawFlour;
+    food.id = mWorld.generateID();
+    return food;
+  }
+  for (auto& element : mRawJunk)
+  {
+    if (element.nameRaw == name)
+    {
+      food = element;
+      food.id = mWorld.generateID();
+      return food;
+    }
+  }
+
+  food = mRawFruits.at(0);
+  food.id = mWorld.generateID();
+  return food;
+}
+
 void Food::loadRawFood()
 {
   FoodItem prototype;
@@ -330,15 +392,7 @@ void Food::loadRawFood()
   prototype.nutrient = 100;
   prototype.quench = 100;
   prototype.stamina = 0;
-  prototype.bonusStat.Str = 0;
-  prototype.bonusStat.Con = 0;
-  prototype.bonusStat.Dex = 0;
-  prototype.bonusStat.Per = 0;
-  prototype.bonusStat.Lrn = 0;
-  prototype.bonusStat.Wil = 0;
-  prototype.bonusStat.Mag = 0;
-  prototype.bonusStat.Acc = 0;
-  prototype.bonusStat.Cri = 0;
+  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
   FoodItem rawFood;
 
@@ -583,7 +637,40 @@ void Food::loadRawFood()
   rawFood.bonusStat.Per = 15;
   mRawFish.push_back(rawFood);
 
-  //Ruleset v1: corpse slot 0-2
+  //Ruleset v1: corpse slot 0-5
+  rawFood = prototype;
+  rawFood.nameRaw = "Mouse";
+  rawFood.nameCooked = "Dead " + rawFood.nameRaw;
+  rawFood.type = FoodType::corpse;
+  rawFood.price = 10;
+  rawFood.nutrient = 100;
+  rawFood.quench = 0;
+  rawFood.bonusStat.Lrn = 10;
+  rawFood.bonusStat.Wil = 10;
+  mRawCorpse.push_back(rawFood);
+
+  rawFood = prototype;
+  rawFood.nameRaw = "Bird";
+  rawFood.nameCooked = "Dead " + rawFood.nameRaw;
+  rawFood.type = FoodType::corpse;
+  rawFood.price = 10;
+  rawFood.nutrient = 100;
+  rawFood.quench = 0;
+  rawFood.bonusStat.Lrn = 10;
+  rawFood.bonusStat.Wil = 10;
+  mRawCorpse.push_back(rawFood);
+
+  rawFood = prototype;
+  rawFood.nameRaw = "Snake";
+  rawFood.nameCooked = "Dead " + rawFood.nameRaw;
+  rawFood.type = FoodType::corpse;
+  rawFood.price = 10;
+  rawFood.nutrient = 100;
+  rawFood.quench = 0;
+  rawFood.bonusStat.Lrn = 10;
+  rawFood.bonusStat.Wil = 10;
+  mRawCorpse.push_back(rawFood);
+
   rawFood = prototype;
   rawFood.nameRaw = "Chicken";
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;

@@ -381,8 +381,7 @@ uint8_t CommandProcessor::lookupItemTable(World::ItemType itemType)
   case World::ItemType::food: return 2; 
   case World::ItemType::potion: return 3;
   case World::ItemType::book: return 4;
-  case World::ItemType::toy: return 5;
-  case World::ItemType::gift: return 6;
+  case World::ItemType::gift: return 5;
   default: std::cout << "Item Lookup error\n"; return uint8_t(-1);
   }
 }

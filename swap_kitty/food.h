@@ -10,7 +10,7 @@ public:
   ~Food();
   void init(World& world);
 
-  enum class FoodType { fruit, vegatable, fish, corpse, flour, junk };
+  enum class FoodType { fruit, vegatable, fish, corpse, flour, junk, vermin };
 
   struct FoodItem
   {
@@ -28,6 +28,7 @@ public:
 
   FoodItem randomizeRawFood(const std::string& seed, Food::FoodType foodType);
   void randomizeCookedFood(const std::string& seed, FoodItem& rawFood);
+  FoodItem generateRawFood(const std::string& name);
 
 private:
   World mWorld;

@@ -92,17 +92,7 @@ World::Dice World::addDice(const std::vector<Dice>& die)
 
 World::Stat World::addStat(const std::vector<Stat>& stats)
 {
-  Stat combinedStat;
-  combinedStat.Str = 0;
-  combinedStat.Con = 0;
-  combinedStat.Dex = 0;
-  combinedStat.Per = 0;
-  combinedStat.Lrn = 0;
-  combinedStat.Wil = 0;
-  combinedStat.Mag = 0;
-  combinedStat.Chr = 0;
-  combinedStat.Acc = 0;
-  combinedStat.Cri = 0;
+  Stat combinedStat{ 0,0,0,0,0,0,0,0,0,0 };
 
   for (auto& element : stats)
   {
@@ -119,6 +109,44 @@ World::Stat World::addStat(const std::vector<Stat>& stats)
   }
 
   return combinedStat;
+}
+
+World::Skill World::addSkill(const std::vector<Skill>& skills)
+{
+  Skill combinedSkill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+
+  for (auto& element : skills)
+  {
+    combinedSkill.literacy = element.literacy;
+    combinedSkill.cooking = element.cooking;
+    combinedSkill.cleaning = element.cleaning;
+    combinedSkill.service = element.service;
+    combinedSkill.music = element.music;
+    combinedSkill.art = element.art;
+    combinedSkill.tailor = element.tailor;
+    combinedSkill.stoneWorking = element.stoneWorking;
+    combinedSkill.woodWorking = element.woodWorking;
+    combinedSkill.metalworking = element.metalworking;
+    combinedSkill.farming = element.farming;
+    combinedSkill.fishing = element.fishing;
+    combinedSkill.crafting = element.crafting;
+    combinedSkill.sword = element.sword;
+    combinedSkill.axe = element.axe;
+    combinedSkill.bludgeon = element.bludgeon;
+    combinedSkill.stave = element.stave;
+    combinedSkill.polearm = element.polearm;
+    combinedSkill.evasion = element.evasion;
+    combinedSkill.fire = element.fire;
+    combinedSkill.water = element.water;
+    combinedSkill.earth = element.earth;
+    combinedSkill.air = element.air;
+    combinedSkill.lightning = element.lightning;
+    combinedSkill.holy = element.holy;
+    combinedSkill.dark = element.dark;
+    combinedSkill.machine = element.machine;
+    combinedSkill.poison = element.poison;
+    combinedSkill.choas = element.choas;
+  }
 }
 
 uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t numOfFaces)
