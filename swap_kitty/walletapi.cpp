@@ -359,7 +359,7 @@ std::vector<WalletAPI::PaymentID> WalletAPI::getIncomingPaymentID(uint64_t minHe
   httpPost["id"] = "0";
   httpPost["jsonrpc"] = "2.0";
   httpPost["method"] = "get_transfers";
-  httpPost["params"]["in"] = true;
+  httpPost["params"]["out"] = true;
   httpPost["params"]["filter_by_height"] = true;
   httpPost["params"]["min_height"] = minHeight;
   httpPost["params"]["max_height"] = maxHeight;
@@ -384,9 +384,9 @@ std::vector<WalletAPI::PaymentID> WalletAPI::getIncomingPaymentID(uint64_t minHe
 
   std::vector<PaymentID> result;
 
-  if (!httpReponse["result"]["in"].is_null())
+  if (!httpReponse["result"]["out"].is_null())
   {
-    for (auto& element : httpReponse["result"]["in"])
+    for (auto& element : httpReponse["result"]["out"])
     {
       PaymentID paymentID;
       paymentID.height = element["height"];

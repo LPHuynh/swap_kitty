@@ -114,6 +114,8 @@ void App::run()
         }
         else
         {
+          mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
+
           if (mCommandProcessor.scanForCharacterCreationCommand())
           {
             mGui.get<tgui::Label>("LabelWalletHeight")->setText("Processing Graphics and Events...");

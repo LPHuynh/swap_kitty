@@ -1,7 +1,5 @@
 #include "world.h"
 
-#include "siple.hpp"
-
 
 World::World()
 {
@@ -163,13 +161,14 @@ uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t num
 
 uint16_t World::getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
-  seed += generateNonce();
-  return (siphash24(&seed, seed.length()) % (maxNumber - minNumber + 1)) + minNumber;
+  seed += generateNonce() + seed;
+
+  return (hash(seed) % (maxNumber - minNumber + 1)) + minNumber;
 }
 
 uint16_t World::getNoncelessRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
-  return (siphash24(&seed, seed.length()) % (maxNumber - minNumber + 1)) + minNumber;
+  return (hash(seed) % (maxNumber - minNumber + 1)) + minNumber;
 }
 
 uint16_t World::generateID()
@@ -199,4 +198,17 @@ std::string World::generateNonce()
 {
   mNonceCounter++;
   return std::to_string(mNonceCounter);
+}
+
+uint32_t World::hash(const std::string& seed)
+{
+  //djb2 Hash Functions 
+  const char* str = seed.c_str();
+  unsigned long hash = 5381;
+  int c;
+
+  while (c = *str++)
+    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+  return hash;
 }

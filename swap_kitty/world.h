@@ -92,6 +92,8 @@ public:
   uint64_t currentWorldHeight;
   uint16_t localTimeOffset;
 private:
+  uint32_t hash(const std::string& seed);
+
   uint16_t mIDCounter;
   uint16_t mNonceCounter;
   std::queue<uint16_t> mRecoveredID;

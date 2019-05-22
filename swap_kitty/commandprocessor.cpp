@@ -165,7 +165,7 @@ bool CommandProcessor::scanForCharacterCreationCommand()
       if (convertHexToString(element.paymentID.substr(8, 4)) == "NC")
       {
         std::string seed = element.paymentID.substr(0, 60) + mSigningKey;
-        std::string securityHash = convertIntToHex(mWorld.getRandomNumber(seed, 0, uint16_t(-1)));
+        std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
 
         if (element.paymentID.substr(60, 4) == securityHash)
         {
@@ -192,7 +192,7 @@ void CommandProcessor::scanForCommands()
       if (std::stol(element.paymentID.substr(4, 4), 0, 16) >= mWorld.currentRulesetVersion)
       {
         std::string seed = element.paymentID.substr(0, 60) + mSigningKey;
-        std::string securityHash = convertIntToHex(mWorld.getRandomNumber(seed, 0, uint16_t(-1)));
+        std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
 
         if (element.paymentID.substr(60, 4) == securityHash)
         {
@@ -290,7 +290,7 @@ std::string CommandProcessor::convertCommandToHex(const CommandProcessor::Comman
 
   std::stringstream filledCommand;
   std::stringstream filledParamHex;
-  filledCommand << std::setfill('0') << std::setw(4) << command.commandCode;
+  filledCommand << std::setfill('0') << std::setw(4) << convertStringToHex(command.commandCode);
   filledParamHex << std::setfill('0') << std::setw(48) << command.param;
 
   std::string hexString;
@@ -303,7 +303,7 @@ std::string CommandProcessor::convertCommandToHex(const CommandProcessor::Comman
   }
 
   std::string seed = gameHexCode + convertIntToHex(command.rulesetVersion) + filledCommand.str() + filledParamHex.str() + mSigningKey;
-  std::string securityHash = convertIntToHex(mWorld.getRandomNumber(seed, 0, uint16_t(-1)));
+  std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
 
   return gameHexCode + convertIntToHex(command.rulesetVersion) + filledCommand.str() + filledParamHex.str() + securityHash;
 }
@@ -319,7 +319,7 @@ CommandProcessor::Command CommandProcessor::convertHexToCommand(const std::strin
   if (hexadecimalString.substr(0, 4) == convertStringToHex("SM") || (mIsBetaVersion && hexadecimalString.substr(0, 4) == convertStringToHex("SB")))
   {
     std::string seed = hexadecimalString.substr(0,60) + mSigningKey;
-    std::string securityHash = convertIntToHex(mWorld.getRandomNumber(seed, 0, uint16_t(-1)));
+    std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
 
     if (hexadecimalString.substr(60, 4) == securityHash)
     {
