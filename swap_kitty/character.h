@@ -14,9 +14,10 @@
 class Character
 {
 public:
-  Character();
+  Character(World& world);
   ~Character();
-  void init(const std::string& blockHash, World& world, const std::string& characterName);
+
+  void generateNewCharacter(const std::string& blockHash, const std::string& characterName);
 
   struct Profile
   {
@@ -87,7 +88,7 @@ public:
   Toy toy;
   Job job;
 private:
-  World mWorld;
+  World& mWorld;
 
   void generateStartingStats(const std::string& blockHash);
   void generateStartingItems(const std::string& blockHash);

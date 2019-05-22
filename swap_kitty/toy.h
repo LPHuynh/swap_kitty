@@ -6,9 +6,8 @@
 class Toy
 {
 public:
-  Toy();
+  Toy(World& world);
   ~Toy();
-  void init(World& world);
 
   struct ToyItem
   {
@@ -24,7 +23,7 @@ public:
   ToyItem generateToy(const std::string& name);
 
 private:
-  World mWorld;
+  World& mWorld;
 
   void loadToy();
 

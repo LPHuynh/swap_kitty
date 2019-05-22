@@ -1,18 +1,13 @@
 #include "book.h"
 
 
-Book::Book()
+Book::Book(World& world) : mWorld(world)
 {
   loadBook();
 }
 
 Book::~Book()
 {
-}
-
-void Book::init(World& world)
-{
-  mWorld = world;
 }
 
 Book::BookItem Book::randomizeBook(const std::string& seed)

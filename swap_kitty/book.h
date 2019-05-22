@@ -4,9 +4,8 @@
 class Book
 {
 public:
-  Book();
+  Book(World& world);
   ~Book();
-  void init(World& world);
 
   struct BookItem
   {
@@ -24,7 +23,7 @@ public:
   void applyWearLevelPrefix(const std::string& seed, Book::BookItem& book);
 
 private:
-  World mWorld;
+  World& mWorld;
 
   void loadBook();
 

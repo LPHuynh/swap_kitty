@@ -6,9 +6,8 @@
 class Potion
 {
 public:
-  Potion();
+  Potion(World& world);
   ~Potion();
-  void init(World& world);
 
   enum class Rarity { common, uncommon, rare };
   
@@ -28,7 +27,7 @@ public:
   PotionItem generatePotion(const std::string& name);
 
 private:
-  World mWorld;
+  World& mWorld;
 
   void loadPotion();
 

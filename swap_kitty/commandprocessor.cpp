@@ -1,24 +1,26 @@
 #include "commandprocessor.h"
 
 
-CommandProcessor::CommandProcessor()
+CommandProcessor::CommandProcessor(DaemonAPI& daemonAPI, WalletAPI& walletAPI, World& world, Character& character) : mDaemonAPI(daemonAPI), mWalletAPI(walletAPI), mWorld(world), mCharacter(character)
 {
   mCurrentScanHeight = 0;
   mLastTimeResyncRequest = 0;
   mIsCharacterLoaded = false;
+  mWalletAddress = "";
+  mTxPriority = 0;
+  mMixin = 0;
+  mSigningKey = "";
+  mCurrentScanHeight = 0;
+  mIsBetaVersion = false;
 }
 
 CommandProcessor::~CommandProcessor()
 {
 }
 
-void CommandProcessor::init(DaemonAPI& daemonAPI, WalletAPI& walletAPI, World& world, Character& character, const std::string& signingKey, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion)
+void CommandProcessor::init(const std::string& signingKey, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion)
 {
-  mDaemonAPI = daemonAPI;
-  mWalletAPI = walletAPI;
-  mWorld = world;
   mWalletAddress = mWalletAPI.getAddress();
-  mCharacter = character;
   mTxPriority = txPriority;
   mMixin = mixin;
   mSigningKey = signingKey;
@@ -81,7 +83,7 @@ void CommandProcessor::submitResyncGameClock(uint16_t offset)
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitAssignScheduleCommand(uint16_t activity[24])
+void CommandProcessor::submitAssignScheduleCommand(uint8_t activity[24])
 {
   //Specification(Param): (1 byte Daily Activities)x24.
 
@@ -241,7 +243,7 @@ void CommandProcessor::processCommand()
     {
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
-        mCharacter.init(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), mWorld, convertHexToString(commands.front().param.substr(0, 44)));
+        mCharacter.generateNewCharacter(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), convertHexToString(commands.front().param.substr(0, 44)));
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
         mWorld.startingHeight = mWorld.currentWorldHeight;
         mIsCharacterLoaded = true;

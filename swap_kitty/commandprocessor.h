@@ -8,9 +8,9 @@
 class CommandProcessor
 {
 public:
-  CommandProcessor();
+  CommandProcessor(DaemonAPI& daemonAPI, WalletAPI& walletAPI, World& world, Character& character);
   ~CommandProcessor();
-  void init(DaemonAPI& daemonAPI, WalletAPI& walletAPI, World& world, Character& character, const std::string& signingKey, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion);
+  void init(const std::string& signingKey, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion);
 
   struct Command
   {
@@ -21,7 +21,7 @@ public:
 
   void submitCharacterCreationCommand(const std::string& characterName);
   void submitResyncGameClock(uint16_t offset);
-  void submitAssignScheduleCommand(uint16_t activity[12]);
+  void submitAssignScheduleCommand(uint8_t activity[24]);
   void submitAssignBookCommand(uint16_t ID[12]);
   void submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8]);
   bool scanForCharacterCreationCommand();
@@ -36,10 +36,10 @@ public:
   template<typename INT_T> static std::string convertIntToHex(INT_T integer);
 
 private:
-  DaemonAPI mDaemonAPI;
-  WalletAPI mWalletAPI;
-  Character mCharacter;
-  World mWorld;
+  DaemonAPI& mDaemonAPI;
+  WalletAPI& mWalletAPI;
+  Character& mCharacter;
+  World& mWorld;
 
   uint8_t lookupItemTable(World::ItemType itemType);
    

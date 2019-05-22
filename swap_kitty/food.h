@@ -6,9 +6,8 @@
 class Food
 {
 public:
-  Food();
+  Food(World& world);
   ~Food();
-  void init(World& world);
 
   enum class FoodType { fruit, vegatable, fish, corpse, flour, junk, vermin };
 
@@ -31,7 +30,7 @@ public:
   FoodItem generateRawFood(const std::string& name);
 
 private:
-  World mWorld;
+  World& mWorld;
 
   void loadRawFood();
 

@@ -3,7 +3,7 @@
 #include "json.hpp"
 
 
-App::App()
+App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), mCharacter(mWorld), mCommandProcessor(mDaemonAPI, mWalletAPI, mWorld, mCharacter)
 {
   std::ifstream inFile("config.json");
   nlohmann::json jsonDatabase;
@@ -124,6 +124,7 @@ void App::run()
 
             while (!t1.joinable() && !t2.joinable())
             {
+              std::this_thread::sleep_for(std::chrono::seconds(15));
               //Display Graphics
             }            
 
@@ -180,11 +181,11 @@ void App::startGame()
       gameState = GameState::exit;
     }
   }
-  mSetting.characterName = characterName;
+    mSetting.characterName = characterName;
   gameState = GameState::loading;
   mGui.removeAllWidgets();
   mLoadLoadingScreen();
-  mCommandProcessor.init(mDaemonAPI, mWalletAPI, mWorld, mCharacter, mSetting.signingKey, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
+  mCommandProcessor.init(mSetting.signingKey, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
   mClock.restart();
 }
 

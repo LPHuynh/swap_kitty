@@ -1,18 +1,13 @@
 #include "food.h"
 
 
-Food::Food()
+Food::Food(World & world) : mWorld(world)
 {
   loadRawFood();
 }
 
 Food::~Food()
 {
-}
-
-void Food::init(World& world)
-{
-  mWorld = world;
 }
 
 Food::FoodItem Food::randomizeRawFood(const std::string& seed, Food::FoodType foodType)

@@ -1,24 +1,19 @@
 #include "character.h"
 
 
-Character::Character()
+Character::Character(World& world) : mWorld(world), weapon(Weapon(world)), dress(Dress(world)), food(Food(world)), potion(Potion(world)), book(Book(world)), toy(Toy(world))
 {
+  //Warning not all member have been initiated.
+  //Calling generateNewCharacter is not possible until wallet is opened
 }
 
 Character::~Character()
 {
 }
 
-void Character::init(const std::string& blockHash, World& world, const std::string& characterName)
+void Character::generateNewCharacter(const std::string& blockHash, const std::string& characterName)
 {
   profile.name = characterName;
-
-  mWorld = world;
-  weapon.init(mWorld);
-  dress.init(mWorld);
-  food.init(mWorld);
-  book.init(mWorld);
-  toy.init(mWorld);
 
   generateStartingStats(blockHash);
   generateStartingItems(blockHash);

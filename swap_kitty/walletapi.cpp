@@ -34,7 +34,7 @@ bool WalletAPI::init(const std::string& daemonHost, uint16_t daemonPort, uint16_
   mWalletPort = walletPort;
   mWalletJsonHttp = "http://127.0.0.1:" + std::to_string(walletPort) + "/json_rpc";
 
-  std::string startRPCWalletCommand = "swap\\swap-wallet-rpc.exe --daemon-address " + daemonHost + ":" + std::to_string(daemonPort) + " --rpc-bind-port " + std::to_string(mWalletPort) + " --disable-rpc-login --wallet-dir swap\\wallet";
+  std::string startRPCWalletCommand = "swap\\swap-wallet-rpc.exe --daemon-address " + daemonHost + ":" + std::to_string(daemonPort) + " --rpc-bind-port " + std::to_string(mWalletPort) + " --disable-rpc-login --wallet-dir wallet";
   char command[1024];
   strncpy_s(command, startRPCWalletCommand.c_str(), sizeof(command));
   command[sizeof(command) - 1] = 0;

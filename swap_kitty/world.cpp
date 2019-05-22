@@ -167,6 +167,11 @@ uint16_t World::getRandomNumber(std::string seed, uint16_t minNumber, uint16_t m
   return (siphash24(&seed, seed.length()) % (maxNumber - minNumber + 1)) + minNumber;
 }
 
+uint16_t World::getNoncelessRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
+{
+  return (siphash24(&seed, seed.length()) % (maxNumber - minNumber + 1)) + minNumber;
+}
+
 uint16_t World::generateID()
 {
   uint16_t id;

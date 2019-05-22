@@ -1,7 +1,7 @@
 #include "potion.h"
 
 
-Potion::Potion()
+Potion::Potion(World & world) : mWorld(world)
 {
 }
 
@@ -9,10 +9,6 @@ Potion::~Potion()
 {
 }
 
-void Potion::init(World& world)
-{
-  mWorld = world;
-}
 
 Potion::PotionItem Potion::randomizePotion(const std::string& seed, Rarity rarity)
 {

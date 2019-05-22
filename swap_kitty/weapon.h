@@ -6,9 +6,8 @@
 class Weapon
 {
 public:
-  Weapon();
+  Weapon(World& world);
   ~Weapon();
-  void init(World& world);
 
   enum class WeaponType { sword, axe, bludgeon, stave, polearm };
 
@@ -27,7 +26,7 @@ public:
   WeaponItem randomizeWeapon(const std::string& seed, int64_t maxCost);
 
 private:
-  World mWorld;
+  World& mWorld;
 
   struct WeaponBase
   {

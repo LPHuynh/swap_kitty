@@ -1,7 +1,7 @@
 #include "weapon.h"
 
 
-Weapon::Weapon()
+Weapon::Weapon(World& world): mWorld(world)
 {
   loadWeapon();
   loadMaterial();
@@ -12,11 +12,6 @@ Weapon::Weapon()
 
 Weapon::~Weapon()
 {
-}
-
-void Weapon::init(World& world)
-{
-  mWorld = world;
 }
 
 Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxCost)

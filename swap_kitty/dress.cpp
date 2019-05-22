@@ -1,7 +1,7 @@
 #include "dress.h"
 
 
-Dress::Dress()
+Dress::Dress(World & world) : mWorld(world)
 {
   loadDress();
 }
@@ -10,10 +10,6 @@ Dress::~Dress()
 {
 }
 
-void Dress::init(World & world)
-{
-  mWorld = world;
-}
 
 Dress::DressItem Dress::randomizeDress(const std::string & seed)
 {

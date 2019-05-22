@@ -1,18 +1,13 @@
 #include "toy.h"
 
 
-Toy::Toy()
+Toy::Toy(World & world) : mWorld(world)
 {
   loadToy();
 }
 
 Toy::~Toy()
 {
-}
-
-void Toy::init(World& world)
-{
-  mWorld = world;
 }
 
 Toy::ToyItem Toy::randomizeToy(const std::string & seed)

@@ -82,6 +82,7 @@ public:
   Skill addSkill(const std::vector<Skill>& skills);
   uint16_t rollDie(const std::string& seed, uint16_t dice, uint16_t face);
   uint16_t getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);
+  uint16_t getNoncelessRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);
   uint16_t generateID();
   void freeID(uint16_t id);
   std::string generateNonce();

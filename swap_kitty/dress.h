@@ -5,9 +5,8 @@
 class Dress
 {
 public:
-  Dress();
+  Dress(World& world);
   ~Dress();
-  void init(World& world);
 
   struct DressItem
   {
@@ -26,7 +25,7 @@ public:
   DressItem generateDress(const std::string& name);
 
 private:
-  World mWorld;
+  World& mWorld;
 
   void loadDress();
 
