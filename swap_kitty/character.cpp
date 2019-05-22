@@ -32,9 +32,6 @@ void Character::generateStartingStats(const std::string& blockHash)
 
   profile.cosmetic.init(profile.primaryElement, profile.secondaryElement, blockHash, mWorld);
 
-  profile.age = 10;
-  profile.height = 1200 + mWorld.getRandomNumber(blockHash, 0, 80);
-  profile.weight = 26000 + mWorld.getRandomNumber(blockHash, 0, 4000);
   profile.level = 1;
   profile.exp = 0;
   profile.stamina = 10000;

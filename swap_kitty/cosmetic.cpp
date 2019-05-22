@@ -25,8 +25,8 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, c
   species = "Catgirl";
   gender = "Female";
   age = 10;
-  weight = 28 + world.rollDie(seed, 1, 6);
-  height = 128 + world.rollDie(seed, 1, 6);
+  weight = 26000 + world.getRandomNumber(seed, 0, 4000);
+  height = 1200 + world.getRandomNumber(seed, 0, 80);
 }
 
 std::string Cosmetic::generateNaturalHairColour(World::Element firstElement, World::Element secondElement)

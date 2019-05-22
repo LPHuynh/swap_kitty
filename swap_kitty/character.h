@@ -24,9 +24,6 @@ public:
     World::Element primaryElement;
     World::Element secondaryElement;
     Cosmetic cosmetic;
-    int16_t age;
-    int16_t height;    //height in mm
-    int16_t weight;    //weight in g
     int16_t level;
     int16_t exp;
     int16_t health;
