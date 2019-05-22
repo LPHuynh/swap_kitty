@@ -117,26 +117,24 @@ void CommandProcessor::submitAssignBookCommand(uint16_t ID[12])
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8], uint64_t expiryHeight)
+void CommandProcessor::submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8])
 {
-  //Specification(Param): Buy: 8 byte expiry height, 1 byte Unused, (1 byte Item Type, 2 byte ID)x5
-  //Specification(Param): Other: (1 byte Item Type, 2 byte ID)x8
+  //Specification(Param): (1 byte Item Type, 2 byte ID)x8
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
 
-  uint16_t maxItem = 12;
   command.param = "";
 
   switch (itemAction)
   {
-  case World::ItemAction::buy: command.commandCode = "BI"; command.param = convertIntToHex(expiryHeight) + "00"; maxItem = 5; break;
+  case World::ItemAction::buy: command.commandCode = "BI"; break;
   case World::ItemAction::use: command.commandCode = "UI"; break;
   case World::ItemAction::sell: command.commandCode = "SI"; break;
   case World::ItemAction::discard: command.commandCode = "DI"; break;
   }
 
-  for (int i = 0; i < maxItem; i++)
+  for (int i = 0; i < 8; i++)
   {
     if (ID > 0)
     {

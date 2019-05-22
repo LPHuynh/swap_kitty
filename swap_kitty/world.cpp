@@ -171,7 +171,7 @@ uint16_t World::generateID()
 {
   uint16_t id;
 
-  if (mRecoveredID.empty())
+  if (mRecoveredID.size() < 1000)
   {
     id = mIDCounter;
     mIDCounter++;    

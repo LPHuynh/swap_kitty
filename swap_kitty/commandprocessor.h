@@ -23,7 +23,7 @@ public:
   void submitResyncGameClock(uint16_t offset);
   void submitAssignScheduleCommand(uint16_t activity[12]);
   void submitAssignBookCommand(uint16_t ID[12]);
-  void submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8], uint64_t expiryHeight);
+  void submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8]);
   bool scanForCharacterCreationCommand();
   void scanForCommands();
   bool static sortCommand(Command i, Command j);
