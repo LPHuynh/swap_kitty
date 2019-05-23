@@ -22,11 +22,12 @@ Potion::PotionItem Potion::randomizePotion(const std::string& seed, Rarity rarit
   case Rarity::rare: potion = mRarePotions.at(mWorld.getRandomNumber(seed, 0, 0)); break;
   }
 
+  potion.price += mWorld.getRandomNumber(seed, 0, 100);
   potion.id = mWorld.generateID();
   return potion;
 }
 
-Potion::PotionItem Potion::generatePotion(const std::string& name)
+Potion::PotionItem Potion::generatePotion(const std::string& seed, const std::string& name)
 {
   Potion::PotionItem potion;
 
@@ -35,6 +36,7 @@ Potion::PotionItem Potion::generatePotion(const std::string& name)
     if (element.name == name)
     {
       potion = element;
+      potion.price += mWorld.getRandomNumber(seed, 0, 100);
       potion.id = mWorld.generateID();
       return potion;
     }
@@ -44,6 +46,7 @@ Potion::PotionItem Potion::generatePotion(const std::string& name)
     if (element.name == name)
     {
       potion = element;
+      potion.price += mWorld.getRandomNumber(seed, 0, 100);
       potion.id = mWorld.generateID();
       return potion;
     }
@@ -53,11 +56,13 @@ Potion::PotionItem Potion::generatePotion(const std::string& name)
     if (element.name == name)
     {
       potion = element;
+      potion.price += mWorld.getRandomNumber(seed, 0, 100);
       potion.id = mWorld.generateID();
       return potion;
     }
   }
   potion = mCommonPotions.at(0);
+  potion.price += mWorld.getRandomNumber(seed, 0, 100);
   potion.id = mWorld.generateID();
   return potion;
 }

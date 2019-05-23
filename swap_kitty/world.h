@@ -32,16 +32,16 @@ public:
   };
   struct Stat
   {
-    int16_t Str;
-    int16_t Con;
-    int16_t Dex;
-    int16_t Per;
-    int16_t Lrn;
-    int16_t Wil;
-    int16_t Mag;
-    int16_t Chr;
-    int16_t Acc;
-    int16_t Cri;
+    int16_t str;
+    int16_t con;
+    int16_t dex;
+    int16_t per;
+    int16_t lrn;
+    int16_t wil;
+    int16_t mag;
+    int16_t chr;
+    int16_t acc;
+    int16_t cri;
   };
   struct Skill
   {

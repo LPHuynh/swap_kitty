@@ -11,6 +11,7 @@ public:
   struct DressItem
   {
     uint16_t id;
+    std::string baseName;
     std::string name;
     int64_t price;
     bool isWinterEquip;

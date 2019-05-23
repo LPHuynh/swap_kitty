@@ -9,7 +9,7 @@ public:
   Food(World& world);
   ~Food();
 
-  enum class FoodType { fruit, vegatable, fish, corpse, flour, junk, vermin };
+  enum class FoodType { fruit, vegatable, fish, corpse, flour, junkFood, vermin };
 
   struct FoodItem
   {
@@ -39,5 +39,5 @@ private:
   std::vector<FoodItem> mRawFish;
   std::vector<FoodItem> mRawCorpse;
   FoodItem mRawFlour;
-  std::vector<FoodItem> mRawJunk;
+  std::vector<FoodItem> mRawJunkFood;
 };

@@ -24,7 +24,7 @@ public:
   };
 
   PotionItem randomizePotion(const std::string& seed, Rarity rarity);
-  PotionItem generatePotion(const std::string& name);
+  PotionItem generatePotion(const std::string& seed, const std::string& name);
 
 private:
   World& mWorld;

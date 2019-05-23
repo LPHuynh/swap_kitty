@@ -88,25 +88,25 @@ void Book::loadBook()
   book = prototype;
   book.nameRaw = "Enclopedia of Everything";
   book.name = book.nameRaw;
-  book.bonusStat.Lrn = 10;
+  book.bonusStat.lrn = 10;
   mBooks.push_back(book);
 
   book = prototype;
   book.nameRaw = "Book of Zen";
   book.name = book.nameRaw;
-  book.bonusStat.Wil = 10;
+  book.bonusStat.wil = 10;
   mBooks.push_back(book);
 
   book = prototype;
   book.nameRaw = "Magic Book";
   book.name = book.nameRaw;
-  book.bonusStat.Mag = 10;
+  book.bonusStat.mag = 10;
   mBooks.push_back(book);
 
   book = prototype;
   book.nameRaw = "Makeup Guide";
   book.name = book.nameRaw;
-  book.bonusStat.Chr = 10;
+  book.bonusStat.chr = 10;
   mBooks.push_back(book);
 
   book = prototype;

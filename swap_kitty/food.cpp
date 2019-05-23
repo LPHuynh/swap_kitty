@@ -31,25 +31,27 @@ Food::FoodItem Food::randomizeRawFood(const std::string& seed, Food::FoodType fo
   case Food::FoodType::flour: 
     food = mRawFlour;
     break;
-  case Food::FoodType::junk:
-    food = mRawJunk.at(mWorld.getRandomNumber(seed, 0, 5));
+  case Food::FoodType::junkFood:
+    food = mRawJunkFood.at(mWorld.getRandomNumber(seed, 0, 5));
     break;
   case Food::FoodType::vermin:
     food = mRawCorpse.at(mWorld.getRandomNumber(seed, 0, 2));
     break;
   }
 
+  food.price += mWorld.getRandomNumber(seed, 0, 200);
   food.id = mWorld.generateID();
   return food;
 }
 
 void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
 {
-  if (cookableFood.dishLevel > 0 || cookableFood.type == FoodType::junk)
+  if (cookableFood.dishLevel > 0 || cookableFood.type == FoodType::junkFood)
   {
     return;
   }
 
+  cookableFood.price += mWorld.getRandomNumber(seed, 0, 200);
   cookableFood.dishLevel = mWorld.getRandomNumber(seed, 1, 5);
 
   if (cookableFood.type == FoodType::fruit)
@@ -60,15 +62,15 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 2;
       cookableFood.nutrient *= 1;
       cookableFood.quench += 10;
-      cookableFood.bonusStat.Mag += 10;
+      cookableFood.bonusStat.mag += 10;
     }
     else if (cookableFood.dishLevel == 2)
     {
       cookableFood.nameCooked = cookableFood.nameRaw + " Pudding";
       cookableFood.price *= 3;
       cookableFood.nutrient *= 2;
-      cookableFood.bonusStat.Chr += 10;
-      cookableFood.bonusStat.Mag += 10;
+      cookableFood.bonusStat.chr += 10;
+      cookableFood.bonusStat.mag += 10;
     }
     else if (cookableFood.dishLevel == 3)
     {
@@ -76,8 +78,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 4;
       cookableFood.nutrient *= 2;
       cookableFood.stamina += 25;
-      cookableFood.bonusStat.Chr += 10;
-      cookableFood.bonusStat.Mag += 20;
+      cookableFood.bonusStat.chr += 10;
+      cookableFood.bonusStat.mag += 20;
     }
     else if (cookableFood.dishLevel == 4)
     {
@@ -86,8 +88,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nutrient *= 3;
       cookableFood.quench += 20;
       cookableFood.stamina += 50;
-      cookableFood.bonusStat.Chr += 10;
-      cookableFood.bonusStat.Mag += 20;
+      cookableFood.bonusStat.chr += 10;
+      cookableFood.bonusStat.mag += 20;
     }
     else if (cookableFood.dishLevel == 5)
     {
@@ -96,8 +98,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nutrient *= 3;
       cookableFood.quench += 20;
       cookableFood.stamina += 100;
-      cookableFood.bonusStat.Chr += 20;
-      cookableFood.bonusStat.Mag += 30;
+      cookableFood.bonusStat.chr += 20;
+      cookableFood.bonusStat.mag += 30;
     }
   }
   else if (cookableFood.type == FoodType::vegatable)
@@ -107,15 +109,15 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nameCooked = cookableFood.nameRaw + " Salad";
       cookableFood.price *= 2;
       cookableFood.nutrient *= 1;
-      cookableFood.bonusStat.Lrn += 10;
+      cookableFood.bonusStat.lrn += 10;
     }
     else if (cookableFood.dishLevel == 2)
     {
       cookableFood.nameCooked = cookableFood.nameRaw + " Roll";
       cookableFood.price *= 3;
       cookableFood.nutrient *= 2;
-      cookableFood.bonusStat.Wil += 10;
-      cookableFood.bonusStat.Lrn += 10;
+      cookableFood.bonusStat.wil += 10;
+      cookableFood.bonusStat.lrn += 10;
     }
     else if (cookableFood.dishLevel == 3)
     {
@@ -123,8 +125,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 4;
       cookableFood.nutrient *= 2;
       cookableFood.stamina += 25;
-      cookableFood.bonusStat.Wil += 10;
-      cookableFood.bonusStat.Lrn += 20;
+      cookableFood.bonusStat.wil += 10;
+      cookableFood.bonusStat.lrn += 20;
     }
     else if (cookableFood.dishLevel == 4)
     {
@@ -133,8 +135,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nutrient *= 3;
       cookableFood.quench += 30;
       cookableFood.stamina += 59;
-      cookableFood.bonusStat.Wil += 20;
-      cookableFood.bonusStat.Lrn += 20;
+      cookableFood.bonusStat.wil += 20;
+      cookableFood.bonusStat.lrn += 20;
     }
     else if (cookableFood.dishLevel == 5)
     {
@@ -142,8 +144,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 6;
       cookableFood.nutrient *= 3;
       cookableFood.stamina += 100;
-      cookableFood.bonusStat.Wil += 20;
-      cookableFood.bonusStat.Lrn += 30;
+      cookableFood.bonusStat.wil += 20;
+      cookableFood.bonusStat.lrn += 30;
     }
   }
   else if (cookableFood.type == FoodType::fish)
@@ -153,7 +155,7 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nameCooked = "Fried " + cookableFood.nameRaw;
       cookableFood.price *= 2;
       cookableFood.nutrient *= 1;
-      cookableFood.bonusStat.Dex += 10;
+      cookableFood.bonusStat.dex += 10;
     }
     else if (cookableFood.dishLevel == 2)
     {
@@ -161,8 +163,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 3;
       cookableFood.nutrient *= 2;
       cookableFood.quench += 30;
-      cookableFood.bonusStat.Per += 1;
-      cookableFood.bonusStat.Dex += 1;
+      cookableFood.bonusStat.per += 1;
+      cookableFood.bonusStat.dex += 1;
     }
     else if (cookableFood.dishLevel == 3)
     {
@@ -170,8 +172,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 4;
       cookableFood.nutrient *= 2;
       cookableFood.stamina += 25;
-      cookableFood.bonusStat.Per += 10;
-      cookableFood.bonusStat.Dex += 20;
+      cookableFood.bonusStat.per += 10;
+      cookableFood.bonusStat.dex += 20;
     }
     else if (cookableFood.dishLevel == 4)
     {
@@ -179,8 +181,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 5;
       cookableFood.nutrient *= 3;
       cookableFood.stamina += 50;
-      cookableFood.bonusStat.Per += 20;
-      cookableFood.bonusStat.Dex += 20;
+      cookableFood.bonusStat.per += 20;
+      cookableFood.bonusStat.dex += 20;
     }
     else if (cookableFood.dishLevel == 5)
     {
@@ -188,8 +190,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 6;
       cookableFood.nutrient *= 3;
       cookableFood.stamina += 100;
-      cookableFood.bonusStat.Per += 20;
-      cookableFood.bonusStat.Dex += 30;
+      cookableFood.bonusStat.per += 20;
+      cookableFood.bonusStat.dex += 30;
     }
 
   }
@@ -200,7 +202,7 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nameCooked = "Roasted  " + cookableFood.nameRaw;
       cookableFood.price *= 2;
       cookableFood.nutrient *= 1;
-      cookableFood.bonusStat.Str += 10;
+      cookableFood.bonusStat.str += 10;
     }
     else if (cookableFood.dishLevel == 2)
     {
@@ -208,8 +210,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 3;
       cookableFood.nutrient *= 2;
       cookableFood.quench += 30;
-      cookableFood.bonusStat.Con += 1;
-      cookableFood.bonusStat.Str += 1;
+      cookableFood.bonusStat.con += 1;
+      cookableFood.bonusStat.str += 1;
     }
     else if (cookableFood.dishLevel == 3)
     {
@@ -217,8 +219,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 4;
       cookableFood.nutrient *= 2;
       cookableFood.stamina += 25;
-      cookableFood.bonusStat.Con += 10;
-      cookableFood.bonusStat.Str += 20;
+      cookableFood.bonusStat.con += 10;
+      cookableFood.bonusStat.str += 20;
     }
     else if (cookableFood.dishLevel == 4)
     {
@@ -226,8 +228,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 5;
       cookableFood.nutrient *= 3;
       cookableFood.stamina += 50;
-      cookableFood.bonusStat.Con += 20;
-      cookableFood.bonusStat.Str += 20;
+      cookableFood.bonusStat.con += 20;
+      cookableFood.bonusStat.str += 20;
     }
     else if (cookableFood.dishLevel == 5)
     {
@@ -235,8 +237,8 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 6;
       cookableFood.nutrient *= 3;
       cookableFood.stamina += 100;
-      cookableFood.bonusStat.Con += 20;
-      cookableFood.bonusStat.Str += 30;
+      cookableFood.bonusStat.con += 20;
+      cookableFood.bonusStat.str += 30;
     }
   }
   else if (cookableFood.type == FoodType::flour)
@@ -246,13 +248,13 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.nameCooked = "Flat Bread" + cookableFood.nameRaw;
       cookableFood.price *= 2;
       cookableFood.nutrient *= 2;
-      cookableFood.bonusStat.Str += 5;
-      cookableFood.bonusStat.Con += 5;
-      cookableFood.bonusStat.Dex += 5;
-      cookableFood.bonusStat.Per += 5;
-      cookableFood.bonusStat.Lrn += 5;
-      cookableFood.bonusStat.Wil += 5;
-      cookableFood.bonusStat.Mag += 5;
+      cookableFood.bonusStat.str += 5;
+      cookableFood.bonusStat.con += 5;
+      cookableFood.bonusStat.dex += 5;
+      cookableFood.bonusStat.per += 5;
+      cookableFood.bonusStat.lrn += 5;
+      cookableFood.bonusStat.wil += 5;
+      cookableFood.bonusStat.mag += 5;
     }
     else if (cookableFood.dishLevel == 2)
     {
@@ -260,13 +262,13 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 3;
       cookableFood.nutrient *= 3;
       cookableFood.quench += 30;
-      cookableFood.bonusStat.Str += 10;
-      cookableFood.bonusStat.Con += 10;
-      cookableFood.bonusStat.Dex += 10;
-      cookableFood.bonusStat.Per += 10;
-      cookableFood.bonusStat.Lrn += 10;
-      cookableFood.bonusStat.Wil += 10;
-      cookableFood.bonusStat.Mag += 10;
+      cookableFood.bonusStat.str += 10;
+      cookableFood.bonusStat.con += 10;
+      cookableFood.bonusStat.dex += 10;
+      cookableFood.bonusStat.per += 10;
+      cookableFood.bonusStat.lrn += 10;
+      cookableFood.bonusStat.wil += 10;
+      cookableFood.bonusStat.mag += 10;
     }
     else if (cookableFood.dishLevel == 3)
     {
@@ -274,13 +276,13 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 4;
       cookableFood.nutrient *= 4;
       cookableFood.stamina += 25;
-      cookableFood.bonusStat.Str += 12;
-      cookableFood.bonusStat.Con += 12;
-      cookableFood.bonusStat.Dex += 12;
-      cookableFood.bonusStat.Per += 12;
-      cookableFood.bonusStat.Lrn += 12;
-      cookableFood.bonusStat.Wil += 12;
-      cookableFood.bonusStat.Mag += 12;
+      cookableFood.bonusStat.str += 12;
+      cookableFood.bonusStat.con += 12;
+      cookableFood.bonusStat.dex += 12;
+      cookableFood.bonusStat.per += 12;
+      cookableFood.bonusStat.lrn += 12;
+      cookableFood.bonusStat.wil += 12;
+      cookableFood.bonusStat.mag += 12;
     }
     else if (cookableFood.dishLevel == 4)
     {
@@ -288,13 +290,13 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 5;
       cookableFood.nutrient *= 5;
       cookableFood.stamina += 50;
-      cookableFood.bonusStat.Str += 15;
-      cookableFood.bonusStat.Con += 15;
-      cookableFood.bonusStat.Dex += 15;
-      cookableFood.bonusStat.Per += 15;
-      cookableFood.bonusStat.Lrn += 15;
-      cookableFood.bonusStat.Wil += 15;
-      cookableFood.bonusStat.Mag += 15;
+      cookableFood.bonusStat.str += 15;
+      cookableFood.bonusStat.con += 15;
+      cookableFood.bonusStat.dex += 15;
+      cookableFood.bonusStat.per += 15;
+      cookableFood.bonusStat.lrn += 15;
+      cookableFood.bonusStat.wil += 15;
+      cookableFood.bonusStat.mag += 15;
     }
     else if (cookableFood.dishLevel == 5)
     {
@@ -302,13 +304,13 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
       cookableFood.price *= 6;
       cookableFood.nutrient *= 6;
       cookableFood.stamina += 100;
-      cookableFood.bonusStat.Str += 20;
-      cookableFood.bonusStat.Con += 20;
-      cookableFood.bonusStat.Dex += 20;
-      cookableFood.bonusStat.Per += 20;
-      cookableFood.bonusStat.Lrn += 20;
-      cookableFood.bonusStat.Wil += 20;
-      cookableFood.bonusStat.Mag += 20;
+      cookableFood.bonusStat.str += 20;
+      cookableFood.bonusStat.con += 20;
+      cookableFood.bonusStat.dex += 20;
+      cookableFood.bonusStat.per += 20;
+      cookableFood.bonusStat.lrn += 20;
+      cookableFood.bonusStat.wil += 20;
+      cookableFood.bonusStat.mag += 20;
     }
   }
 }
@@ -359,7 +361,7 @@ Food::FoodItem Food::generateRawFood(const std::string & name)
     food.id = mWorld.generateID();
     return food;
   }
-  for (auto& element : mRawJunk)
+  for (auto& element : mRawJunkFood)
   {
     if (element.nameRaw == name)
     {
@@ -399,8 +401,8 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 200;
   rawFood.quench = 0;
-  rawFood.bonusStat.Con = 10;
-  rawFood.bonusStat.Mag = 20;
+  rawFood.bonusStat.con = 10;
+  rawFood.bonusStat.mag = 20;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -410,9 +412,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 190;
   rawFood.quench = 10;
-  rawFood.bonusStat.Per = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.per = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -422,9 +424,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 180;
   rawFood.quench = 20;
-  rawFood.bonusStat.Per = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.per = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -434,9 +436,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 150;
   rawFood.quench = 50;
-  rawFood.bonusStat.Wil = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.wil = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -446,9 +448,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 180;
   rawFood.quench = 20;
-  rawFood.bonusStat.Per = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.per = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -458,9 +460,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 170;
   rawFood.quench = 30;
-  rawFood.bonusStat.Per = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.per = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -470,9 +472,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 170;
   rawFood.quench = 30;
-  rawFood.bonusStat.Per = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.per = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   rawFood = prototype;
@@ -482,9 +484,9 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 50;
   rawFood.quench = 150;
-  rawFood.bonusStat.Per = 10;
-  rawFood.bonusStat.Mag = 10;
-  rawFood.bonusStat.Chr = 10;
+  rawFood.bonusStat.per = 10;
+  rawFood.bonusStat.mag = 10;
+  rawFood.bonusStat.chr = 10;
   mRawFruits.push_back(rawFood);
 
   //Ruleset v1: vegatable slot 0-4
@@ -495,8 +497,8 @@ void Food::loadRawFood()
   rawFood.price = 100;
   rawFood.nutrient = 20;
   rawFood.quench = 80;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);
 
   rawFood = prototype;
@@ -506,8 +508,8 @@ void Food::loadRawFood()
   rawFood.price = 100;
   rawFood.nutrient = 100;
   rawFood.quench = 0;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);
 
   rawFood = prototype;
@@ -517,8 +519,8 @@ void Food::loadRawFood()
   rawFood.price = 100;
   rawFood.nutrient = 90;
   rawFood.quench = 10;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);
 
   rawFood = prototype;
@@ -528,8 +530,8 @@ void Food::loadRawFood()
   rawFood.price = 100;
   rawFood.nutrient = 100;
   rawFood.quench = 0;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);
 
   rawFood = prototype;
@@ -539,8 +541,8 @@ void Food::loadRawFood()
   rawFood.price = 100;
   rawFood.nutrient = 100;
   rawFood.quench = 0;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);
 
   //Ruleset v1: fish slot 0-7
@@ -551,8 +553,8 @@ void Food::loadRawFood()
   rawFood.price = 150;
   rawFood.nutrient = 150;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 10;
-  rawFood.bonusStat.Per = 15;
+  rawFood.bonusStat.dex = 10;
+  rawFood.bonusStat.per = 15;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -562,8 +564,8 @@ void Food::loadRawFood()
   rawFood.price = 200;
   rawFood.nutrient = 200;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 10;
-  rawFood.bonusStat.Per = 20;
+  rawFood.bonusStat.dex = 10;
+  rawFood.bonusStat.per = 20;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -573,8 +575,8 @@ void Food::loadRawFood()
   rawFood.price = 210;
   rawFood.nutrient = 210;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 20;
-  rawFood.bonusStat.Per = 10;
+  rawFood.bonusStat.dex = 20;
+  rawFood.bonusStat.per = 10;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -584,8 +586,8 @@ void Food::loadRawFood()
   rawFood.price = 230;
   rawFood.nutrient = 230;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 20;
-  rawFood.bonusStat.Per = 15;
+  rawFood.bonusStat.dex = 20;
+  rawFood.bonusStat.per = 15;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -595,8 +597,8 @@ void Food::loadRawFood()
   rawFood.price = 240;
   rawFood.nutrient = 240;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 20;
-  rawFood.bonusStat.Per = 15;
+  rawFood.bonusStat.dex = 20;
+  rawFood.bonusStat.per = 15;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -606,8 +608,8 @@ void Food::loadRawFood()
   rawFood.price = 270;
   rawFood.nutrient = 270;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 20;
-  rawFood.bonusStat.Per = 15;
+  rawFood.bonusStat.dex = 20;
+  rawFood.bonusStat.per = 15;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -617,8 +619,8 @@ void Food::loadRawFood()
   rawFood.price = 310;
   rawFood.nutrient = 310;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 25;
-  rawFood.bonusStat.Per = 15;
+  rawFood.bonusStat.dex = 25;
+  rawFood.bonusStat.per = 15;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -628,8 +630,8 @@ void Food::loadRawFood()
   rawFood.price = 350;
   rawFood.nutrient = 350;
   rawFood.quench = 0;
-  rawFood.bonusStat.Dex = 30;
-  rawFood.bonusStat.Per = 15;
+  rawFood.bonusStat.dex = 30;
+  rawFood.bonusStat.per = 15;
   mRawFish.push_back(rawFood);
 
   //Ruleset v1: corpse slot 0-5
@@ -640,8 +642,8 @@ void Food::loadRawFood()
   rawFood.price = 10;
   rawFood.nutrient = 100;
   rawFood.quench = 0;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawCorpse.push_back(rawFood);
 
   rawFood = prototype;
@@ -651,8 +653,8 @@ void Food::loadRawFood()
   rawFood.price = 10;
   rawFood.nutrient = 100;
   rawFood.quench = 0;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawCorpse.push_back(rawFood);
 
   rawFood = prototype;
@@ -662,8 +664,8 @@ void Food::loadRawFood()
   rawFood.price = 10;
   rawFood.nutrient = 100;
   rawFood.quench = 0;
-  rawFood.bonusStat.Lrn = 10;
-  rawFood.bonusStat.Wil = 10;
+  rawFood.bonusStat.lrn = 10;
+  rawFood.bonusStat.wil = 10;
   mRawCorpse.push_back(rawFood);
 
   rawFood = prototype;
@@ -673,8 +675,8 @@ void Food::loadRawFood()
   rawFood.price = 240;
   rawFood.nutrient = 240;
   rawFood.quench = 0;
-  rawFood.bonusStat.Str = 20;
-  rawFood.bonusStat.Con = 15;
+  rawFood.bonusStat.str = 20;
+  rawFood.bonusStat.con = 15;
   mRawCorpse.push_back(rawFood);
 
   rawFood = prototype;
@@ -684,8 +686,8 @@ void Food::loadRawFood()
   rawFood.price = 350;
   rawFood.nutrient = 350;
   rawFood.quench = 0;
-  rawFood.bonusStat.Str = 30;
-  rawFood.bonusStat.Con = 15;
+  rawFood.bonusStat.str = 30;
+  rawFood.bonusStat.con = 15;
   mRawFish.push_back(rawFood);
 
   rawFood = prototype;
@@ -695,8 +697,8 @@ void Food::loadRawFood()
   rawFood.price = 400;
   rawFood.nutrient = 400;
   rawFood.quench = 0;
-  rawFood.bonusStat.Str = 40;
-  rawFood.bonusStat.Con = 20;
+  rawFood.bonusStat.str = 40;
+  rawFood.bonusStat.con = 20;
   mRawFish.push_back(rawFood);
 
   //Flour
@@ -709,65 +711,65 @@ void Food::loadRawFood()
   rawFood.quench = 0;
   mRawFlour = rawFood;
 
-  //Ruleset v1: junk slot 0-5
+  //Ruleset v1: junk food slot 0-5
   rawFood = prototype;
   rawFood.nameRaw = "Potato Chip";
   rawFood.nameCooked = rawFood.nameRaw;
-  rawFood.type = FoodType::junk;
+  rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 5000;
   rawFood.nutrient = 500;
   rawFood.quench = 0;
-  mRawJunk.push_back(rawFood);
+  mRawJunkFood.push_back(rawFood);
 
   rawFood = prototype;
   rawFood.nameRaw = "Pizza";
   rawFood.nameCooked = rawFood.nameRaw;
-  rawFood.type = FoodType::junk;
+  rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 5500;
   rawFood.nutrient = 500;
   rawFood.quench = 0;
-  mRawJunk.push_back(rawFood);
+  mRawJunkFood.push_back(rawFood);
 
   rawFood = prototype;
   rawFood.nameRaw = "Chocolate";
   rawFood.nameCooked = rawFood.nameRaw;
-  rawFood.type = FoodType::junk;
+  rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 7500;
   rawFood.nutrient = 500;
   rawFood.quench = 0;
   rawFood.stamina = 300;
-  mRawJunk.push_back(rawFood);
+  mRawJunkFood.push_back(rawFood);
 
   rawFood = prototype;
   rawFood.nameRaw = "Popcorn";
   rawFood.nameCooked = rawFood.nameRaw;
-  rawFood.type = FoodType::junk;
+  rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 1000;
   rawFood.nutrient = 200;
   rawFood.quench = 0;
-  mRawJunk.push_back(rawFood);
+  mRawJunkFood.push_back(rawFood);
 
   rawFood = prototype;
   rawFood.nameRaw = "Pop Tarts";
   rawFood.nameCooked = rawFood.nameRaw;
-  rawFood.type = FoodType::junk;
+  rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 1500;
   rawFood.nutrient = 200;
   rawFood.quench = 0;
-  mRawJunk.push_back(rawFood);
+  mRawJunkFood.push_back(rawFood);
 
   rawFood = prototype;
   rawFood.nameRaw = "Instant Ramen";
   rawFood.nameCooked = rawFood.nameRaw;
-  rawFood.type = FoodType::junk;
+  rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 2000;
   rawFood.nutrient = 500;
   rawFood.quench = 0;
-  mRawJunk.push_back(rawFood);
+  mRawJunkFood.push_back(rawFood);
 }

@@ -6,6 +6,7 @@
 #include "food.h"
 #include "job.h"
 #include "potion.h"
+#include "shop.h"
 #include "toy.h"
 #include "weapon.h"
 #include "world.h"
@@ -17,7 +18,7 @@ public:
   Character(World& world);
   ~Character();
 
-  void generateNewCharacter(const std::string& blockHash, const std::string& characterName);
+  void generateNewCharacter(const std::string& seed, const std::string& characterName);
 
   struct Profile
   {
@@ -70,7 +71,6 @@ public:
   uint8_t dailySchedule[24];
 
   Weapon::WeaponType favouriteWeaponType;
-  Food::FoodType favouriteFoodType;
   std::string favouriteFruit;
   std::string favouriteFruitDish;
   int16_t favouriteFruitDishLevel;
@@ -87,11 +87,12 @@ public:
   Book book;
   Toy toy;
   Job job;
+  Shop shop;
 private:
   World& mWorld;
 
-  void generateStartingStats(const std::string& blockHash);
-  void generateStartingItems(const std::string& blockHash);
+  void generateStartingStats(const std::string& seed);
+  void generateStartingItems(const std::string& seed);
   void generateFluffText();
 };
 

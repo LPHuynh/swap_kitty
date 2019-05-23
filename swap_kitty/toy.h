@@ -20,7 +20,7 @@ public:
   };
 
   ToyItem randomizeToy(const std::string& seed);
-  ToyItem generateToy(const std::string& name);
+  ToyItem generateToy(const std::string & seed, const std::string& name);
 
 private:
   World& mWorld;

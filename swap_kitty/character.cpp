@@ -1,7 +1,7 @@
 #include "character.h"
 
 
-Character::Character(World& world) : mWorld(world), weapon(Weapon(world)), dress(Dress(world)), food(Food(world)), potion(Potion(world)), book(Book(world)), toy(Toy(world))
+Character::Character(World& world) : mWorld(world), weapon(Weapon(world)), dress(Dress(world)), food(Food(world)), potion(Potion(world)), book(Book(world)), toy(Toy(world)), shop(Shop(world, weapon, dress, food, potion, book, toy))
 {
   //Warning not all member have been initiated.
   //Calling generateNewCharacter is not possible until wallet is opened
@@ -11,22 +11,24 @@ Character::~Character()
 {
 }
 
-void Character::generateNewCharacter(const std::string& blockHash, const std::string& characterName)
+void Character::generateNewCharacter(const std::string& seed, const std::string& characterName)
 {
   profile.name = characterName;
 
-  generateStartingStats(blockHash);
-  generateStartingItems(blockHash);
+  generateStartingStats(seed);
+  generateStartingItems(seed);
   generateFluffText();
+
+  shop.refreshInventory(seed);
 }
 
-void Character::generateStartingStats(const std::string& blockHash)
+void Character::generateStartingStats(const std::string& seed)
 {
   profile.money = 100000;
-  profile.primaryElement = World::Element(mWorld.getRandomNumber(blockHash, 1, 6));
-  profile.secondaryElement = World::Element(mWorld.getRandomNumber(blockHash, 1, 6));
+  profile.primaryElement = World::Element(mWorld.getRandomNumber(seed, 1, 6));
+  profile.secondaryElement = World::Element(mWorld.getRandomNumber(seed, 1, 6));
 
-  profile.cosmetic.init(profile.primaryElement, profile.secondaryElement, blockHash, mWorld);
+  profile.cosmetic.init(profile.primaryElement, profile.secondaryElement, seed, mWorld);
 
   profile.level = 1;
   profile.exp = 0;
@@ -34,56 +36,56 @@ void Character::generateStartingStats(const std::string& blockHash)
   profile.satiation = 10000;
   profile.quench = 10000;
   profile.toxicity = 0;
-  profile.domesticated = mWorld.getRandomNumber(blockHash, 0, 2500);
+  profile.domesticated = mWorld.getRandomNumber(seed, 0, 2500);
   profile.cleaniness = 10000;
-  profile.happiness = mWorld.getRandomNumber(blockHash, 2500, 5000);
-  profile.obidence = mWorld.getRandomNumber(blockHash, 0, 2500);
+  profile.happiness = mWorld.getRandomNumber(seed, 2500, 5000);
+  profile.obidence = mWorld.getRandomNumber(seed, 0, 2500);
 
-  stats.Str = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Con = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Dex = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Per = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Lrn = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Wil = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Mag = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Chr = mWorld.getRandomNumber(blockHash, 0, 2000);
-  stats.Acc = stats.Per + stats.Dex * 2;
-  stats.Cri = stats.Per + stats.Lrn;
+  stats.str = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.con = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.dex = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.per = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.lrn = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.wil = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.mag = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.chr = mWorld.getRandomNumber(seed, 0, 2000);
+  stats.acc = stats.per + stats.dex * 2;
+  stats.cri = stats.per + stats.lrn;
 
-  profile.maxHealth = (stats.Con * 2 + stats.Wil) * profile.level + 5000;
+  profile.maxHealth = (stats.con * 2 + stats.wil) * profile.level + 5000;
   profile.health = profile.maxHealth;
-  profile.maxMana = (stats.Mag * 2 + stats.Wil) * profile.level + 500;
+  profile.maxMana = (stats.mag * 2 + stats.wil) * profile.level + 500;
   profile.mana = profile.maxMana;  
 
-  skills.literacy = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.cooking = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.cleaning = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.service = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.music = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.art = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.tailor = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.stoneWorking = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.woodWorking = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.metalworking = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.farming = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.fishing = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.crafting = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.sword = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.axe = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.bludgeon = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.stave = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.polearm = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.evasion = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.fire = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.water = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.earth = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.air = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.lightning = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.holy = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.dark = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.machine = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.poison = mWorld.getRandomNumber(blockHash, 0, 2000);
-  skills.choas = mWorld.getRandomNumber(blockHash, 0, 2000);
+  skills.literacy = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.cooking = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.cleaning = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.service = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.music = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.art = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.tailor = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.stoneWorking = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.woodWorking = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.metalworking = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.farming = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.fishing = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.crafting = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.sword = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.axe = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.bludgeon = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.stave = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.polearm = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.evasion = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.fire = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.water = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.earth = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.air = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.lightning = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.holy = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.dark = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.machine = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.poison = mWorld.getRandomNumber(seed, 0, 2000);
+  skills.choas = mWorld.getRandomNumber(seed, 0, 2000);
 
   residence.cleaniness = 10000;
   residence.houseLevel = 1;
@@ -117,12 +119,12 @@ void Character::generateStartingStats(const std::string& blockHash)
   dailySchedule[23] = job.getActivityID("Sleep");
   dailySchedule[24] = job.getActivityID("Sleep");
 
-  favouriteActivityType = Job::ActivityType(mWorld.getRandomNumber(blockHash, 0, 3));
+  favouriteActivityType = Job::ActivityType(mWorld.getRandomNumber(seed, 0, 3));
 }
 
-void Character::generateStartingItems(const std::string& blockHash)
+void Character::generateStartingItems(const std::string& seed)
 {
-  Weapon::WeaponItem startingWeapon = weapon.randomizeWeapon(blockHash, 500000);
+  Weapon::WeaponItem startingWeapon = weapon.randomizeWeapon(seed, 500000);
   weaponInventory.push_back(std::make_pair(startingWeapon.id, startingWeapon));
   equipedWeapon = weaponInventory.at(0).first;
   favouriteWeaponType = weaponInventory.at(0).second.type;
@@ -131,9 +133,8 @@ void Character::generateStartingItems(const std::string& blockHash)
   dressInventory.push_back(std::make_pair(startingDress.id, startingDress));
   equipedDress = dressInventory.at(0).first;
 
-  favouriteFoodType = Food::FoodType::fish;
-  Food::FoodItem fruitDish = food.randomizeRawFood(blockHash, Food::FoodType::fruit);
-  food.randomizeCookedFood(blockHash, fruitDish);
+  Food::FoodItem fruitDish = food.randomizeRawFood(seed, Food::FoodType::fruit);
+  food.randomizeCookedFood(seed, fruitDish);
   foodInventory.push_back(std::make_pair(fruitDish.id, fruitDish));
   favouriteFruit = fruitDish.nameRaw;
   favouriteFruitDish = fruitDish.nameCooked;
@@ -141,34 +142,34 @@ void Character::generateStartingItems(const std::string& blockHash)
 
   for (int i = 0; i < 5; i++)
   {
-    Food::FoodItem vegatable = food.randomizeRawFood(blockHash, Food::FoodType::vegatable);
+    Food::FoodItem vegatable = food.randomizeRawFood(seed, Food::FoodType::vegatable);
     foodInventory.push_back(std::make_pair(vegatable.id, vegatable));
     favouriteVegatable = vegatable.nameRaw;
   }
   for (int i = 0; i < 5; i++)
   {
-    Food::FoodItem flour = food.randomizeRawFood(blockHash, Food::FoodType::flour);
+    Food::FoodItem flour = food.randomizeRawFood(seed, Food::FoodType::flour);
     foodInventory.push_back(std::make_pair(flour.id, flour));
   }
 
-  Food::FoodItem junkfood = food.randomizeRawFood(blockHash, Food::FoodType::junk);
+  Food::FoodItem junkfood = food.randomizeRawFood(seed, Food::FoodType::junkFood);
   favouriteJunkFood = junkfood.nameRaw;
   mWorld.freeID(junkfood.id);
 
   for (int i = 0; i < 10; i++)
   {
-    Potion::PotionItem startingPotion = potion.randomizePotion(blockHash, Potion::Rarity::common);
+    Potion::PotionItem startingPotion = potion.randomizePotion(seed, Potion::Rarity::common);
   }
 
   for (int i = 0; i < 3; i++)
   {
-    Book::BookItem startingBook = book.randomizeBook(blockHash);
+    Book::BookItem startingBook = book.randomizeBook(seed);
     library.push_back(startingBook.id);
   }
 
   for (int i = 0; i < 3; i++)
   {
-    Toy::ToyItem startingToy = toy.randomizeToy(blockHash);
+    Toy::ToyItem startingToy = toy.randomizeToy(seed);
     playRoom.push_back(startingToy.id);
   }
 }
@@ -209,7 +210,7 @@ void Character::generateFluffText()
   }
   else
   {
-    elementText = "She is shrouded in an aura " + primaryElementText + " and " + secondaryElementText + ".\n\n";
+    elementText = "She is shrouded in an aura of " + primaryElementText + " and " + secondaryElementText + ".\n\n";
   }
 
   std::string activityText;
@@ -237,9 +238,8 @@ void Character::generateFluffText()
 
   fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + " "
     + "with " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
-    + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height/10) + "cm tall.\n\n"
-
-    + "Her favourite food are " + favouriteVegatable + ", " + favouriteFruitDish + ", " + favouriteJunkFood + ", and Fish.\n"
+    + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall.\n\n"
+    + "Her favourite food are " + favouriteVegatable + ", " + favouriteFruitDish + ", and " + favouriteJunkFood + ".\n"
     + activityText + weaponText + "\n"
     + elementText;
 }

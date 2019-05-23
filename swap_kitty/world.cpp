@@ -94,16 +94,16 @@ World::Stat World::addStat(const std::vector<Stat>& stats)
 
   for (auto& element : stats)
   {
-    combinedStat.Str += element.Str;
-    combinedStat.Con += element.Con;
-    combinedStat.Dex += element.Dex;
-    combinedStat.Per += element.Per;
-    combinedStat.Lrn += element.Lrn;
-    combinedStat.Wil += element.Wil;
-    combinedStat.Mag += element.Mag;
-    combinedStat.Chr += element.Chr;
-    combinedStat.Acc += element.Acc;
-    combinedStat.Cri += element.Cri;
+    combinedStat.str += element.str;
+    combinedStat.con += element.con;
+    combinedStat.dex += element.dex;
+    combinedStat.per += element.per;
+    combinedStat.lrn += element.lrn;
+    combinedStat.wil += element.wil;
+    combinedStat.mag += element.mag;
+    combinedStat.chr += element.chr;
+    combinedStat.acc += element.acc;
+    combinedStat.cri += element.cri;
   }
 
   return combinedStat;
