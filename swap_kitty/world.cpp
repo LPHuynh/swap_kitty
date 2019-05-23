@@ -162,7 +162,6 @@ uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t num
 uint16_t World::getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
   seed += generateNonce() + seed;
-
   return (hash(seed) % (maxNumber - minNumber + 1)) + minNumber;
 }
 

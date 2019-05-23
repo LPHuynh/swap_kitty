@@ -10,7 +10,7 @@ class CommandProcessor
 public:
   CommandProcessor(DaemonAPI& daemonAPI, WalletAPI& walletAPI, World& world, Character& character);
   ~CommandProcessor();
-  void init(const std::string& signingKey, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion);
+  void init(uint64_t txAmount, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion);
 
   struct Command
   {
@@ -50,7 +50,6 @@ private:
   uint64_t mTxAmount;
   uint16_t mTxPriority;
   uint16_t mMixin;
-  std::string mSigningKey;
   bool mIsBetaVersion;
   bool mIsCharacterLoaded;
 };

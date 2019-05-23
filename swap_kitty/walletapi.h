@@ -18,7 +18,7 @@ public:
     uint64_t unlockedBalance;
   };
 
-  struct WithdrawlReceipt
+  struct TransferReceipt
   {
     bool isSuccess;
     std::string txHash;
@@ -43,8 +43,8 @@ public:
   Balance getBalance();
   std::vector<PaymentID> getIncomingPaymentID(uint64_t minHeight, uint64_t maxHeight);
 
-  WithdrawlReceipt transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin);
-  WithdrawlReceipt sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin);
+  TransferReceipt transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin);
+  TransferReceipt sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin);
 
 private:
 #ifdef _WIN32

@@ -228,17 +228,18 @@ void Character::generateFluffText()
   switch (favouriteWeaponType)
   {
   case Weapon::WeaponType::sword: weaponText = "never leaves the house without a good pocket knife.\n"; break;
-  case Weapon::WeaponType::axe: weaponText = "easily find ways around locked doors and chests.\n"; break;
+  case Weapon::WeaponType::axe: weaponText = "can easily find ways around locked doors and chests.\n"; break;
   case Weapon::WeaponType::bludgeon: weaponText = "loves fixings things using percussive repair.\n"; break;
   case Weapon::WeaponType::stave: weaponText = "loves collecting twigs and tree branch in her spare time.\n"; break;
   case Weapon::WeaponType::polearm: weaponText = "loves poking at things with a long pointy stick.\n"; break;
   default: weaponText = ""; break;
   }
 
-  fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + ".\n"
-    + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height/10) + "cm tall.\n"
-    + "She has " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
-    + elementText
-    + "She's a " + profile.cosmetic.species + ", so of courses she loves fish. Otherwise, she enjoys munching on " + favouriteVegatable + ", " + favouriteFruitDish + ", or " + favouriteJunkFood + ".\n"
-    + activityText + weaponText;
+  fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + " "
+    + "with " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
+    + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height/10) + "cm tall.\n\n"
+
+    + "Her favourite food are " + favouriteVegatable + ", " + favouriteFruitDish + ", " + favouriteJunkFood + ", and Fish.\n"
+    + activityText + weaponText + "\n"
+    + elementText;
 }

@@ -21,7 +21,6 @@ public:
     std::string windowTitle;
     uint16_t lastestRulesetVersion;
     bool isBetaVersion;
-    std::string signingKey;
     std::string characterName;
     std::string daemonHost;
     uint16_t daemonPort;

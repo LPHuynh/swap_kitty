@@ -15,7 +15,6 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   mSetting.lastestRulesetVersion = 1;
   mSetting.isBetaVersion = false;
   mSetting.characterName = jsonDatabase["config"]["character"]["name"].get<std::string>();
-  mSetting.signingKey = jsonDatabase["config"]["character"]["signingkey"].get<std::string>();
   mSetting.daemonHost = jsonDatabase["config"]["daemon"]["host"].get<std::string>();
   mSetting.daemonPort = jsonDatabase["config"]["daemon"]["port"];
   mSetting.walletPort = jsonDatabase["config"]["wallet"]["port"];
@@ -60,7 +59,6 @@ App::~App()
   nlohmann::json jsonDatabase;
 
   jsonDatabase["config"]["character"]["name"] = mSetting.characterName;
-  jsonDatabase["config"]["character"]["signingkey"] = mSetting.signingKey;
   jsonDatabase["config"]["daemon"]["host"] = mSetting.daemonHost;
   jsonDatabase["config"]["daemon"]["port"] = mSetting.daemonPort;
   jsonDatabase["config"]["wallet"]["port"] = mSetting.walletPort;
@@ -108,13 +106,13 @@ void App::run()
         uint64_t daemonHeight = mDaemonAPI.getBlockCount();
         uint64_t walletHeight = mWalletAPI.getBlockHeight();
 
-        if (daemonHeight > walletHeight)
+        if (daemonHeight > walletHeight + 10)
         {
           mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
         }
         else
         {
-          mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
+          mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(daemonHeight) + "/" + std::to_string(daemonHeight) + "...");
 
           if (mCommandProcessor.scanForCharacterCreationCommand())
           {
@@ -187,7 +185,7 @@ void App::startGame()
   gameState = GameState::loading;
   mGui.removeAllWidgets();
   mLoadLoadingScreen();
-  mCommandProcessor.init(mSetting.signingKey, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
+  mCommandProcessor.init(mSetting.txAmount, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
   mClock.restart();
 }
 

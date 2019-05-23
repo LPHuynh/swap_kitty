@@ -2,7 +2,6 @@
   "config": {
     "character": {
       "name": "",
-      "signingkey": ""
     },
     "daemon": {
       "host": "node.pocketwhale.info",

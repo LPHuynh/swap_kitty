@@ -9,7 +9,6 @@ CommandProcessor::CommandProcessor(DaemonAPI& daemonAPI, WalletAPI& walletAPI, W
   mWalletAddress = "";
   mTxPriority = 0;
   mMixin = 0;
-  mSigningKey = "";
   mCurrentScanHeight = 0;
   mIsBetaVersion = false;
 }
@@ -18,27 +17,19 @@ CommandProcessor::~CommandProcessor()
 {
 }
 
-void CommandProcessor::init(const std::string& signingKey, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion)
+void CommandProcessor::init(uint64_t txAmount, uint16_t txPriority, uint16_t mixin, uint64_t startingScanHeight, bool isBetaVersion)
 {
   mWalletAddress = mWalletAPI.getAddress();
+  mTxAmount = txAmount;
   mTxPriority = txPriority;
   mMixin = mixin;
-  mSigningKey = signingKey;
   mCurrentScanHeight = startingScanHeight;
   mIsBetaVersion = isBetaVersion;
-
-  if (mSigningKey == "")
-  {
-    //If signing key is not set, use the first word from the wallet's mnemonic seed
-    std::istringstream iss(mWalletAPI.getMnemonicSeed());
-    std::vector<std::string> results(std::istream_iterator<std::string>{iss}, std::istream_iterator<std::string>());
-    mSigningKey = results.at(0);
-  }
 }
 
 void CommandProcessor::submitCharacterCreationCommand(const std::string& characterName)
 {
-  //Specification(Param): 22 byte Character Name, 2 byte Clock Offset
+  //Specification(Param): 24 byte Character Name, 2 byte Clock Offset
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
@@ -67,12 +58,13 @@ void CommandProcessor::submitCharacterCreationCommand(const std::string& charact
   command.param = convertStringToHex(characterName) + convertIntToHex(blockOffset);
 
   std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
 void CommandProcessor::submitResyncGameClock(uint16_t offset)
 {
-  //Specification(Param): 22 byte Unused, 2 byte Offset
+  //Specification(Param): 24 byte Unused, 2 byte Offset
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
@@ -80,12 +72,13 @@ void CommandProcessor::submitResyncGameClock(uint16_t offset)
   command.param = convertIntToHex(offset);
 
   std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
 void CommandProcessor::submitAssignScheduleCommand(uint8_t activity[24])
 {
-  //Specification(Param): (1 byte Daily Activities)x24.
+  //Specification(Param): 2 bytes unused, (1 byte Daily Activities)x24.
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
@@ -98,30 +91,32 @@ void CommandProcessor::submitAssignScheduleCommand(uint8_t activity[24])
   }
 
   std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitAssignBookCommand(uint16_t ID[12])
+void CommandProcessor::submitAssignBookCommand(uint16_t ID[13])
 {
-  //Specification(Param): (2 byte ID)x12
+  //Specification(Param): (2 byte ID)x13
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
   command.commandCode = "AB";
   command.param = "";
 
-  for (int i = 0; i < 12; i++)
+  for (int i = 0; i < 13; i++)
   {
     command.param += convertIntToHex(ID[i]);
   }
 
   std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
 void CommandProcessor::submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8])
 {
-  //Specification(Param): (1 byte Item Type, 2 byte ID)x8
+  //Specification(Param): 2 byte Unused, (1 byte Item Type, 2 byte ID)x8
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
@@ -145,6 +140,7 @@ void CommandProcessor::submitUseItemCommand(World::ItemAction itemAction, World:
   }
 
   std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -164,16 +160,11 @@ bool CommandProcessor::scanForCharacterCreationCommand()
     {
       if (convertHexToString(element.paymentID.substr(8, 4)) == "NC")
       {
-        std::string seed = element.paymentID.substr(0, 60) + mSigningKey;
-        std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
-
-        if (element.paymentID.substr(60, 4) == securityHash)
-        {
-          mCurrentScanHeight = element.height + 1;
-          mWorld.currentWorldHeight = (element.height);
-          mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
-          return true;
-        }
+        mCurrentScanHeight = element.height + 1;
+        mWorld.currentWorldHeight = (element.height);
+        std::cout << "Recieved Command: " << element.paymentID << "\n";
+        mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
+        return true;
       }
     }
   }
@@ -189,29 +180,24 @@ void CommandProcessor::scanForCommands()
   {
     if (convertHexToString(element.paymentID.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.paymentID.substr(0, 4)) == "SB"))
     {
+      std::cout << "Recieved Command: " << element.paymentID << "\n";
       if (std::stol(element.paymentID.substr(4, 4), 0, 16) >= mWorld.currentRulesetVersion)
       {
-        std::string seed = element.paymentID.substr(0, 60) + mSigningKey;
-        std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
-
-        if (element.paymentID.substr(60, 4) == securityHash)
+        if (element.height >= mCurrentScanHeight)
         {
-          if (element.height >= mCurrentScanHeight)
+          if (element.paymentID.substr(8, 4) != "NC")
           {
-            if (element.paymentID.substr(8, 4) != "NC")
-            {
-              mCurrentScanHeight = element.height;
-              mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
-            }
-            else
-            {
-              std::cout << "Duplicate New Character Command detected; Ignoring...";
-            }
+            mCurrentScanHeight = element.height;
+            mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
           }
           else
           {
-            std::cout << "Something went wrong: Commands were obtained in the incorrect order.";
+            std::cout << "Duplicate New Character Command detected; Ignoring...";
           }
+        }
+        else
+        {
+          std::cout << "Something went wrong: Commands were obtained in the incorrect order.";
         }
       }
     }
@@ -229,24 +215,30 @@ void CommandProcessor::processCommand()
   if (mCommandQueue.front().first == mWorld.currentWorldHeight)
   {
     std::deque<Command> commands;
-
-    while (mCommandQueue.front().first == mWorld.currentWorldHeight)
+    if (!mCommandQueue.empty())
     {
-      commands.push_back(mCommandQueue.front().second);
-      mCommandQueue.pop();
-    }
+      while (mCommandQueue.front().first == mWorld.currentWorldHeight)
+      {
+        commands.push_back(mCommandQueue.front().second);
+        mCommandQueue.pop();
 
+        if (mCommandQueue.empty())
+        {
+          break;
+        }
+      }
+    }
     //if more than 1 commands are on the same block, process them in alphabetical order of their security hash
     std::sort(commands.begin(), commands.end(), sortCommand);
-
     while (!commands.empty())
     {
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
-        mCharacter.generateNewCharacter(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), convertHexToString(commands.front().param.substr(0, 44)));
-        mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
+        mCharacter.generateNewCharacter(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), convertHexToString(commands.front().param.substr(0, 48)));
+        mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
         mWorld.startingHeight = mWorld.currentWorldHeight;
         mIsCharacterLoaded = true;
+        std::cout << "\n\nCharacter Loaded:\n" << mCharacter.fluffText << "\n\n";
       }
       else if (commands.front().commandCode == "RC")
       {
@@ -286,12 +278,12 @@ void CommandProcessor::processCommand()
 std::string CommandProcessor::convertCommandToHex(const CommandProcessor::Command& command)
 {
   //Specification: Command Hex String represents 64 nibble or 32 byte in human-readable string format.
-  //Reserved Placement of data (in order): 2 byte Game for Identifier, 2 byte for Ruleset Verion, 2 byte for Command Code, 24 byte for Param(Hex String), 2 for byte Security Hash.
+  //Reserved Placement of data (in order): 2 byte Game for Identifier, 2 byte for Ruleset Verion, 2 byte for Command Code, 26 byte for Param(Hex String)
 
   std::stringstream filledCommand;
   std::stringstream filledParamHex;
   filledCommand << std::setfill('0') << std::setw(4) << convertStringToHex(command.commandCode);
-  filledParamHex << std::setfill('0') << std::setw(48) << command.param;
+  filledParamHex << std::setfill('0') << std::setw(52) << command.param;
 
   std::string hexString;
   std::string gameHexCode;
@@ -302,10 +294,7 @@ std::string CommandProcessor::convertCommandToHex(const CommandProcessor::Comman
     case false: gameHexCode = convertStringToHex("SM"); break;
   }
 
-  std::string seed = gameHexCode + convertIntToHex(command.rulesetVersion) + filledCommand.str() + filledParamHex.str() + mSigningKey;
-  std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
-
-  return gameHexCode + convertIntToHex(command.rulesetVersion) + filledCommand.str() + filledParamHex.str() + securityHash;
+  return gameHexCode + convertIntToHex(command.rulesetVersion) + filledCommand.str() + filledParamHex.str();
 }
 
 CommandProcessor::Command CommandProcessor::convertHexToCommand(const std::string& hexadecimalString)
@@ -318,15 +307,9 @@ CommandProcessor::Command CommandProcessor::convertHexToCommand(const std::strin
 
   if (hexadecimalString.substr(0, 4) == convertStringToHex("SM") || (mIsBetaVersion && hexadecimalString.substr(0, 4) == convertStringToHex("SB")))
   {
-    std::string seed = hexadecimalString.substr(0,60) + mSigningKey;
-    std::string securityHash = convertIntToHex(mWorld.getNoncelessRandomNumber(seed, 0, uint16_t(-1)));
-
-    if (hexadecimalString.substr(60, 4) == securityHash)
-    {
-      commandResult.rulesetVersion = std::stoi(hexadecimalString.substr(4, 4), 0, 16);
-      commandResult.commandCode = convertHexToString(hexadecimalString.substr(8, 4));
-      commandResult.param = hexadecimalString.substr(12, 48);
-    }
+    commandResult.rulesetVersion = std::stoi(hexadecimalString.substr(4, 4), 0, 16);
+    commandResult.commandCode = convertHexToString(hexadecimalString.substr(8, 4));
+    commandResult.param = hexadecimalString.substr(12, 52);
   }
 
   return commandResult;

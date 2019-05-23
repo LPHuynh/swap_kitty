@@ -3,6 +3,7 @@
 
 Potion::Potion(World & world) : mWorld(world)
 {
+  loadPotion();
 }
 
 Potion::~Potion()
@@ -151,5 +152,5 @@ void Potion::loadPotion()
   potion.stamina = 0;
   potion.toxicity = 10;
   potion.bonusStat = World::Stat{ 100,100,100,100,100,100,100,100,100,100 };
-  mUncommonPotions.push_back(potion);
+  mRarePotions.push_back(potion);
 }

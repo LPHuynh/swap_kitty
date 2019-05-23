@@ -398,7 +398,7 @@ std::vector<WalletAPI::PaymentID> WalletAPI::getIncomingPaymentID(uint64_t minHe
   return result;
 }
 
-WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin)
+WalletAPI::TransferReceipt WalletAPI::transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -412,7 +412,7 @@ WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress
   httpPost["id"] = "0";
   httpPost["jsonrpc"] = "2.0";
   httpPost["method"] = "transfer";
-  httpPost["params"]["destinations"] = { destination };
+  httpPost["params"]["destinations"] = { destination, destination }; //TODO: Workaround for now since nlohmann::json does not generate arrays in the proper format with only 1 element, and windows version of swap daemon cannot read it...
   httpPost["params"]["payment_id"] = paymentID;
   httpPost["params"]["mixin"] = mixin;
   httpPost["params"]["priority"] = priority;
@@ -435,7 +435,7 @@ WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress
   nlohmann::json httpReponse;
   httpReponse = nlohmann::json::parse(str.str());
 
-  WalletAPI::WithdrawlReceipt receipt;
+  WalletAPI::TransferReceipt receipt;
 
   if (!httpReponse["result"]["tx_hash"].is_null())
   {
@@ -453,7 +453,7 @@ WalletAPI::WithdrawlReceipt WalletAPI::transfer(const std::string& walletAddress
   return receipt;
 }
 
-WalletAPI::WithdrawlReceipt WalletAPI::sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin)
+WalletAPI::TransferReceipt WalletAPI::sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -463,7 +463,7 @@ WalletAPI::WithdrawlReceipt WalletAPI::sweepAll(const std::string& walletAddress
   httpPost["id"] = "0";
   httpPost["jsonrpc"] = "2.0";
   httpPost["method"] = "sweep_all";
-  httpPost["params"]["address "] = walletAddress;
+  httpPost["params"]["address"] = walletAddress;
   httpPost["params"]["payment_id"] = paymentID;
   httpPost["params"]["mixin"] = mixin;
   httpPost["params"]["priority"] = priority;
@@ -486,7 +486,7 @@ WalletAPI::WithdrawlReceipt WalletAPI::sweepAll(const std::string& walletAddress
   nlohmann::json httpReponse;
   httpReponse = nlohmann::json::parse(str.str());
 
-  WalletAPI::WithdrawlReceipt receipt;
+  WalletAPI::TransferReceipt receipt;
 
   if (!httpReponse["result"]["tx_hash"].is_null())
   {
