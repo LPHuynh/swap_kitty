@@ -10,16 +10,35 @@ Job::~Job()
 {
 }
 
-uint8_t Job::getActivityID(const std::string& name)
+uint16_t Job::rollActivitySucessLevel(World::Stat stat, World::Skill skill, Activity activity)
+{
+
+
+
+}
+
+Job::Activity Job::getActivity(const std::string& name)
 {
   for (auto& element : mActivity)
   {
     if (element.name == name)
     {
-      return element.id;
+      return element;
     }
   }
-  return 0;
+  return mActivity.at(0);
+}
+
+Job::Activity Job::getActivity(uint8_t id)
+{
+  for (auto& element : mActivity)
+  {
+    if (element.id == id)
+    {
+      return element;
+    }
+  }
+  return mActivity.at(0);
 }
 
 void Job::loadActivity()
@@ -72,8 +91,8 @@ void Job::loadActivity()
   activity.name = "Read Book";
   activity.isNightActivity = true;
   activity.payment = 0;
-  activity.activityType = ActivityType::domestic;
-  activity.workLevel = 0;
+  activity.activityType = ActivityType::self;
+  activity.workLevel = 1;
   activity.workStat.wil = 40;
   activity.workStat.lrn = 40;
   activity.workSkill.literacy = 60;
@@ -85,8 +104,8 @@ void Job::loadActivity()
   activity.name = "Play";
   activity.isNightActivity = true;
   activity.payment = 0;
-  activity.activityType = ActivityType::domestic;
-  activity.workLevel = 0;
+  activity.activityType = ActivityType::self;
+  activity.workLevel = 1;
   activity.workStat.con = 40;
   activity.workStat.dex = 40;
   activity.workSkill.art = 30;
@@ -99,8 +118,8 @@ void Job::loadActivity()
   activity.name = "Bath";
   activity.isNightActivity = true;
   activity.payment = 0;
-  activity.activityType = ActivityType::domestic;
-  activity.workLevel = 0;
+  activity.activityType = ActivityType::self;
+  activity.workLevel = 1;
   activity.workStat.wil = 0;
   activity.staminaUsed = 5;
   activity.quenchUsed = 5;
@@ -109,8 +128,8 @@ void Job::loadActivity()
   activity = prototype;
   activity.name = "Nap";
   activity.payment = 0;
-  activity.activityType = ActivityType::domestic;
-  activity.workLevel = 0;
+  activity.activityType = ActivityType::self;
+  activity.workLevel = 1;
   activity.workStat.wil = 60;
   activity.staminaUsed = 5;
   activity.quenchUsed = 5;
@@ -120,8 +139,8 @@ void Job::loadActivity()
   activity.name = "Sleep";
   activity.isNightActivity = true;
   activity.payment = 0;
-  activity.activityType = ActivityType::domestic;
-  activity.workLevel = 0;
+  activity.activityType = ActivityType::self;
+  activity.workLevel = 1;
   activity.workStat.wil = 40;
   activity.staminaUsed = 5;
   activity.quenchUsed = 5;
@@ -141,7 +160,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Bar Tending";
+  activity.name = "Bar Tender";
   activity.isDayActivity = false;
   activity.isNightActivity = true;
   activity.payment = 140;
@@ -236,7 +255,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Gathering";
+  activity.name = "Plant Gatherer";
   activity.payment = 0;
   activity.workLevel = 1;
   activity.activityType = ActivityType::agriculture;
@@ -249,7 +268,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Industrial Fishing";
+  activity.name = "Industrial Fisher";
   activity.payment = 150;
   activity.workLevel = 2;
   activity.activityType = ActivityType::agriculture;
@@ -301,7 +320,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Wood Cutting";
+  activity.name = "Wood Cutter";
   activity.payment = 170;
   activity.workLevel = 1;
   activity.activityType = ActivityType::heavyIndustry;
@@ -314,7 +333,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Mining";
+  activity.name = "Miner";
   activity.payment = 270;
   activity.workLevel = 1;
   activity.activityType = ActivityType::heavyIndustry;
@@ -327,7 +346,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Black Smithing";
+  activity.name = "Black Smither";
   activity.payment = 210;
   activity.workLevel = 2;
   activity.activityType = ActivityType::heavyIndustry;
@@ -353,7 +372,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Iron Smelting";
+  activity.name = "Iron Smelter";
   activity.payment = 280;
   activity.workLevel = 3;
   activity.activityType = ActivityType::heavyIndustry;

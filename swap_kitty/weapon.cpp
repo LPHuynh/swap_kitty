@@ -75,8 +75,9 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
   weaponItem.name = quality.name + " " + statBonus.name + " " + material.name + " " + base.name + " " + ability.name;
   weaponItem.type = type;
   weaponItem.price = base.baseCost * quality.costMultplier * statBonus.costMultplier * material.costMultplier * ability.costMultplier;
-  weaponItem.baseDice = mWorld.addDice({ base.bonusDice, quality.bonusDice, statBonus.bonusDice, material.bonusDice });
-  weaponItem.bonusStat = mWorld.addStat({ base.bonusStat, quality.bonusStat, statBonus.bonusStat, material.bonusStat });
+  weaponItem.baseDice = base.bonusDice + quality.bonusDice + statBonus.bonusDice + material.bonusDice;
+  weaponItem.bonusStat = base.bonusStat + quality.bonusStat + statBonus.bonusStat + material.bonusStat;
+  weaponItem.bonusSkill = base.bonusSkill + quality.bonusSkill + statBonus.bonusSkill + material.bonusSkill;
   weaponItem.abilityDice = ability.bonusDice;
   weaponItem.attribute = ability.attribute;
 
@@ -98,6 +99,7 @@ void Weapon::loadWeapon()
   prototype.bonusDice.roll = 12;
   prototype.bonusDice.plus = 0;
   prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
+  prototype.bonusSkill = World::Skill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
   WeaponBase weapon;
 
@@ -442,6 +444,7 @@ void Weapon::loadMaterial()
   prototype.bonusDice.roll = 12;
   prototype.bonusDice.plus = 0;
   prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
+  prototype.bonusSkill = World::Skill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
   WeaponMaterial material;
 
@@ -598,6 +601,7 @@ void Weapon::loadQuality()
   prototype.bonusDice.roll = 12;
   prototype.bonusDice.plus = 0;
   prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
+  prototype.bonusSkill = World::Skill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
   WeaponQuality quality;
 
@@ -683,6 +687,7 @@ void Weapon::loadAbility()
   prototype.bonusDice.roll = 6;
   prototype.bonusDice.plus = 0;
   prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
+  prototype.bonusSkill = World::Skill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
   prototype.attribute = World::Element::normal;
 
   WeaponAbility ability;
@@ -800,6 +805,7 @@ void Weapon::loadStatBonus()
   prototype.bonusDice.roll = 0;
   prototype.bonusDice.plus = 1;
   prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
+  prototype.bonusSkill = World::Skill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
   WeaponStatBonus statBonus;
 

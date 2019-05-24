@@ -345,7 +345,7 @@ void CommandProcessor::processCommand()
         //Assign Schedule
         for (int i = 0; i < 24; i++)
         {
-          mCharacter.dailySchedule[i] = std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16);
+          mCharacter.dailySchedule[i] = mCharacter.job.getActivity(std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16));
         }
       }
       else if (commands.front().commandCode == "AB")
@@ -359,7 +359,7 @@ void CommandProcessor::processCommand()
           {
             if (element.id == std::stoi(commands.front().param.substr(i * 4, 4), 0, 16))
             {
-              mCharacter.library.push_back(element.id);
+              mCharacter.library.push_back(element);
             }
           }
         }

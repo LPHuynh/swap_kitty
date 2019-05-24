@@ -3,7 +3,7 @@
 #include "json.hpp"
 
 
-App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), mCharacter(mWorld), mCommandProcessor(mDaemonAPI, mWalletAPI, mWorld, mCharacter)
+App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), mCharacter(mWorld), mEvent(mWorld, mCharacter, mDaemonAPI), mCommandProcessor(mDaemonAPI, mWalletAPI, mWorld, mCharacter)
 {
   std::ifstream inFile("config.json");
   nlohmann::json jsonDatabase;
@@ -117,7 +117,7 @@ void App::run()
           if (mCommandProcessor.scanForCharacterCreationCommand())
           {
             mGui.get<tgui::Label>("LabelWalletHeight")->setText("Processing Graphics and Events...");
-            
+
             //Process Commands in own Thread, while displaying and loading graphics
             std::thread t1(&App::mRunTurns, this);
             std::thread t2(&App::mLoadGraphics, this);
@@ -181,7 +181,7 @@ void App::startGame()
       gameState = GameState::exit;
     }
   }
-    mSetting.characterName = characterName;
+  mSetting.characterName = characterName;
   gameState = GameState::loading;
   mGui.removeAllWidgets();
   mLoadLoadingScreen();
@@ -195,7 +195,7 @@ void App::mRunTurns()
   mCommandProcessor.scanForCommands();
   while (mWorld.currentWorldHeight < topHeight)
   {
-    //Process Event;
+    mEvent.processEvent();
     mCommandProcessor.processCommand();
     mWorld.currentWorldHeight++;
   }

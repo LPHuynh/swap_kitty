@@ -4,6 +4,7 @@
 #include "character.h"
 #include "commandprocessor.h"
 #include "daemonapi.h"
+#include "event.h"
 #include "walletapi.h"
 #include "world.h"
 
@@ -46,6 +47,7 @@ private:
   WalletAPI mWalletAPI;
   CommandProcessor mCommandProcessor;
   Character mCharacter;
+  Event mEvent;
   World mWorld;
 
   AppSetting mSetting;

@@ -41,51 +41,51 @@ void Character::generateStartingStats(const std::string& seed)
   profile.happiness = mWorld.getRandomNumber(seed, 2500, 5000);
   profile.obidence = mWorld.getRandomNumber(seed, 0, 2500);
 
-  stats.str = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.con = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.dex = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.per = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.lrn = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.wil = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.mag = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.chr = mWorld.getRandomNumber(seed, 0, 2000);
-  stats.acc = stats.per + stats.dex * 2;
-  stats.cri = stats.per + stats.lrn;
+  stat.str = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.con = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.dex = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.per = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.lrn = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.wil = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.mag = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.chr = mWorld.getRandomNumber(seed, 0, 2000);
+  stat.acc = stat.per + stat.dex * 2;
+  stat.cri = stat.per + stat.lrn;
 
-  profile.maxHealth = (stats.con * 2 + stats.wil) * profile.level + 5000;
+  profile.maxHealth = (stat.con * 2 + stat.wil) * profile.level + 5000;
   profile.health = profile.maxHealth;
-  profile.maxMana = (stats.mag * 2 + stats.wil) * profile.level + 500;
+  profile.maxMana = (stat.mag * 2 + stat.wil) * profile.level + 500;
   profile.mana = profile.maxMana;  
 
-  skills.literacy = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.cooking = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.cleaning = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.service = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.music = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.art = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.tailor = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.stoneWorking = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.woodWorking = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.metalworking = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.farming = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.fishing = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.crafting = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.sword = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.axe = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.bludgeon = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.stave = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.polearm = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.evasion = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.fire = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.water = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.earth = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.air = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.lightning = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.holy = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.dark = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.machine = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.poison = mWorld.getRandomNumber(seed, 0, 2000);
-  skills.choas = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.literacy = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.cooking = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.cleaning = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.service = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.music = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.art = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.tailor = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.stoneWorking = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.woodWorking = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.metalworking = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.farming = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.fishing = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.crafting = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.sword = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.axe = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.bludgeon = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.stave = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.polearm = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.evasion = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.fire = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.water = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.earth = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.air = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.lightning = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.holy = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.dark = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.machine = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.poison = mWorld.getRandomNumber(seed, 0, 2000);
+  skill.choas = mWorld.getRandomNumber(seed, 0, 2000);
 
   residence.cleaniness = 10000;
   residence.houseLevel = 1;
@@ -93,48 +93,48 @@ void Character::generateStartingStats(const std::string& seed)
   residence.libraryLevel = 1;
   residence.bedroomLevel = 1;
 
-  dailySchedule[0] = job.getActivityID("Sleep");
-  dailySchedule[1] = job.getActivityID("Sleep");
-  dailySchedule[2] = job.getActivityID("Sleep");
-  dailySchedule[3] = job.getActivityID("Sleep");
-  dailySchedule[4] = job.getActivityID("Cooking");
-  dailySchedule[5] = job.getActivityID("Cleaning");
-  dailySchedule[6] = job.getActivityID("Nap");
-  dailySchedule[7] = job.getActivityID("Playing");
-  dailySchedule[8] = job.getActivityID("Nap");
-  dailySchedule[9] = job.getActivityID("Playing");
-  dailySchedule[10] = job.getActivityID("Read Book");
-  dailySchedule[11] = job.getActivityID("Cooking");
-  dailySchedule[12] = job.getActivityID("Cleaning");
-  dailySchedule[13] = job.getActivityID("Nap");
-  dailySchedule[14] = job.getActivityID("Read Book");
-  dailySchedule[15] = job.getActivityID("Bath");
-  dailySchedule[16] = job.getActivityID("Cooking");
-  dailySchedule[17] = job.getActivityID("Cleaning");
-  dailySchedule[18] = job.getActivityID("Playing");
-  dailySchedule[19] = job.getActivityID("Bath");
-  dailySchedule[20] = job.getActivityID("Read Book");
-  dailySchedule[21] = job.getActivityID("Sleep");
-  dailySchedule[22] = job.getActivityID("Sleep");
-  dailySchedule[23] = job.getActivityID("Sleep");
-  dailySchedule[24] = job.getActivityID("Sleep");
+  dailySchedule[0] = job.getActivity("Sleep");
+  dailySchedule[1] = job.getActivity("Sleep");
+  dailySchedule[2] = job.getActivity("Sleep");
+  dailySchedule[3] = job.getActivity("Sleep");
+  dailySchedule[4] = job.getActivity("Cooking");
+  dailySchedule[5] = job.getActivity("Cleaning");
+  dailySchedule[6] = job.getActivity("Nap");
+  dailySchedule[7] = job.getActivity("Playing");
+  dailySchedule[8] = job.getActivity("Nap");
+  dailySchedule[9] = job.getActivity("Playing");
+  dailySchedule[10] = job.getActivity("Read Book");
+  dailySchedule[11] = job.getActivity("Cooking");
+  dailySchedule[12] = job.getActivity("Cleaning");
+  dailySchedule[13] = job.getActivity("Nap");
+  dailySchedule[14] = job.getActivity("Read Book");
+  dailySchedule[15] = job.getActivity("Bath");
+  dailySchedule[16] = job.getActivity("Cooking");
+  dailySchedule[17] = job.getActivity("Cleaning");
+  dailySchedule[18] = job.getActivity("Playing");
+  dailySchedule[19] = job.getActivity("Bath");
+  dailySchedule[20] = job.getActivity("Read Book");
+  dailySchedule[21] = job.getActivity("Sleep");
+  dailySchedule[22] = job.getActivity("Sleep");
+  dailySchedule[23] = job.getActivity("Sleep");
+  dailySchedule[24] = job.getActivity("Sleep");
 
   uint16_t timeOfDay = (mWorld.currentWorldHeight + mWorld.localTimeOffset) % 5760;
-  uint16_t currentHour = timeOfDay / 24;
+  uint16_t currentHour = timeOfDay / (24 * 4);
   currentActivity = dailySchedule[currentHour];
-  favouriteActivityType = Job::ActivityType(mWorld.getRandomNumber(seed, 0, 3));
+  favouriteActivityType = Job::ActivityType(mWorld.getRandomNumber(seed, 1, 4));
 }
 
 void Character::generateStartingItems(const std::string& seed)
 {
   Weapon::WeaponItem startingWeapon = weapon.randomizeWeapon(seed, 500000);
   weaponInventory.push_back(startingWeapon);
-  equipedWeapon = weaponInventory.at(0).id;
+  equipedWeapon = weaponInventory.at(0);
   favouriteWeaponType = weaponInventory.at(0).type;
 
   Dress::DressItem startingDress = dress.generateDress("Basic Dress");
   dressInventory.push_back(startingDress);
-  equipedDress = dressInventory.at(0).id;
+  equipedDress = dressInventory.at(0);
 
   Food::FoodItem fruitDish = food.randomizeRawFood(seed, Food::FoodType::fruit);
   food.randomizeCookedFood(seed, fruitDish);
@@ -167,13 +167,13 @@ void Character::generateStartingItems(const std::string& seed)
   for (int i = 0; i < 3; i++)
   {
     Book::BookItem startingBook = book.randomizeBook(seed);
-    library.push_back(startingBook.id);
+    library.push_back(startingBook);
   }
 
   for (int i = 0; i < 3; i++)
   {
     Toy::ToyItem startingToy = toy.randomizeToy(seed);
-    playRoom.push_back(startingToy.id);
+    playRoom.push_back(startingToy);
   }
 }
 

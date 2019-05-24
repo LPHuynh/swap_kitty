@@ -53,14 +53,14 @@ public:
   };
 
   Profile profile;
-  World::Stat stats;
-  World::Skill skills;
+  World::Stat stat;
+  World::Skill skill;
   Residence residence;
   
-  uint16_t equipedWeapon;
-  uint16_t equipedDress;
-  std::vector<uint16_t> library;
-  std::vector<uint16_t> playRoom;
+  Weapon::WeaponItem equipedWeapon;
+  Dress::DressItem equipedDress;
+  std::vector<Book::BookItem> library;
+  std::vector<Toy::ToyItem> playRoom;
   std::vector<Weapon::WeaponItem> weaponInventory;
   std::vector<Dress::DressItem> dressInventory;
   std::vector<Food::FoodItem> foodInventory;
@@ -68,8 +68,8 @@ public:
   std::vector<Book::BookItem> bookInventory;
   std::vector<Toy::ToyItem>ToyInventory;
   
-  uint8_t currentActivity;
-  uint8_t dailySchedule[24];
+  Job::Activity currentActivity;
+  Job::Activity dailySchedule[24];
 
   Weapon::WeaponType favouriteWeaponType;
   std::string favouriteFruit;

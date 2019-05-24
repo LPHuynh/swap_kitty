@@ -9,7 +9,7 @@ public:
   Job();
   ~Job();
 
-  enum class ActivityType { domestic, entertainment, agriculture, heavyIndustry};
+  enum class ActivityType { self, domestic, entertainment, agriculture, heavyIndustry};
 
   struct Activity
   {
@@ -26,7 +26,10 @@ public:
     int16_t quenchUsed;
   };
 
-  uint8_t getActivityID(const std::string& name);
+  uint16_t rollActivitySucessLevel(World::Stat stat, World::Skill skill, Activity activity);
+
+  Activity getActivity(const std::string& name);
+  Activity getActivity(uint8_t id);
 
 private:
   void loadActivity();

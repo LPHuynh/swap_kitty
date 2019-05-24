@@ -13,13 +13,145 @@ World::~World()
 {
 }
 
+World::Dice World::Dice::operator+(const Dice& rhs)
+{
+  Dice dice;
+
+  dice.face = this->face + rhs.face;
+  dice.roll = this->roll + rhs.roll;
+  dice.plus = this->plus + rhs.plus;
+  
+  return dice;
+}
+
+World::Dice World::Dice::operator-(const Dice& rhs)
+{
+  Dice dice;
+
+  dice.face = this->face - rhs.face;
+  dice.roll = this->roll - rhs.roll;
+  dice.plus = this->plus - rhs.plus;
+
+  return dice;
+}
+
+World::Stat World::Stat::operator+(const Stat& rhs)
+{
+  Stat stat;
+
+  stat.str = this->str + rhs.str;
+  stat.con = this->con + rhs.con;
+  stat.dex = this->dex + rhs.dex;
+  stat.per = this->per + rhs.per;
+  stat.lrn = this->lrn + rhs.lrn;
+  stat.wil = this->wil + rhs.wil;
+  stat.mag = this->mag + rhs.mag;
+  stat.chr = this->chr + rhs.chr;
+  stat.acc = this->acc + rhs.acc;
+  stat.cri = this->cri + rhs.cri;
+
+  return stat;
+}
+
+World::Skill World::Skill::operator+(const Skill& rhs)
+{
+  Skill skill;
+
+  skill.literacy = this->literacy + rhs.literacy;
+  skill.cooking = this->cooking + rhs.cooking;
+  skill.cleaning = this->cleaning + rhs.cleaning;
+  skill.service = this->service + rhs.service;
+  skill.music = this->music + rhs.music;
+  skill.art = this->art + rhs.art;
+  skill.tailor = this->tailor + rhs.tailor;
+  skill.stoneWorking = this->stoneWorking + rhs.stoneWorking;
+  skill.woodWorking = this->woodWorking + rhs.woodWorking;
+  skill.metalworking = this->metalworking + rhs.metalworking;
+  skill.farming = this->farming + rhs.farming;
+  skill.fishing = this->fishing + rhs.fishing;
+  skill.crafting = this->crafting + rhs.crafting;
+  skill.sword = this->sword + rhs.sword;
+  skill.axe = this->axe + rhs.axe;
+  skill.bludgeon = this->bludgeon + rhs.bludgeon;
+  skill.stave = this->stave + rhs.stave;
+  skill.polearm = this->polearm + rhs.polearm;
+  skill.evasion = this->evasion + rhs.evasion;
+  skill.fire = this->fire + rhs.fire;
+  skill.water = this->water + rhs.water;
+  skill.earth = this->earth + rhs.earth;
+  skill.air = this->air + rhs.air;
+  skill.lightning = this->lightning + rhs.lightning;
+  skill.holy = this->holy + rhs.holy;
+  skill.dark = this->dark + rhs.dark;
+  skill.machine = this->machine + rhs.machine;
+  skill.poison = this->poison + rhs.poison;
+  skill.choas = this->choas + rhs.choas;
+
+  return skill;
+}
+
+World::Stat World::Stat::operator-(const Stat& rhs)
+{
+  Stat stat;
+
+  stat.str = this->str - rhs.str;
+  stat.con = this->con - rhs.con;
+  stat.dex = this->dex - rhs.dex;
+  stat.per = this->per - rhs.per;
+  stat.lrn = this->lrn - rhs.lrn;
+  stat.wil = this->wil - rhs.wil;
+  stat.mag = this->mag - rhs.mag;
+  stat.chr = this->chr - rhs.chr;
+  stat.acc = this->acc - rhs.acc;
+  stat.cri = this->cri - rhs.cri;
+
+  return stat;
+}
+
+World::Skill World::Skill::operator-(const Skill& rhs)
+{
+  Skill skill;
+
+  skill.literacy = this->literacy - rhs.literacy;
+  skill.cooking = this->cooking - rhs.cooking;
+  skill.cleaning = this->cleaning - rhs.cleaning;
+  skill.service = this->service - rhs.service;
+  skill.music = this->music - rhs.music;
+  skill.art = this->art - rhs.art;
+  skill.tailor = this->tailor - rhs.tailor;
+  skill.stoneWorking = this->stoneWorking - rhs.stoneWorking;
+  skill.woodWorking = this->woodWorking - rhs.woodWorking;
+  skill.metalworking = this->metalworking - rhs.metalworking;
+  skill.farming = this->farming - rhs.farming;
+  skill.fishing = this->fishing - rhs.fishing;
+  skill.crafting = this->crafting - rhs.crafting;
+  skill.sword = this->sword - rhs.sword;
+  skill.axe = this->axe - rhs.axe;
+  skill.bludgeon = this->bludgeon - rhs.bludgeon;
+  skill.stave = this->stave - rhs.stave;
+  skill.polearm = this->polearm - rhs.polearm;
+  skill.evasion = this->evasion - rhs.evasion;
+  skill.fire = this->fire - rhs.fire;
+  skill.water = this->water - rhs.water;
+  skill.earth = this->earth - rhs.earth;
+  skill.air = this->air - rhs.air;
+  skill.lightning = this->lightning - rhs.lightning;
+  skill.holy = this->holy - rhs.holy;
+  skill.dark = this->dark - rhs.dark;
+  skill.machine = this->machine - rhs.machine;
+  skill.poison = this->poison - rhs.poison;
+  skill.choas = this->choas - rhs.choas;
+
+  return skill;
+}
+
 int16_t World::calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement)
 {
   int16_t damageBonus = 100;
 
   for (auto& element : defenderElement) {
     if (attackerElement == Element::fire && (element == Element::air || element == Element::poison))
-    { 
+    {
       damageBonus += 25;
     }
     else if (attackerElement == Element::water && (element == Element::fire || element == Element::machine))
@@ -71,80 +203,112 @@ int16_t World::calculateElementAttackBonus(Element attackerElement, const std::v
   return damageBonus;
 }
 
-World::Dice World::addDice(const std::vector<Dice>& die)
+World::Stat World::shiftStat(const Stat& stat, int8_t bitwiseShift)
 {
-  Dice combinedDice;
-  combinedDice.roll = 0;
-  combinedDice.face = 0;
-  combinedDice.plus = 0;
+  Stat shiftedStat;
 
-  for (auto& element : die) 
+  if (bitwiseShift > 0)
   {
-    combinedDice.roll += element.roll;
-    combinedDice.face += element.face;
-    combinedDice.plus += element.plus;
+    shiftedStat.str = stat.str << bitwiseShift;
+    shiftedStat.con = stat.con << bitwiseShift;
+    shiftedStat.dex = stat.dex << bitwiseShift;
+    shiftedStat.per = stat.per << bitwiseShift;
+    shiftedStat.lrn = stat.lrn << bitwiseShift;
+    shiftedStat.wil = stat.wil << bitwiseShift;
+    shiftedStat.mag = stat.mag << bitwiseShift;
+    shiftedStat.chr = stat.chr << bitwiseShift;
+    shiftedStat.acc = stat.acc << bitwiseShift;
+    shiftedStat.cri = stat.cri << bitwiseShift;
+  }
+  else
+  {
+    bitwiseShift *= -1;
+    shiftedStat.str = stat.str >> bitwiseShift;
+    shiftedStat.con = stat.con >> bitwiseShift;
+    shiftedStat.dex = stat.dex >> bitwiseShift;
+    shiftedStat.per = stat.per >> bitwiseShift;
+    shiftedStat.lrn = stat.lrn >> bitwiseShift;
+    shiftedStat.wil = stat.wil >> bitwiseShift;
+    shiftedStat.mag = stat.mag >> bitwiseShift;
+    shiftedStat.chr = stat.chr >> bitwiseShift;
+    shiftedStat.acc = stat.acc >> bitwiseShift;
+    shiftedStat.cri = stat.cri >> bitwiseShift;
   }
 
-  return combinedDice;
+  return shiftedStat;
 }
 
-World::Stat World::addStat(const std::vector<Stat>& stats)
+World::Skill World::shiftSkill(const Skill& skill, int8_t bitwiseShift)
 {
-  Stat combinedStat{ 0,0,0,0,0,0,0,0,0,0 };
+  Skill shiftedSkill;
 
-  for (auto& element : stats)
+  if (bitwiseShift > 0)
   {
-    combinedStat.str += element.str;
-    combinedStat.con += element.con;
-    combinedStat.dex += element.dex;
-    combinedStat.per += element.per;
-    combinedStat.lrn += element.lrn;
-    combinedStat.wil += element.wil;
-    combinedStat.mag += element.mag;
-    combinedStat.chr += element.chr;
-    combinedStat.acc += element.acc;
-    combinedStat.cri += element.cri;
+    shiftedSkill.literacy = skill.literacy << bitwiseShift;
+    shiftedSkill.cooking = skill.cooking << bitwiseShift;
+    shiftedSkill.cleaning = skill.cleaning << bitwiseShift;
+    shiftedSkill.service = skill.service << bitwiseShift;
+    shiftedSkill.music = skill.music << bitwiseShift;
+    shiftedSkill.art = skill.art << bitwiseShift;
+    shiftedSkill.tailor = skill.tailor << bitwiseShift;
+    shiftedSkill.stoneWorking = skill.stoneWorking << bitwiseShift;
+    shiftedSkill.woodWorking = skill.woodWorking << bitwiseShift;
+    shiftedSkill.metalworking = skill.metalworking << bitwiseShift;
+    shiftedSkill.farming = skill.farming << bitwiseShift;
+    shiftedSkill.fishing = skill.fishing << bitwiseShift;
+    shiftedSkill.crafting = skill.crafting << bitwiseShift;
+    shiftedSkill.sword = skill.sword << bitwiseShift;
+    shiftedSkill.axe = skill.axe << bitwiseShift;
+    shiftedSkill.bludgeon = skill.bludgeon << bitwiseShift;
+    shiftedSkill.stave = skill.stave << bitwiseShift;
+    shiftedSkill.polearm = skill.polearm << bitwiseShift;
+    shiftedSkill.evasion = skill.evasion << bitwiseShift;
+    shiftedSkill.fire = skill.fire << bitwiseShift;
+    shiftedSkill.water = skill.water << bitwiseShift;
+    shiftedSkill.earth = skill.earth << bitwiseShift;
+    shiftedSkill.air = skill.air << bitwiseShift;
+    shiftedSkill.lightning = skill.lightning << bitwiseShift;
+    shiftedSkill.holy = skill.holy << bitwiseShift;
+    shiftedSkill.dark = skill.dark << bitwiseShift;
+    shiftedSkill.machine = skill.machine << bitwiseShift;
+    shiftedSkill.poison = skill.poison << bitwiseShift;
+    shiftedSkill.choas = skill.choas << bitwiseShift;
+  }
+  else
+  {
+    bitwiseShift *= -1;
+    shiftedSkill.literacy = skill.literacy >> bitwiseShift;
+    shiftedSkill.cooking = skill.cooking >> bitwiseShift;
+    shiftedSkill.cleaning = skill.cleaning >> bitwiseShift;
+    shiftedSkill.service = skill.service >> bitwiseShift;
+    shiftedSkill.music = skill.music >> bitwiseShift;
+    shiftedSkill.art = skill.art >> bitwiseShift;
+    shiftedSkill.tailor = skill.tailor >> bitwiseShift;
+    shiftedSkill.stoneWorking = skill.stoneWorking >> bitwiseShift;
+    shiftedSkill.woodWorking = skill.woodWorking >> bitwiseShift;
+    shiftedSkill.metalworking = skill.metalworking >> bitwiseShift;
+    shiftedSkill.farming = skill.farming >> bitwiseShift;
+    shiftedSkill.fishing = skill.fishing >> bitwiseShift;
+    shiftedSkill.crafting = skill.crafting >> bitwiseShift;
+    shiftedSkill.sword = skill.sword >> bitwiseShift;
+    shiftedSkill.axe = skill.axe >> bitwiseShift;
+    shiftedSkill.bludgeon = skill.bludgeon >> bitwiseShift;
+    shiftedSkill.stave = skill.stave >> bitwiseShift;
+    shiftedSkill.polearm = skill.polearm >> bitwiseShift;
+    shiftedSkill.evasion = skill.evasion >> bitwiseShift;
+    shiftedSkill.fire = skill.fire >> bitwiseShift;
+    shiftedSkill.water = skill.water >> bitwiseShift;
+    shiftedSkill.earth = skill.earth >> bitwiseShift;
+    shiftedSkill.air = skill.air >> bitwiseShift;
+    shiftedSkill.lightning = skill.lightning >> bitwiseShift;
+    shiftedSkill.holy = skill.holy >> bitwiseShift;
+    shiftedSkill.dark = skill.dark >> bitwiseShift;
+    shiftedSkill.machine = skill.machine >> bitwiseShift;
+    shiftedSkill.poison = skill.poison >> bitwiseShift;
+    shiftedSkill.choas = skill.choas >> bitwiseShift;
   }
 
-  return combinedStat;
-}
-
-World::Skill World::addSkill(const std::vector<Skill>& skills)
-{
-  Skill combinedSkill{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
-
-  for (auto& element : skills)
-  {
-    combinedSkill.literacy = element.literacy;
-    combinedSkill.cooking = element.cooking;
-    combinedSkill.cleaning = element.cleaning;
-    combinedSkill.service = element.service;
-    combinedSkill.music = element.music;
-    combinedSkill.art = element.art;
-    combinedSkill.tailor = element.tailor;
-    combinedSkill.stoneWorking = element.stoneWorking;
-    combinedSkill.woodWorking = element.woodWorking;
-    combinedSkill.metalworking = element.metalworking;
-    combinedSkill.farming = element.farming;
-    combinedSkill.fishing = element.fishing;
-    combinedSkill.crafting = element.crafting;
-    combinedSkill.sword = element.sword;
-    combinedSkill.axe = element.axe;
-    combinedSkill.bludgeon = element.bludgeon;
-    combinedSkill.stave = element.stave;
-    combinedSkill.polearm = element.polearm;
-    combinedSkill.evasion = element.evasion;
-    combinedSkill.fire = element.fire;
-    combinedSkill.water = element.water;
-    combinedSkill.earth = element.earth;
-    combinedSkill.air = element.air;
-    combinedSkill.lightning = element.lightning;
-    combinedSkill.holy = element.holy;
-    combinedSkill.dark = element.dark;
-    combinedSkill.machine = element.machine;
-    combinedSkill.poison = element.poison;
-    combinedSkill.choas = element.choas;
-  }
+  return shiftedSkill;
 }
 
 uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t numOfFaces)

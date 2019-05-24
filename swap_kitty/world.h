@@ -29,6 +29,8 @@ public:
     int16_t roll;
     int16_t face;
     int16_t plus;
+    Dice operator+(const Dice& rhs);
+    Dice operator-(const Dice& rhs);
   };
   struct Stat
   {
@@ -42,6 +44,8 @@ public:
     int16_t chr;
     int16_t acc;
     int16_t cri;
+    Stat operator+(const Stat& rhs);
+    Stat operator-(const Stat& rhs);
   };
   struct Skill
   {
@@ -74,12 +78,13 @@ public:
     int16_t machine;
     int16_t poison;
     int16_t choas;
+    Skill operator+(const Skill& rhs);
+    Skill operator-(const Skill& rhs);
   };
 
   int16_t calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement);
-  Dice addDice(const std::vector<Dice>& die);
-  Stat addStat(const std::vector<Stat>& stats);
-  Skill addSkill(const std::vector<Skill>& skills);
+  Stat shiftStat(const Stat& stat, int8_t bitwiseShift);
+  Skill shiftSkill(const Skill& skill, int8_t bitwiseShift);
   uint16_t rollDie(const std::string& seed, uint16_t dice, uint16_t face);
   uint16_t getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);
   uint16_t getNoncelessRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);

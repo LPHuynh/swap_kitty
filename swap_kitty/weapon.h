@@ -19,6 +19,7 @@ public:
     int64_t price;
     World::Dice baseDice;
     World::Stat bonusStat;
+    World::Skill bonusSkill;
     World::Dice abilityDice;
     World::Element attribute;
   };
@@ -35,6 +36,7 @@ private:
     int16_t baseCost;
     World::Dice bonusDice;
     World::Stat bonusStat;
+    World::Skill bonusSkill;
   };
   struct WeaponMaterial
   {
@@ -43,6 +45,7 @@ private:
     int16_t costMultplier;
     World::Dice bonusDice;
     World::Stat bonusStat;
+    World::Skill bonusSkill;
   };
   struct WeaponQuality
   {
@@ -50,6 +53,7 @@ private:
     int16_t costMultplier;
     World::Dice bonusDice;
     World::Stat bonusStat;
+    World::Skill bonusSkill;
   };
   struct WeaponAbility
   {
@@ -57,6 +61,7 @@ private:
     int16_t costMultplier;
     World::Dice bonusDice;
     World::Stat bonusStat;
+    World::Skill bonusSkill;
     World::Element attribute;
   };
   struct WeaponStatBonus
@@ -65,6 +70,7 @@ private:
     int16_t costMultplier;
     World::Dice bonusDice;
     World::Stat bonusStat;
+    World::Skill bonusSkill;
   };
 
   void loadWeapon();
