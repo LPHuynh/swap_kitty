@@ -61,13 +61,14 @@ public:
   uint16_t equipedDress;
   std::vector<uint16_t> library;
   std::vector<uint16_t> playRoom;
-  std::vector<std::pair<uint16_t, Weapon::WeaponItem>> weaponInventory;
-  std::vector<std::pair <uint16_t, Dress::DressItem>> dressInventory;
-  std::vector<std::pair <uint16_t, Food::FoodItem>> foodInventory;
-  std::vector<std::pair <uint16_t, Potion::PotionItem>> potionInventory;
-  std::vector<std::pair <uint16_t, Book::BookItem>> bookInventory;
-  std::vector<std::pair <uint16_t, Toy::ToyItem>>ToyInventory;
+  std::vector<Weapon::WeaponItem> weaponInventory;
+  std::vector<Dress::DressItem> dressInventory;
+  std::vector<Food::FoodItem> foodInventory;
+  std::vector<Potion::PotionItem> potionInventory;
+  std::vector<Book::BookItem> bookInventory;
+  std::vector<Toy::ToyItem>ToyInventory;
   
+  uint8_t currentActivity;
   uint8_t dailySchedule[24];
 
   Weapon::WeaponType favouriteWeaponType;

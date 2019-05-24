@@ -22,8 +22,11 @@ public:
   void submitCharacterCreationCommand(const std::string& characterName);
   void submitResyncGameClock(uint16_t offset);
   void submitAssignScheduleCommand(uint8_t activity[24]);
-  void submitAssignBookCommand(uint16_t ID[12]);
-  void submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8]);
+  void submitAssignBookCommand(uint16_t ID[13]);
+  void submitManageItemCommand(World::ItemAction itemAction, World::ItemType itemType, uint16_t ID[13]);
+  void submitGiftCommand(uint16_t toyID[13]);
+  void submitFeedCommand(uint16_t foodID, uint16_t potionID);
+  void submitEquipCommand(uint16_t weaponID, uint16_t dressID);
   bool scanForCharacterCreationCommand();
   void scanForCommands();
   bool static sortCommand(Command i, Command j);
@@ -34,6 +37,8 @@ public:
   static std::string convertHexToString(const std::string& hexadecimalString);
   static std::string convertStringToHex(const std::string& textString);
   template<typename INT_T> static std::string convertIntToHex(INT_T integer);
+
+  std::string getBlockHash();
 
 private:
   DaemonAPI& mDaemonAPI;

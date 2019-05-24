@@ -22,7 +22,7 @@ public:
 
   enum class Element { normal, fire, water, earth, air, lightning, holy, dark, machine, poison, chaos };
   enum class ItemType { weapon, dress, food, potion, book, toy };
-  enum class ItemAction { buy, use, sell, discard };
+  enum class ItemAction { buy, sell, discard };
 
   struct Dice
   {
@@ -92,7 +92,7 @@ public:
   uint64_t currentWorldHeight;
   uint16_t localTimeOffset;
 private:
-  uint32_t hash(const std::string& seed);
+  uint32_t generateHash(const std::string& seed);
 
   uint16_t mIDCounter;
   uint16_t mNonceCounter;

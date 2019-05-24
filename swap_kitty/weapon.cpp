@@ -80,7 +80,7 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
   weaponItem.abilityDice = ability.bonusDice;
   weaponItem.attribute = ability.attribute;
 
-  weaponItem.price += mWorld.getRandomNumber(seed, 0, 100000);
+  weaponItem.price += mWorld.getRandomNumber(seed, 0, 50000);
   weaponItem.id = mWorld.generateID();
   return weaponItem;
 }

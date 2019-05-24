@@ -114,30 +114,117 @@ void CommandProcessor::submitAssignBookCommand(uint16_t ID[13])
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitUseItemCommand(World::ItemAction itemAction, World::ItemType itemType[8], uint16_t ID[8])
+void CommandProcessor::submitManageItemCommand(World::ItemAction itemAction, World::ItemType itemType, uint16_t itemID[13])
 {
-  //Specification(Param): 2 byte Unused, (1 byte Item Type, 2 byte ID)x8
+  //Specification(Param): (2 byte ID)x13
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
 
   command.param = "";
 
-  switch (itemAction)
+  switch (itemType)
   {
-  case World::ItemAction::buy: command.commandCode = "BI"; break;
-  case World::ItemAction::use: command.commandCode = "UI"; break;
-  case World::ItemAction::sell: command.commandCode = "SI"; break;
-  case World::ItemAction::discard: command.commandCode = "DI"; break;
+  case World::ItemType::weapon: 
+    switch (itemAction)
+    {
+    case World::ItemAction::buy: command.commandCode = "BW"; break;
+    case World::ItemAction::sell: command.commandCode = "SW"; break;
+    case World::ItemAction::discard: command.commandCode = "DW"; break;
+    } break;
+  case World::ItemType::dress:
+    switch (itemAction)
+    {
+    case World::ItemAction::buy: command.commandCode = "BD"; break;
+    case World::ItemAction::sell: command.commandCode = "SD"; break;
+    case World::ItemAction::discard: command.commandCode = "DD"; break;
+    } break;
+  case World::ItemType::food:
+    switch (itemAction)
+    {
+    case World::ItemAction::buy: command.commandCode = "BF"; break;
+    case World::ItemAction::sell: command.commandCode = "SF"; break;
+    case World::ItemAction::discard: command.commandCode = "DF"; break;
+    } break;
+  case World::ItemType::potion:
+    switch (itemAction)
+    {
+    case World::ItemAction::buy: command.commandCode = "BP"; break;
+    case World::ItemAction::sell: command.commandCode = "SP"; break;
+    case World::ItemAction::discard: command.commandCode = "DP"; break;
+    } break;
+  case World::ItemType::book:
+    switch (itemAction)
+    {
+    case World::ItemAction::buy: command.commandCode = "BB"; break;
+    case World::ItemAction::sell: command.commandCode = "SB"; break;
+    case World::ItemAction::discard: command.commandCode = "DB"; break;
+    } break;
+  case World::ItemType::toy:
+    switch (itemAction)
+    {
+    case World::ItemAction::buy: command.commandCode = "BT"; break;
+    case World::ItemAction::sell: command.commandCode = "ST"; break;
+    case World::ItemAction::discard: command.commandCode = "DT"; break;
+    } break;
   }
 
-  for (int i = 0; i < 8; i++)
+
+  for (int i = 0; i < 13; i++)
   {
-    if (ID > 0)
+    if (itemID > 0)
     {
-      command.param += convertIntToHex(lookupItemTable(itemType[i])) + convertIntToHex(ID[i]);
+      command.param += convertIntToHex(convertIntToHex(itemID[i]));
     }
   }
+
+  std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
+}
+
+void CommandProcessor::submitGiftCommand(uint16_t toyID[13])
+{
+  //Specification(Param): (2 byte toyID)x13
+  Command command;
+  command.rulesetVersion = mWorld.currentRulesetVersion;
+  command.commandCode = "GT";
+
+  for (int i = 0; i < 13; i++)
+  {
+    if (toyID > 0)
+    {
+      command.param = convertIntToHex(toyID);
+    }
+  }
+
+  std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
+}
+
+void CommandProcessor::submitFeedCommand(uint16_t foodID, uint16_t potionID)
+{
+  //Specification(Param): 22 byte Unused, 2 byte foodID, 2 byte potionID
+  Command command;
+  command.rulesetVersion = mWorld.currentRulesetVersion;
+  command.commandCode = "FD";
+
+  command.param = convertIntToHex(foodID) + convertIntToHex(potionID);
+
+  std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
+}
+
+void CommandProcessor::submitEquipCommand(uint16_t weaponID, uint16_t dressID)
+{
+  //Specification(Param): 22 byte Unused, 2 byte weaponID, 2 byte dressID
+  Command command;
+  command.rulesetVersion = mWorld.currentRulesetVersion;
+  command.commandCode = "EQ";
+
+  command.param = convertIntToHex(weaponID) + convertIntToHex(dressID);
 
   std::string commandHex = convertCommandToHex(command);
   std::cout << "Submitted Command: " << commandHex << "\n";
@@ -234,7 +321,8 @@ void CommandProcessor::processCommand()
     {
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
-        mCharacter.generateNewCharacter(mDaemonAPI.getBlockHash(mWorld.currentWorldHeight), convertHexToString(commands.front().param.substr(0, 48)));
+        //New Character
+        mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
         mWorld.startingHeight = mWorld.currentWorldHeight;
         mIsCharacterLoaded = true;
@@ -242,6 +330,7 @@ void CommandProcessor::processCommand()
       }
       else if (commands.front().commandCode == "RC")
       {
+        //Resync Clock
         if (mLastTimeResyncRequest < mWorld.currentWorldHeight + 40320)
         {
           mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
@@ -253,20 +342,80 @@ void CommandProcessor::processCommand()
       }
       else if (commands.front().commandCode == "AS")
       {
+        //Assign Schedule
+        for (int i = 0; i < 24; i++)
+        {
+          mCharacter.dailySchedule[i] = std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16);
+        }
       }
       else if (commands.front().commandCode == "AB")
       {
+        //Assign Books to Library
+        mCharacter.library.clear();
+
+        for (int i = 0; i < 13; i++)
+        {
+          for (auto& element : mCharacter.bookInventory)
+          {
+            if (element.id == std::stoi(commands.front().param.substr(i * 4, 4), 0, 16))
+            {
+              mCharacter.library.push_back(element.id);
+            }
+          }
+        }
       }
-      else if (commands.front().commandCode == "BI")
+      else if (commands.front().commandCode == "BW")
       {
       }
-      else if (commands.front().commandCode == "UI")
+      else if (commands.front().commandCode == "SW")
       {
       }
-      else if (commands.front().commandCode == "SI")
+      else if (commands.front().commandCode == "DW")
       {
       }
-      else if (commands.front().commandCode == "DI")
+      else if (commands.front().commandCode == "BD")
+      {
+      }
+      else if (commands.front().commandCode == "SD")
+      {
+      }
+      else if (commands.front().commandCode == "DD")
+      {
+      }
+      else if (commands.front().commandCode == "BF")
+      {
+      }
+      else if (commands.front().commandCode == "SF")
+      {
+      }
+      else if (commands.front().commandCode == "DF")
+      {
+      }
+      else if (commands.front().commandCode == "BP")
+      {
+      }
+      else if (commands.front().commandCode == "SP")
+      {
+      }
+      else if (commands.front().commandCode == "DP")
+      {
+      }
+      else if (commands.front().commandCode == "BB")
+      {
+      }
+      else if (commands.front().commandCode == "SB")
+      {
+      }
+      else if (commands.front().commandCode == "DB")
+      {
+      }
+      else if (commands.front().commandCode == "BT")
+      {
+      }
+      else if (commands.front().commandCode == "ST")
+      {
+      }
+      else if (commands.front().commandCode == "DT")
       {
       }
 
@@ -346,6 +495,11 @@ std::string CommandProcessor::convertStringToHex(const std::string& textString)
     output.push_back(lut[c & 15]);
   }
   return output;
+}
+
+std::string CommandProcessor::getBlockHash()
+{
+  return mDaemonAPI.getBlockHash(mWorld.currentWorldHeight - 5);
 }
 
 template<typename INT_T>

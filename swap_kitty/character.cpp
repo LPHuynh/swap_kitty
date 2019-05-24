@@ -119,23 +119,26 @@ void Character::generateStartingStats(const std::string& seed)
   dailySchedule[23] = job.getActivityID("Sleep");
   dailySchedule[24] = job.getActivityID("Sleep");
 
+  uint16_t timeOfDay = (mWorld.currentWorldHeight + mWorld.localTimeOffset) % 5760;
+  uint16_t currentHour = timeOfDay / 24;
+  currentActivity = dailySchedule[currentHour];
   favouriteActivityType = Job::ActivityType(mWorld.getRandomNumber(seed, 0, 3));
 }
 
 void Character::generateStartingItems(const std::string& seed)
 {
   Weapon::WeaponItem startingWeapon = weapon.randomizeWeapon(seed, 500000);
-  weaponInventory.push_back(std::make_pair(startingWeapon.id, startingWeapon));
-  equipedWeapon = weaponInventory.at(0).first;
-  favouriteWeaponType = weaponInventory.at(0).second.type;
+  weaponInventory.push_back(startingWeapon);
+  equipedWeapon = weaponInventory.at(0).id;
+  favouriteWeaponType = weaponInventory.at(0).type;
 
   Dress::DressItem startingDress = dress.generateDress("Basic Dress");
-  dressInventory.push_back(std::make_pair(startingDress.id, startingDress));
-  equipedDress = dressInventory.at(0).first;
+  dressInventory.push_back(startingDress);
+  equipedDress = dressInventory.at(0).id;
 
   Food::FoodItem fruitDish = food.randomizeRawFood(seed, Food::FoodType::fruit);
   food.randomizeCookedFood(seed, fruitDish);
-  foodInventory.push_back(std::make_pair(fruitDish.id, fruitDish));
+  foodInventory.push_back(fruitDish);
   favouriteFruit = fruitDish.nameRaw;
   favouriteFruitDish = fruitDish.nameCooked;
   favouriteFruitDishLevel = fruitDish.dishLevel;
@@ -143,13 +146,13 @@ void Character::generateStartingItems(const std::string& seed)
   for (int i = 0; i < 5; i++)
   {
     Food::FoodItem vegatable = food.randomizeRawFood(seed, Food::FoodType::vegatable);
-    foodInventory.push_back(std::make_pair(vegatable.id, vegatable));
+    foodInventory.push_back( vegatable);
     favouriteVegatable = vegatable.nameRaw;
   }
   for (int i = 0; i < 5; i++)
   {
     Food::FoodItem flour = food.randomizeRawFood(seed, Food::FoodType::flour);
-    foodInventory.push_back(std::make_pair(flour.id, flour));
+    foodInventory.push_back(flour);
   }
 
   Food::FoodItem junkfood = food.randomizeRawFood(seed, Food::FoodType::junkFood);

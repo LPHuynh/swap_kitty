@@ -45,7 +45,7 @@ Dress::DressItem Dress::randomizeDress(const std::string & seed)
     }
   }
 
-  dress.price += mWorld.getRandomNumber(seed, 0, 100000);
+  dress.price += mWorld.getRandomNumber(seed, 0, 50000);
   dress.id = mWorld.generateID();
   return dress;
 }

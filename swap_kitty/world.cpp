@@ -162,12 +162,12 @@ uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t num
 uint16_t World::getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
   seed += generateNonce() + seed;
-  return (hash(seed) % (maxNumber - minNumber + 1)) + minNumber;
+  return (generateHash(seed) % (maxNumber - minNumber + 1)) + minNumber;
 }
 
 uint16_t World::getNoncelessRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
-  return (hash(seed) % (maxNumber - minNumber + 1)) + minNumber;
+  return (generateHash(seed) % (maxNumber - minNumber + 1)) + minNumber;
 }
 
 uint16_t World::generateID()
@@ -199,7 +199,7 @@ std::string World::generateNonce()
   return std::to_string(mNonceCounter);
 }
 
-uint32_t World::hash(const std::string& seed)
+uint32_t World::generateHash(const std::string& seed)
 {
   //djb2 Hash Functions 
   const char* str = seed.c_str();
