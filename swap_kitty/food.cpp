@@ -245,7 +245,7 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
   {
     if (cookableFood.dishLevel == 1)
     {
-      cookableFood.nameCooked = "Flat Bread" + cookableFood.nameRaw;
+      cookableFood.nameCooked = "Flat Bread";
       cookableFood.price *= 2;
       cookableFood.nutrient *= 2;
       cookableFood.bonusStat.str += 5;
@@ -518,7 +518,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::vegatable;
   rawFood.price = 100;
   rawFood.nutrient = 900;
-  rawFood.quench = 10;
+  rawFood.quench = 100;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);

@@ -20,7 +20,7 @@ public:
     int16_t quench;
     int16_t stamina;
     int16_t toxicity;
-    World::Stat bonusStat;
+    World::Stat bonusTempStat;
   };
 
   PotionItem randomizePotion(const std::string& seed, Rarity rarity);

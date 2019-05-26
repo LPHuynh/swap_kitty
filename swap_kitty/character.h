@@ -18,8 +18,6 @@ public:
   Character(World& world);
   ~Character();
 
-  void generateNewCharacter(const std::string& seed, const std::string& characterName);
-
   struct Profile
   {
     std::string name;
@@ -41,6 +39,9 @@ public:
     int16_t cleaniness;
     int16_t happiness;
     int16_t obidence;
+    World::Stat stat;
+    World::Stat tempStat;
+    World::Skill skill;
   };
 
   struct Residence
@@ -52,9 +53,16 @@ public:
     int16_t bedroomLevel;
   };
 
+  void generateNewCharacter(const std::string& seed, const std::string& characterName);
+  void updateSecondaryStats();
+  void consumeFood(uint16_t id);
+  void consumePotion(uint16_t id);
+  template<class T> void destroyItem(std::vector<T>& source, uint16_t id);
+  template<class T> void transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id);
+
+  void updateFluffText();
+
   Profile profile;
-  World::Stat stat;
-  World::Skill skill;
   Residence residence;
   
   Weapon::WeaponItem equipedWeapon;
@@ -92,6 +100,51 @@ private:
 
   void generateStartingStats(const std::string& seed);
   void generateStartingItems(const std::string& seed);
-  void generateFluffText();
 };
 
+template<typename T>
+void Character::destroyItem(std::vector<T>& source, uint16_t id)
+{
+  int i = 0;
+  bool isItemFound = false;
+
+  for (auto& element : source)
+  {
+    if (element.id == id)
+    {
+      isItemFound = true;
+      break;
+    }
+    i++;
+  }
+
+  if (isItemFound)
+  {
+    mWorld.freeID(id);
+    source.erase(source.begin() + i);
+  }
+}
+
+template<typename T>
+void Character::transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id)
+{
+  int i = 0;
+  bool isItemFound = false;
+
+  for (auto& element : source)
+  {
+    if (element.id == id)
+    {
+      destination.push_back(element);
+      isItemFound = true;
+      break;
+    }
+    i++;
+  }
+
+  if (isItemFound)
+  {
+    mWorld.freeID(id);
+    source.erase(source.begin() + i);
+  }
+}

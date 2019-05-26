@@ -37,7 +37,7 @@ public:
   Command convertHexToCommand(const std::string& hexadecimalString);
   static std::string convertHexToString(const std::string& hexadecimalString);
   static std::string convertStringToHex(const std::string& textString);
-  template<typename INT_T> static std::string convertIntToHex(INT_T integer);
+  template<typename INT_T> std::string convertIntToHex(INT_T integer);
 
   std::string getBlockHash();
 
@@ -59,3 +59,11 @@ private:
   bool mIsBetaVersion;
   bool mIsCharacterLoaded;
 };
+
+template<typename INT_T>
+std::string CommandProcessor::convertIntToHex(INT_T integer)
+{
+  std::stringstream stream;
+  stream << std::setfill('0') << std::setw(sizeof(INT_T) * 2) << std::hex << integer;
+  return stream.str();
+}

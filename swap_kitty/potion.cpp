@@ -77,7 +77,7 @@ void Potion::loadPotion()
   prototype.quench = 0;
   prototype.stamina = 0;
   prototype.toxicity = 0;
-  prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
+  prototype.bonusTempStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
   PotionItem potion;
 
@@ -144,8 +144,8 @@ void Potion::loadPotion()
   potion.quench = 4000;
   potion.stamina = 2000;
   potion.toxicity = 100;
-  potion.bonusStat.str = 100;
-  potion.bonusStat.wil = 100;
+  potion.bonusTempStat.str = 1000;
+  potion.bonusTempStat.wil = 1000;
   mUncommonPotions.push_back(potion);
 
   //Ruleset v1: rare potion slot 0-0
@@ -156,6 +156,6 @@ void Potion::loadPotion()
   potion.quench = 2000;
   potion.stamina = 0;
   potion.toxicity = 200;
-  potion.bonusStat = World::Stat{ 100,100,100,100,100,100,100,100,100,100 };
+  potion.bonusTempStat = World::Stat{ 1000,1000,1000,1000,1000,1000,1000,1000,1000,1000 };
   mRarePotions.push_back(potion);
 }

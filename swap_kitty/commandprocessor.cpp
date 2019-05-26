@@ -588,14 +588,6 @@ std::string CommandProcessor::getBlockHash()
   }
 }
 
-template<typename INT_T>
-std::string CommandProcessor::convertIntToHex(INT_T integer)
-{
-  std::stringstream stream;
-  stream << std::setfill('0') << std::setw(sizeof(INT_T)*2) << std::hex << integer;
-  return stream.str();
-}
-
 uint8_t CommandProcessor::lookupItemTable(World::ItemType itemType)
 {
   switch (itemType)

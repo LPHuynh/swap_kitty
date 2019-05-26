@@ -15,7 +15,7 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, c
   naturalEyeColour = generateNaturalEyeColour(firstElement);
   naturalSkinTone = generateNaturalSkinTone(secondElement);
   currentHairStyle = randomizeHairStyle(seed);
-  currentTailStyle = randomizeTailStyle(seed);
+  naturalTailStyle = randomizeTailStyle(seed);
   naturalEyeStyle = randomizeEyeStyle(seed);
 
   currentHairColour = naturalHairColour;
@@ -134,14 +134,14 @@ int16_t Cosmetic::generateNaturalSkinTone(World::Element element)
 {
   switch (element)
   {
-  case World::Element::fire: return 75;
-  case World::Element::water: return 35;
-  case World::Element::earth: return 65;
-  case World::Element::air: return 25;
-  case World::Element::lightning: return 45;
-  case World::Element::holy: return 45;
-  case World::Element::dark: return 55;
-  default: return 0;
+  case World::Element::fire: return 7500;
+  case World::Element::water: return 3500;
+  case World::Element::earth: return 6500;
+  case World::Element::air: return 2500;
+  case World::Element::lightning: return 4500;
+  case World::Element::holy: return 4500;
+  case World::Element::dark: return 5500;
+  default: return 5000;
   }
 }
 
@@ -157,7 +157,7 @@ std::string Cosmetic::randomizeTailStyle(const std::string& seed)
 
 std::string Cosmetic::randomizeEyeStyle(const std::string& seed)
 {
-  return "Large Round";
+  return "Large, Round,";
 }
 
 std::string Cosmetic::getSkinToneDescription(int16_t skinTone)

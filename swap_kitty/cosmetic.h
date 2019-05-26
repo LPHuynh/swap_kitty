@@ -26,11 +26,12 @@ public:
   uint16_t ageCounter;
   uint16_t weight;    //weight in g
   uint16_t height;    //height in mm
+  uint16_t milkDrinkingCounter;
 
   std::string naturalHairColour;
   std::string currentHairColour;
   std::string currentHairStyle;
-  std::string currentTailStyle;
+  std::string naturalTailStyle;
   std::string naturalEyeColour;
   std::string currentEyeColour;
   std::string naturalEyeStyle;

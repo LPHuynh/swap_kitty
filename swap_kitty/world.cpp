@@ -5,8 +5,10 @@ World::World()
 {
   currentRulesetVersion = 1;
   startingHeight = 0;
-  mIDCounter = 1; //0 is used to indicate non-existing items
+  currentWorldHeight = 0;
+  isNighttime = false;
   localTimeOffset = 0;
+  mIDCounter = 1; //0 is used to indicate non-existing items
 }
 
 World::~World()

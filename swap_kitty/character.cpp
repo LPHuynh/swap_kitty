@@ -17,9 +17,265 @@ void Character::generateNewCharacter(const std::string& seed, const std::string&
 
   generateStartingStats(seed);
   generateStartingItems(seed);
-  generateFluffText();
+  updateFluffText();
 
   shop.refreshInventory(seed);
+}
+
+void Character::updateSecondaryStats()
+{
+  profile.stat.acc = profile.stat.per + profile.stat.dex * 2;
+  profile.stat.cri = profile.stat.per + profile.stat.lrn;
+  profile.maxHealth = (profile.stat.con * 2 + profile.stat.wil) * profile.level + 5000;
+  profile.health = profile.maxHealth;
+  profile.maxMana = (profile.stat.mag * 2 + profile.stat.wil) * profile.level + 500;
+  profile.mana = profile.maxMana;
+}
+
+void Character::consumeFood(uint16_t id)
+{
+  int i = 0;
+  bool isItemFound = false;
+  for (auto& element : foodInventory)
+  {
+    if (element.id == id)
+    {
+      isItemFound = true;
+      break;
+    }
+    i++;
+  }
+
+  if (isItemFound)
+  {
+    if (foodInventory.at(i).type == Food::FoodType::vermin)
+    {
+      profile.domesticated -= 20;
+      if (profile.domesticated > 7500)
+      {
+        profile.domesticated -= 100;
+        profile.happiness -= 100;
+        mWorld.logging.addToMainLog("\t" + profile.name + " was forced to eat a small vermin! Yuck!");
+      }
+    }
+    else if (foodInventory.at(i).type == Food::FoodType::fruit)
+    {
+      if (foodInventory.at(i).nameRaw == favouriteFruitDish.nameRaw && foodInventory.at(i).dishLevel == favouriteFruitDish.dishLevel)
+      {
+        profile.domesticated += 100;
+        profile.happiness += 200;
+        mWorld.logging.addToMainLog("\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
+      }
+      else if (foodInventory.at(i).nameRaw == favouriteFruitDish.nameRaw || foodInventory.at(i).dishLevel == favouriteFruitDish.dishLevel)
+      {
+        profile.domesticated += 20;
+        profile.happiness += 100;
+        mWorld.logging.addToMainLog("\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
+      }
+    }
+    else if (foodInventory.at(i).type == Food::FoodType::vegatable)
+    {
+      if (foodInventory.at(i).nameRaw == favouriteVegatable.nameRaw)
+      {
+        profile.domesticated += 20;
+        profile.happiness += 100;
+        mWorld.logging.addToMainLog("\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
+      }
+    }
+    else if (foodInventory.at(i).type == Food::FoodType::flour)
+    {
+      profile.domesticated += 50;
+    }
+    else if (foodInventory.at(i).type == Food::FoodType::junkFood)
+    {
+      if (foodInventory.at(i).nameCooked == favouriteJunkFood.nameCooked)
+      {
+        profile.domesticated += 500;
+        profile.happiness += 500;
+        mWorld.logging.addToMainLog("\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
+      }
+    }
+
+    profile.stat = profile.stat + foodInventory.at(i).bonusStat;
+    profile.stamina += foodInventory.at(i).stamina;
+    profile.satiation += foodInventory.at(i).nutrient;
+    profile.quench += foodInventory.at(i).quench;
+
+    std::string text = "\t";
+    if (foodInventory.at(i).stamina > 0)
+    {
+      text += "+" + std::to_string(foodInventory.at(i).stamina) + "Stamina ";
+    }
+    if (foodInventory.at(i).nutrient > 0)
+    {
+      text += "+" + std::to_string(foodInventory.at(i).nutrient) + "Nutrient ";
+    }
+    if (foodInventory.at(i).quench > 0)
+    {
+      text += "+" + std::to_string(foodInventory.at(i).quench) + "Quench ";
+    }
+    mWorld.logging.addToMainLog(text);
+
+    mWorld.freeID(id);
+    foodInventory.erase(foodInventory.begin() + i);
+  }
+}
+
+void Character::consumePotion(uint16_t id)
+{
+  int i = 0;
+  bool isItemFound = false;
+  for (auto& element : potionInventory)
+  {
+    if (element.id == id)
+    {
+      isItemFound = true;
+      break;
+    }
+    i++;
+  }
+
+  if (isItemFound)
+  {
+    if (potionInventory.at(i).name == "Milk")
+    {
+      profile.cosmetic.milkDrinkingCounter += 10;
+      mWorld.logging.addToMainLog("\tThis is good for " + profile.name + "'s growth!");
+    }
+    else if (potionInventory.at(i).name == "Pond Water")
+    {
+      profile.domesticated -= 10;
+      if (profile.domesticated > 7500)
+      {
+        profile.domesticated -= 100;
+        profile.happiness -= 100;
+        mWorld.logging.addToMainLog("\t" + profile.name + " was forced to drick out of a nearby pond! Yuck!");
+      }
+    }
+
+    profile.tempStat = profile.tempStat + potionInventory.at(i).bonusTempStat;
+    profile.stamina += potionInventory.at(i).stamina;
+    profile.satiation += potionInventory.at(i).nutrient;
+    profile.quench += potionInventory.at(i).quench;
+
+    std::string text = "\t";
+    if (potionInventory.at(i).stamina > 0)
+    {
+      text += "+" + std::to_string(potionInventory.at(i).stamina) + "Stamina ";
+    }
+    if (potionInventory.at(i).nutrient > 0)
+    {
+      text += "+" + std::to_string(potionInventory.at(i).nutrient) + "Nutrient ";
+    }
+    if (potionInventory.at(i).quench > 0)
+    {
+      text += "+" + std::to_string(potionInventory.at(i).quench) + "Quench ";
+    }
+    mWorld.logging.addToMainLog(text);
+
+    mWorld.freeID(id);
+    potionInventory.erase(potionInventory.begin() + i);
+  }
+}
+
+void Character::updateFluffText()
+{
+  std::string elementText;
+  std::string primaryElementText;
+  std::string secondaryElementText;
+  std::string domesticationText;
+
+  switch (profile.primaryElement)
+  {
+  case World::Element::fire: primaryElementText = "Fire"; break;
+  case World::Element::water: primaryElementText = "Water"; break;
+  case World::Element::earth: primaryElementText = "Earth"; break;
+  case World::Element::air: primaryElementText = "Air"; break;
+  case World::Element::lightning: primaryElementText = "Lightning"; break;
+  case World::Element::holy: primaryElementText = "Holiness"; break;
+  case World::Element::dark: primaryElementText = "Darkness"; break;
+  default: primaryElementText = ""; break;
+  }
+
+  switch (profile.secondaryElement)
+  {
+  case World::Element::fire: secondaryElementText = "Fire"; break;
+  case World::Element::water: secondaryElementText = "Water"; break;
+  case World::Element::earth: secondaryElementText = "Earth"; break;
+  case World::Element::air: secondaryElementText = "Air"; break;
+  case World::Element::lightning: secondaryElementText = "Lightning"; break;
+  case World::Element::holy: secondaryElementText = "Holiness"; break;
+  case World::Element::dark: secondaryElementText = "Darkness"; break;
+  default: secondaryElementText = ""; break;
+  }
+
+  if (primaryElementText == secondaryElementText)
+  {
+    elementText = "She is shrouded in an aura of pure " + primaryElementText;
+  }
+  else
+  {
+    elementText = "She is shrouded in an aura of " + primaryElementText + " and " + secondaryElementText + ".";
+  }
+
+  std::string activityText;
+
+  switch (favouriteActivityType)
+  {
+  case Job::ActivityType::domestic: activityText = "She finds cooking and cleaning enjoyable, and "; break;
+  case Job::ActivityType::entertainment: activityText = "She finds entertainment enjoyable, and "; break;
+  case Job::ActivityType::agriculture: activityText = "She finds farming and fishing enjoyable, and "; break;
+  case Job::ActivityType::heavyIndustry: activityText = "She finds hard work enjoyable, and "; break;
+  default: activityText = ""; break;
+  }
+
+  std::string weaponText;
+
+  switch (favouriteWeaponType)
+  {
+  case Weapon::WeaponType::sword: weaponText = "never leaves the house without a good pocket knife."; break;
+  case Weapon::WeaponType::axe: weaponText = "can easily find ways around locked doors and chests."; break;
+  case Weapon::WeaponType::bludgeon: weaponText = "loves fixings things using percussive repair."; break;
+  case Weapon::WeaponType::stave: weaponText = "loves collecting twigs and tree branch in her spare time."; break;
+  case Weapon::WeaponType::polearm: weaponText = "loves poking at things with a long pointy stick."; break;
+  default: weaponText = ""; break;
+  }
+
+  if (profile.domesticated < 1000)
+  {
+    domesticationText = "She is a salvage hunter.";
+
+  }
+  else if (profile.domesticated < 2500)
+  {
+    domesticationText = "Her hunting insticts are strong.";
+  }
+  else if (profile.domesticated < 5000)
+  {
+    domesticationText = "She still retained some of her hunting insticts.";
+  }
+  else if (profile.domesticated < 7500)
+  {
+    domesticationText = "She resists the urge to hunt small animals.";
+  }
+  else if (profile.domesticated < 9000)
+  {
+    domesticationText = "She have forgotting her hunting instincts.";
+  }
+  else
+  {
+    domesticationText = "She is fully domesticated.";
+  }
+
+  fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + " "
+    + "with " + profile.cosmetic.currentHairStyle + " " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
+    + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall. "
+    + "She have a " + profile.cosmetic.naturalTailStyle + " tail. "
+    + "Her eyes are " + profile.cosmetic.naturalEyeStyle + " and " + profile.cosmetic.currentEyeColour + "\n\n"
+    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.nameCooked + ", and " + favouriteJunkFood.nameRaw + ".\n"
+    + activityText + weaponText + "\n\n"
+    + elementText + " "
+    + domesticationText + "\n";
 }
 
 void Character::generateStartingStats(const std::string& seed)
@@ -41,51 +297,47 @@ void Character::generateStartingStats(const std::string& seed)
   profile.happiness = mWorld.getRandomNumber(seed, 2500, 5000);
   profile.obidence = mWorld.getRandomNumber(seed, 0, 2500);
 
-  stat.str = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.con = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.dex = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.per = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.lrn = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.wil = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.mag = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.chr = mWorld.getRandomNumber(seed, 0, 2000);
-  stat.acc = stat.per + stat.dex * 2;
-  stat.cri = stat.per + stat.lrn;
+  profile.stat.str = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.con = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.dex = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.per = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.lrn = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.wil = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.mag = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.stat.chr = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.tempStat = { 0,0,0,0,0,0,0,0,0,0 };
 
-  profile.maxHealth = (stat.con * 2 + stat.wil) * profile.level + 5000;
-  profile.health = profile.maxHealth;
-  profile.maxMana = (stat.mag * 2 + stat.wil) * profile.level + 500;
-  profile.mana = profile.maxMana;  
+  profile.skill.literacy = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.cooking = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.cleaning = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.service = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.music = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.art = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.tailor = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.stoneWorking = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.woodWorking = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.metalworking = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.farming = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.fishing = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.crafting = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.sword = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.axe = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.bludgeon = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.stave = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.polearm = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.evasion = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.fire = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.water = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.earth = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.air = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.lightning = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.holy = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.dark = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.machine = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.poison = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.choas = mWorld.getRandomNumber(seed, 0, 2000);
 
-  skill.literacy = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.cooking = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.cleaning = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.service = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.music = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.art = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.tailor = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.stoneWorking = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.woodWorking = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.metalworking = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.farming = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.fishing = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.crafting = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.sword = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.axe = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.bludgeon = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.stave = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.polearm = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.evasion = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.fire = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.water = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.earth = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.air = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.lightning = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.holy = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.dark = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.machine = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.poison = mWorld.getRandomNumber(seed, 0, 2000);
-  skill.choas = mWorld.getRandomNumber(seed, 0, 2000);
+  updateSecondaryStats();
 
   residence.cleaniness = 10000;
   residence.houseLevel = 1;
@@ -172,74 +424,4 @@ void Character::generateStartingItems(const std::string& seed)
     Toy::ToyItem startingToy = toy.randomizeToy(seed);
     toyRoom.push_back(startingToy);
   }
-}
-
-void Character::generateFluffText()
-{
-  std::string elementText;
-  std::string primaryElementText;
-  std::string secondaryElementText;
-
-  switch (profile.primaryElement)
-  {
-  case World::Element::fire: primaryElementText = "Fire"; break;
-  case World::Element::water: primaryElementText = "Water"; break;
-  case World::Element::earth: primaryElementText = "Earth"; break;
-  case World::Element::air: primaryElementText = "Air"; break;
-  case World::Element::lightning: primaryElementText = "Lightning"; break;
-  case World::Element::holy: primaryElementText = "Holiness"; break;
-  case World::Element::dark: primaryElementText = "Darkness"; break;
-  default: primaryElementText = ""; break;
-  }
-
-  switch (profile.secondaryElement)
-  {
-  case World::Element::fire: secondaryElementText = "Fire"; break;
-  case World::Element::water: secondaryElementText = "Water"; break;
-  case World::Element::earth: secondaryElementText = "Earth"; break;
-  case World::Element::air: secondaryElementText = "Air"; break;
-  case World::Element::lightning: secondaryElementText = "Lightning"; break;
-  case World::Element::holy: secondaryElementText = "Holiness"; break;
-  case World::Element::dark: secondaryElementText = "Darkness"; break;
-  default: secondaryElementText = ""; break;
-  }
-
-  if (primaryElementText == secondaryElementText)
-  {
-    elementText = "She is shrouded in an aura of pure " + primaryElementText;
-  }
-  else
-  {
-    elementText = "She is shrouded in an aura of " + primaryElementText + " and " + secondaryElementText + ".\n\n";
-  }
-
-  std::string activityText;
-
-  switch (favouriteActivityType)
-  {
-  case Job::ActivityType::domestic: activityText = "She finds cooking and cleaning enjoyable, and "; break;
-  case Job::ActivityType::entertainment: activityText = "She finds entertainment enjoyable, and "; break;
-  case Job::ActivityType::agriculture: activityText = "She finds farming and fishing enjoyable, and "; break;
-  case Job::ActivityType::heavyIndustry: activityText = "She finds hard work enjoyable, and "; break;
-  default: activityText = ""; break;
-  }
-
-  std::string weaponText;
-
-  switch (favouriteWeaponType)
-  {
-  case Weapon::WeaponType::sword: weaponText = "never leaves the house without a good pocket knife.\n"; break;
-  case Weapon::WeaponType::axe: weaponText = "can easily find ways around locked doors and chests.\n"; break;
-  case Weapon::WeaponType::bludgeon: weaponText = "loves fixings things using percussive repair.\n"; break;
-  case Weapon::WeaponType::stave: weaponText = "loves collecting twigs and tree branch in her spare time.\n"; break;
-  case Weapon::WeaponType::polearm: weaponText = "loves poking at things with a long pointy stick.\n"; break;
-  default: weaponText = ""; break;
-  }
-
-  fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + " "
-    + "with " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
-    + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall.\n\n"
-    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.nameCooked + ", and " + favouriteJunkFood.nameRaw + ".\n"
-    + activityText + weaponText + "\n"
-    + elementText;
 }

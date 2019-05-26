@@ -57,7 +57,6 @@ void Event::processEvent()
       }
     }
   }
-
   incrementTime();
 }
 
@@ -78,14 +77,6 @@ void Event::incrementTime()
   {
     time.hour = 0;
     time.day++;
-    mCharacter.profile.cosmetic.ageCounter++;
-
-    if (mCharacter.profile.cosmetic.ageCounter == 120)
-    {
-      mCharacter.profile.cosmetic.age++;
-      mCharacter.profile.cosmetic.ageCounter = 0;
-      mWorld.logging.addToMainLog(mCharacter.profile.name + " is now " + std::to_string(mCharacter.profile.cosmetic.age) + " years old!");
-    }
   }
   if (time.day == 121)
   {
@@ -96,12 +87,36 @@ void Event::incrementTime()
 
 void Event::processDailyEvent()
 {
+  //Seasonal announcement
+  switch (time.day)
+  {
+  case 1: mWorld.logging.addToMainLog("It's Spring!"); break;
+  case 31: mWorld.logging.addToMainLog("It's Summer!"); break;
+  case 61: mWorld.logging.addToMainLog("It's Autumn!"); break;
+  case 91: mWorld.logging.addToMainLog("It's Winter!"); break;
+  }
+
+  mCharacter.profile.cosmetic.ageCounter++;
+
+  //Birthday announcement
+  if (mCharacter.profile.cosmetic.ageCounter == 120)
+  {
+    mCharacter.profile.cosmetic.age++;
+    mCharacter.profile.cosmetic.ageCounter = 0;
+    mWorld.logging.addToMainLog(mCharacter.profile.name + " is now " + std::to_string(mCharacter.profile.cosmetic.age) + " years old!");
+  }
+
   //Daily skill rust (~0.39% stat reduction for all stats and skills)
-  mCharacter.stat = mCharacter.stat - mWorld.shiftStat(mCharacter.stat, -8);
-  mCharacter.skill = mCharacter.skill - mWorld.shiftSkill(mCharacter.skill, -8);
+  mCharacter.profile.stat = mCharacter.profile.stat - mWorld.shiftStat(mCharacter.profile.stat, -8);
+  mCharacter.profile.skill = mCharacter.profile.skill - mWorld.shiftSkill(mCharacter.profile.skill, -8);
   mCharacter.profile.domesticated -= mCharacter.profile.domesticated >> 8;
 
   //Cosmetic normalization
+  mCharacter.profile.cosmetic.milkDrinkingCounter /= 2;
+  if ((mCharacter.profile.cosmetic.height >> 10) < 1)
+  {
+    mCharacter.profile.cosmetic.height += 1 - (mCharacter.profile.cosmetic.weight >> 10);
+  }
   mCharacter.profile.cosmetic.weight -= mCharacter.profile.cosmetic.weight >> 10;
   if (mCharacter.profile.cosmetic.currentSkinTone < mCharacter.profile.cosmetic.naturalSkinTone)
   {
@@ -112,6 +127,16 @@ void Event::processDailyEvent()
     mCharacter.profile.cosmetic.currentSkinTone -= 100;
   }
 
+  //Height and weight Gain at midnight if satiated
+  if (mCharacter.profile.satiation > 75000 )
+  {
+    if ((mCharacter.profile.cosmetic.milkDrinkingCounter > 2 && mCharacter.profile.cosmetic.age < 16) || mCharacter.profile.cosmetic.milkDrinkingCounter > 4)
+    {
+      mCharacter.profile.cosmetic.height++;
+    }
+    mCharacter.profile.cosmetic.weight += 60;
+  }
+
   //Detoxification
   mCharacter.profile.toxicity /= 2;
   if (mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire)
@@ -119,36 +144,29 @@ void Event::processDailyEvent()
     mCharacter.profile.toxicity /= 2;
   }
 
-  //Height and weight Gain/Loss at midnight if satiated
-  if (mCharacter.profile.satiation > 75000 )
-  {
-    mCharacter.profile.cosmetic.height += 1;
-    mCharacter.profile.cosmetic.weight += 60;
-  }
-
   //Daily skill gain from character's elemental
   switch (mCharacter.profile.primaryElement)
   {
-  case World::Element::fire: mCharacter.skill.fire += 40; break;
-  case World::Element::water: mCharacter.skill.water += 40; break;
-  case World::Element::earth: mCharacter.skill.earth += 40; break;
-  case World::Element::lightning: mCharacter.skill.lightning += 40; break;
-  case World::Element::holy: mCharacter.skill.holy += 40; break;
-  case World::Element::dark: mCharacter.skill.dark += 40; break;
+  case World::Element::fire: mCharacter.profile.skill.fire += 40; break;
+  case World::Element::water: mCharacter.profile.skill.water += 40; break;
+  case World::Element::earth: mCharacter.profile.skill.earth += 40; break;
+  case World::Element::lightning: mCharacter.profile.skill.lightning += 40; break;
+  case World::Element::holy: mCharacter.profile.skill.holy += 40; break;
+  case World::Element::dark: mCharacter.profile.skill.dark += 40; break;
   }
   switch (mCharacter.profile.secondaryElement)
   {
-  case World::Element::fire: mCharacter.skill.fire += 20; break;
-  case World::Element::water: mCharacter.skill.water += 20; break;
-  case World::Element::earth: mCharacter.skill.earth += 20; break;
-  case World::Element::lightning: mCharacter.skill.lightning += 20; break;
-  case World::Element::holy: mCharacter.skill.holy += 20; break;
-  case World::Element::dark: mCharacter.skill.dark += 20; break;
+  case World::Element::fire: mCharacter.profile.skill.fire += 20; break;
+  case World::Element::water: mCharacter.profile.skill.water += 20; break;
+  case World::Element::earth: mCharacter.profile.skill.earth += 20; break;
+  case World::Element::lightning: mCharacter.profile.skill.lightning += 20; break;
+  case World::Element::holy: mCharacter.profile.skill.holy += 20; break;
+  case World::Element::dark: mCharacter.profile.skill.dark += 20; break;
   }
 
   //Daily skill gain from character's dress
-  mCharacter.stat = mCharacter.stat + mCharacter.equipedDress.dailyStatGain;
-  mCharacter.skill = mCharacter.skill + mCharacter.equipedDress.dailySkillGain;
+  mCharacter.profile.stat = mCharacter.profile.stat + mCharacter.equipedDress.dailyStatGain;
+  mCharacter.profile.skill = mCharacter.profile.skill + mCharacter.equipedDress.dailySkillGain;
 
   //TODO: Special Events
 }
@@ -158,11 +176,32 @@ void Event::processHourlyEvent(const std::string& seed)
   //Update Stats
   mCharacter.residence.cleaniness -= 100 + mCharacter.residence.houseLevel;
   mCharacter.profile.domesticated += 10;
+  mWorld.shiftStat(mCharacter.profile.tempStat, -1);
+
+  //Chance of catching vermins on the way home from agricultural jobs, heavy industry jobs, cooking, cleaning, or playing
+  if (mCharacter.currentActivity.activityType == Job::ActivityType::agriculture || mCharacter.currentActivity.activityType == Job::ActivityType::heavyIndustry || mCharacter.currentActivity.id < 3)
+  {
+    if (mCharacter.profile.domesticated < mWorld.getRandomNumber(seed, 0, 15000 - mCharacter.profile.satiation))
+    {
+      Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
+      mCharacter.foodInventory.push_back(caughtVermin);
+      mFoundItem.push_back(caughtVermin.nameCooked);
+      mCharacter.profile.domesticated -= 10;
+
+      switch (mCharacter.currentActivity.id)
+      {
+      case 0: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while cooking..."); break;
+      case 1: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " found a " + caughtVermin.nameCooked + " while cleaning..."); break;
+      case 2: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while playing..."); break;
+      default: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " brought home a " + caughtVermin.nameCooked + " from work..."); break;
+      }
+    }
+  }
 
   if (time.day > 30 && time.day < 61)
   {
     //Summer
-    if (mCharacter.currentActivity.isOutdoorActivity)
+    if (mCharacter.currentActivity.isOutdoorActivity && !mWorld.isNighttime)
     {
       mCharacter.profile.cosmetic.currentSkinTone += 40;
       mCharacter.profile.quench -= 40;
@@ -248,84 +287,78 @@ void Event::processHourlyEvent(const std::string& seed)
 
   if (mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
   {
-    nextJob = mCharacter.job.getActivity("Sleep");
+    if (time.hour > 5 || time.hour < 20)
+    {
+      nextJob = mCharacter.job.getActivity("Nap");
+    }
+    else
+    {
+      nextJob = mCharacter.job.getActivity("Sleep");
+    }
   }
   else
   {
     nextJob = mCharacter.dailySchedule[time.hour];
   }
 
+  //Summerize Previous Job    
+  std::string summary = "\t[" + mWorld.logging.progress + "]";
+  mWorld.logging.clearProgress();
+
+  if (mEarning > 0)
+  {
+    std::ostringstream formatedEarning;
+    formatedEarning << (mEarning * 0.01f);
+    summary += " +" + formatedEarning.str() + "G";
+    mCharacter.profile.money += mEarning;
+    mEarning = 0;
+  }
+  for (auto& element : mFoundItem)
+  {
+    summary += " +(" + element + ")";
+  }
+  mFoundItem.clear();
+
+  for (int i = 0; i < 11; i++)
+  {
+    if (mWorld.getStatByID(mTotalActivityStatGained, i) > 100)
+    {
+      summary += " +" + std::to_string(mWorld.getStatByID(mTotalActivityStatGained, i) / 100) + mWorld.getStatNameByID(i);
+    }
+  }
+
+  mWorld.logging.addToMainLog(summary);
+  mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
+
+  //Notify if character is sick
+  if (mCommonColdCoolDown > 0)
+  {
+    mWorld.logging.addToMainLog(mCharacter.profile.name + " came down with the flu and needs to rest...");
+    mCommonColdCoolDown--;
+    if ((mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire) && mHeatStrokeCoolDown > 0)
+    {
+      mCommonColdCoolDown--;
+    }
+  }
+  if (mHeatStrokeCoolDown > 0)
+  {
+    mWorld.logging.addToMainLog(mCharacter.profile.name + " collapsed from the heat and needs to rest...");
+    mHeatStrokeCoolDown--;
+    if ((mCharacter.profile.primaryElement == World::Element::water || mCharacter.profile.secondaryElement == World::Element::water) && mHeatStrokeCoolDown > 0)
+    {
+      mHeatStrokeCoolDown--;
+    }
+  }
+
+  //Time announcement
+  switch (time.hour)
+  {
+  case 6: mWorld.logging.addToMainLog("It's Morning!"); mWorld.isNighttime = false; break;
+  case 20: mWorld.logging.addToMainLog("It's Nighttime!"); mWorld.isNighttime = true; break;
+  }
+
   if (mCharacter.currentActivity.id != nextJob.id)
   {
-    //Summerize Previous Job    
-    std::string summary = "[" + mWorld.logging.progress + "]";
-    mWorld.logging.clearProgress();
-
-    if (mEarning > 0)
-    {
-      std::ostringstream formatedEarning;
-      formatedEarning << (mEarning * 0.01f);
-      summary += " +" + formatedEarning.str() + "G";
-      mCharacter.profile.money += mEarning;
-      mEarning = 0;
-    }
-    for (auto& element : mFoundItem)
-    {
-      summary += " +(" + element + ")";
-    }
-    mFoundItem.clear();
-
-    //Display stat gained
-    for (int i = 0; i < 11; i++)
-    {
-      if (mWorld.getStatByID(mTotalActivityStatGained, i) > 100)
-      {
-        summary += " +" + std::to_string(mWorld.getStatByID(mTotalActivityStatGained, i) / 100) + mWorld.getStatNameByID(i);
-      }
-    }
-
-    mWorld.logging.addToMainLog(summary);
-    mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
-
-    //Chance of catching vermins on the way home from agricultural jobs, heavy industry jobs, cooking, cleaning, or playing
-    if (mCharacter.currentActivity.activityType == Job::ActivityType::agriculture || mCharacter.currentActivity.activityType == Job::ActivityType::heavyIndustry || mCharacter.currentActivity.id < 3)
-    {
-      if (mCharacter.profile.domesticated < mWorld.getRandomNumber(seed, 0, 15000 - mCharacter.profile.satiation))
-      {
-        Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
-        mCharacter.foodInventory.push_back(caughtVermin);
-        mCharacter.profile.domesticated -= 10;
-
-        switch (mCharacter.currentActivity.id)
-        {
-        case 0: mWorld.logging.addToMainLog(mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while cooking... +(" + caughtVermin.nameCooked + ")"); break;
-        case 1: mWorld.logging.addToMainLog(mCharacter.profile.name + " found a " + caughtVermin.nameCooked + " while cleaning... +(" + caughtVermin.nameCooked + ")"); break;
-        case 2: mWorld.logging.addToMainLog(mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while playing... +(" + caughtVermin.nameCooked + ")"); break;
-        default: mWorld.logging.addToMainLog(mCharacter.profile.name + " brought home a " + caughtVermin.nameCooked + " from work... +(" + caughtVermin.nameCooked + ")"); break;
-        }
-      }
-    }
-
-    //Notify if character is sick
-    if (mCommonColdCoolDown > 0)
-    {
-      mWorld.logging.addToMainLog(mCharacter.profile.name + " came down with the flu and needs to rest...");
-      mCommonColdCoolDown--;
-      if ((mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire) && mHeatStrokeCoolDown > 0)
-      {
-        mCommonColdCoolDown--;
-      }
-    }
-    if (mHeatStrokeCoolDown > 0)
-    {
-      mWorld.logging.addToMainLog(mCharacter.profile.name + " collapsed from the heat and needs to rest...");
-      mHeatStrokeCoolDown--;
-      if ((mCharacter.profile.primaryElement == World::Element::water || mCharacter.profile.secondaryElement == World::Element::water) && mHeatStrokeCoolDown > 0)
-      {
-        mHeatStrokeCoolDown--;
-      }
-    }
-
     //Start New Job
     mCharacter.currentActivity = nextJob;
 
@@ -393,47 +426,53 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   }
   if (mCharacter.profile.satiation < 0)
   {
-    if (mCharacter.foodInventory.empty() || mCharacter.profile.domesticated < mWorld.getRandomNumber(seed, 0, 10000))
+    if (mCharacter.foodInventory.empty() || mCharacter.profile.domesticated < mWorld.getRandomNumber(seed, 0, 7500))
     {
       Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
-      //TODO process eating caught vermin
-      mCharacter.profile.domesticated -= 20;
-      mCharacter.profile.happiness -= 100;
+      mCharacter.foodInventory.push_back(caughtVermin);
       mWorld.logging.addToMainLog(mCharacter.profile.name + " caught and ate a " + caughtVermin.nameCooked + ".");
+      mCharacter.consumeFood(caughtVermin.id);
       failedRoll = 100;
     }
     else
     {
-      //TODO: process eating food
       mWorld.logging.addToMainLog(mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).nameCooked + ".");
+      mCharacter.consumeFood(mCharacter.foodInventory.at(0).id);
       failedRoll++;
     }
   }
   if (mCharacter.profile.quench < 0)
   {
-    if (mCharacter.potionInventory.empty() || mCharacter.profile.domesticated < mWorld.getRandomNumber(seed, 0, 10000))
+    uint16_t selectedID = 0;
+    std::string selectedName = "";
+
+    if (mCharacter.potionInventory.empty() || mCharacter.profile.domesticated < mWorld.getRandomNumber(seed, 0, 7500))
     {
       Potion::PotionItem water = mCharacter.potion.generatePotion(seed, "Pond Water");
-      mCharacter.profile.domesticated -= 10;
+      mCharacter.potionInventory.push_back(water);
+      selectedID = water.id;
+      selectedName = water.name;
     }
     else
     {
-      uint16_t id = 0;
       for (auto& element : mCharacter.potionInventory)
       {
         if (element.quench > 250)
         {
-          id = element.id;
+          selectedID = element.id;
+          selectedName = element.name;
         }
       }
-      if (id == 0)
+      if (selectedID == 0)
       {
         Potion::PotionItem water = mCharacter.potion.generatePotion(seed, "Pond Water");
-        mCharacter.profile.domesticated -= 10;
+        mCharacter.potionInventory.push_back(water);
+        selectedID = water.id;
+        selectedName = water.name;
       }
-      //TODO: process drinking potion
-    }   
-
+    }
+    mWorld.logging.addToMainLog(mCharacter.profile.name + " helped herself to some " + selectedName + ".");
+    mCharacter.consumePotion(selectedID);
     failedRoll++;
   }
 
@@ -485,9 +524,26 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     }
   }
 
-  mCharacter.profile.stamina -= mCharacter.currentActivity.staminaUsed;
-  mCharacter.profile.satiation -= mCharacter.currentActivity.staminaUsed;
-  mCharacter.profile.quench -= mCharacter.currentActivity.staminaUsed;
+  //Bonus success rolls
+  if (mCharacter.currentActivity.activityType == Job::ActivityType::domestic)
+  {
+    if (mCharacter.profile.domesticated > 7500)
+    {
+      successRoll++;
+    }
+  }
+  else
+  {
+    switch (mCharacter.currentActivity.id)
+    {
+    case 4: successRoll++; break; //Bath
+    case 5: successRoll++; break; //Nap
+    case 6: successRoll++; break; //Sleep
+    case 14: if (mCharacter.profile.domesticated < 2500) { successRoll++; } break; //Fishing
+    case 18: if (mCharacter.profile.domesticated < 2500) { successRoll++; } break; //Butcher
+    case 19: if (mCharacter.profile.domesticated < 2500) { successRoll++; } break; //Hunting
+    }
+  }
 
   if (failedRoll == 0)
   {
@@ -496,21 +552,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     {
       //Cooking
       mCharacter.residence.cleaniness -= 50;
-      mCookingProgress += 2;
-      if (mCookingProgress - mCharacter.residence.kitchenLevel > 10)
-      {
-        //Cook the first raw food in inventory
-        for (auto& element : mCharacter.foodInventory)
-        {
-          if (element.dishLevel == 0)
-          {
-            mCharacter.food.randomizeCookedFood(seed, element);
-            mFoundItem.push_back(element.nameCooked);
-            break;
-          }
-        }
-        mCookingProgress = 0;
-      }
+      mCookingProgress += 4;
     }
     else if (mCharacter.currentActivity.id == 1)
     {
@@ -522,20 +564,20 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       //Reading
       if (mCharacter.library.empty())
       {
-        mCharacter.skill.literacy += 10;
+        mCharacter.profile.skill.literacy += 10;
       }
       else
       {
         uint16_t randomSelection = mWorld.getRandomNumber(seed, 0, uint16_t(mCharacter.library.size() - 1));
 
-        mCharacter.stat = mCharacter.stat + mCharacter.library.at(randomSelection).bonusStat;
-        mCharacter.skill = mCharacter.skill + mCharacter.library.at(randomSelection).bonusSkill;
+        mCharacter.profile.stat = mCharacter.profile.stat + mCharacter.library.at(randomSelection).bonusStat;
+        mCharacter.profile.skill = mCharacter.profile.skill + mCharacter.library.at(randomSelection).bonusSkill;
         mTotalActivityStatGained = mTotalActivityStatGained + mCharacter.library.at(randomSelection).bonusStat;
 
         if (mWorld.getRandomNumber(seed, 0, mCharacter.library.at(randomSelection).health) == 0)
         {
-          //Book destroyed due to usage;
-          mCharacter.library.erase(mCharacter.library.begin() + randomSelection);
+          //Book destroyed due to usage
+          mCharacter.destroyItem(mCharacter.library, mCharacter.library.at(randomSelection).id);
         }
       }
     }
@@ -547,27 +589,21 @@ void Event::processTenthHourlyEvent(const std::string& seed)
         uint16_t randomSelection = mWorld.getRandomNumber(seed, 0, uint16_t(mCharacter.toyRoom.size() - 1));
 
         mCharacter.profile.happiness += 25;
-        mCharacter.stat = mCharacter.stat + mCharacter.toyRoom.at(randomSelection).bonusStat;
-        mCharacter.skill = mCharacter.skill + mCharacter.toyRoom.at(randomSelection).bonusSkill;
+        mCharacter.profile.stat = mCharacter.profile.stat + mCharacter.toyRoom.at(randomSelection).bonusStat;
+        mCharacter.profile.skill = mCharacter.profile.skill + mCharacter.toyRoom.at(randomSelection).bonusSkill;
         mTotalActivityStatGained = mTotalActivityStatGained + mCharacter.toyRoom.at(randomSelection).bonusStat;
 
         if (mWorld.getRandomNumber(seed, 0, mCharacter.toyRoom.at(randomSelection).health) == 0)
         {
-          //Toy destroyed due to usage;
+          //Toy destroyed due to usage
+          mCharacter.destroyItem(mCharacter.toyRoom, mCharacter.toyRoom.at(randomSelection).id);
           mCharacter.profile.happiness -= 10;
-          mCharacter.toyRoom.erase(mCharacter.toyRoom.begin() + randomSelection);
         }
       }
     }
     else if (mCharacter.currentActivity.id == 4 || mCharacter.currentActivity.id == 5 || mCharacter.currentActivity.id == 6)
     {
       //Bathing, Naping, and Sleeping
-      if (mCharacter.stat.wil < 1500)
-      {
-        mCharacter.stat = mCharacter.stat + mCharacter.currentActivity.workStat;
-        mCharacter.skill = mCharacter.skill + mCharacter.currentActivity.workSkill;
-        mTotalActivityStatGained = mTotalActivityStatGained + mCharacter.currentActivity.workStat;
-      }
       if (mCharacter.profile.health < mCharacter.profile.maxHealth)
       {
         mCharacter.profile.health += mCharacter.profile.maxHealth / 100;
@@ -591,58 +627,50 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     else if (mCharacter.currentActivity.id == 14)
     {
       //Fishing
-      mFishingProgress += 2;
-
-      if (mFishingProgress > 20)
-      {
-        Food::FoodItem fish = mCharacter.food.randomizeRawFood(seed, Food::FoodType::fish);
-        mCharacter.foodInventory.push_back(fish);
-        mFoundItem.push_back(fish.nameCooked);
-        mFishingProgress = 0;
-      }
+      mFishingProgress += 4;
     }
     else if (mCharacter.currentActivity.id == 15)
     {
       //Plant Gathering
-      mGatheringProgress += 2;
-
-      if (mGatheringProgress > 10)
-      {
-        Food::FoodItem harvest;
-        if (mWorld.rollDie(seed, 1, 2) == 1)
-        {
-          harvest = mCharacter.food.randomizeRawFood(seed, Food::FoodType::fruit);
-        }
-        else
-        {
-          harvest = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vegatable);
-        }
-        mCharacter.foodInventory.push_back(harvest);
-        mFoundItem.push_back(harvest.nameCooked);
-        mGatheringProgress = 0;
-      }
+      mGatheringProgress += 4;
+    }
+    else if (mCharacter.currentActivity.id == 15)
+    {
+    //Industrial Fishing
+      mFishingProgress++;
+    }
+    else if (mCharacter.currentActivity.id == 16)
+    {
+    //Farming
+      mGatheringProgress++;
+    }
+    else if (mCharacter.currentActivity.id == 17)
+    {
+    //Butcher
+    mHuntingProgress++;
+    }
+    else if (mCharacter.currentActivity.id == 18)
+    {
+    //Hunting
+    mHuntingProgress++;
     }
 
     mEarning += mCharacter.currentActivity.payment;
     mWorld.logging.addToProgress("*");
   }
-  else if (successRoll > failedRoll)
+  else if (successRoll >= failedRoll)
   {
     //Partial Success
     if (mCharacter.currentActivity.id == 0)
     {
       //Cooking
-      mCharacter.residence.cleaniness -= 50;
+      mCharacter.residence.cleaniness -= 100;
       mCookingProgress++;
     }
     else if (mCharacter.currentActivity.id == 1)
     {
       //Cleaning
       mCharacter.residence.cleaniness += 100;
-      if (mCharacter.residence.cleaniness > 10000)
-      {
-        mCharacter.residence.cleaniness = 10000;
-      }
     }
     else if (mCharacter.currentActivity.id == 14)
     {
@@ -660,8 +688,8 @@ void Event::processTenthHourlyEvent(const std::string& seed)
 
     //Learn from minor mistakes
     mCharacter.profile.happiness -= 50;
-    mCharacter.stat = mCharacter.stat + mCharacter.currentActivity.workStat;
-    mCharacter.skill = mCharacter.skill + mCharacter.currentActivity.workSkill;
+    mCharacter.profile.stat = mCharacter.profile.stat + mCharacter.currentActivity.workStat;
+    mCharacter.profile.skill = mCharacter.profile.skill + mCharacter.currentActivity.workSkill;
     mTotalActivityStatGained = mTotalActivityStatGained + mCharacter.currentActivity.workStat;
   }
   else
@@ -670,7 +698,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     if (mCharacter.currentActivity.id == 0)
     {
       //Cooking
-      mCharacter.residence.cleaniness -= 200;
+      mCharacter.residence.cleaniness -= 400;
     }
     else if (mCharacter.currentActivity.id == 2)
     {
@@ -706,6 +734,51 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     mWorld.logging.addToProgress("-");
   }
 
+  //Item acquirement
+  if (mCookingProgress - mCharacter.residence.kitchenLevel > 20)
+  {
+    //Cook the first raw food in inventory
+    for (auto& element : mCharacter.foodInventory)
+    {
+      if (element.dishLevel == 0)
+      {
+        mCharacter.food.randomizeCookedFood(seed, element);
+        mFoundItem.push_back(element.nameCooked);
+        break;
+      }
+    }
+    mCookingProgress = 0;
+  }
+  if (mFishingProgress > 40)
+  {
+    Food::FoodItem fish = mCharacter.food.randomizeRawFood(seed, Food::FoodType::fish);
+    mCharacter.foodInventory.push_back(fish);
+    mFoundItem.push_back(fish.nameCooked);
+    mFishingProgress = 0;
+  }
+  else if (mGatheringProgress > 20)
+  {
+    Food::FoodItem harvest;
+    if (mWorld.rollDie(seed, 1, 2) == 1)
+    {
+      harvest = mCharacter.food.randomizeRawFood(seed, Food::FoodType::fruit);
+    }
+    else
+    {
+      harvest = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vegatable);
+    }
+    mCharacter.foodInventory.push_back(harvest);
+    mFoundItem.push_back(harvest.nameCooked);
+    mGatheringProgress = 0;
+  }
+  else if (mHuntingProgress > 40)
+  {
+    Food::FoodItem corpse = mCharacter.food.randomizeRawFood(seed, Food::FoodType::corpse);
+    mCharacter.foodInventory.push_back(corpse);
+    mFoundItem.push_back(corpse.nameCooked);
+    mHuntingProgress = 0;
+  }
+
   //Reduce to max stat if over
   if (mCharacter.profile.health > mCharacter.profile.maxHealth)
   {
@@ -731,6 +804,10 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   {
     mCharacter.profile.obidence = 10000;
   }
+  if (mCharacter.residence.cleaniness > 10000)
+  {
+    mCharacter.residence.cleaniness = 10000;
+  }
 }
 
 void Event::updateTime()
@@ -748,12 +825,12 @@ void Event::updateCheckedStat()
 
   for (int i = 0; i < 11; i++)
   {
-    mEffectiveStat[i] = mWorld.getStatByID(mCharacter.stat, i) + mWorld.getStatByID(mCharacter.equipedWeapon.bonusStat, i) + mWorld.getStatByID(mCharacter.equipedDress.bonusStat, i);
+    mEffectiveStat[i] = mWorld.getStatByID(mCharacter.profile.stat, i) + mWorld.getStatByID(mCharacter.profile.tempStat, i) + mWorld.getStatByID(mCharacter.equipedWeapon.bonusStat, i) + mWorld.getStatByID(mCharacter.equipedDress.bonusStat, i);
   }
 
   for (int i = 0; i < 30; i++)
   {
-    mEffectiveSkill[i] = mWorld.getSkillByID(mCharacter.skill, i) + mWorld.getSkillByID(mCharacter.equipedWeapon.bonusSkill, i) + mWorld.getSkillByID(mCharacter.equipedDress.bonusSkill, i);
+    mEffectiveSkill[i] = mWorld.getSkillByID(mCharacter.profile.skill, i) + mWorld.getSkillByID(mCharacter.equipedWeapon.bonusSkill, i) + mWorld.getSkillByID(mCharacter.equipedDress.bonusSkill, i);
   }
 }
 
