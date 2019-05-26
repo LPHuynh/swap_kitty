@@ -25,6 +25,7 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, c
   species = "Catgirl";
   gender = "Female";
   age = 10;
+  ageCounter = 0;
   weight = 26000 + world.getRandomNumber(seed, 0, 4000);
   height = 1200 + world.getRandomNumber(seed, 0, 80);
 }

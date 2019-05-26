@@ -22,9 +22,10 @@ public:
 
   std::string species;
   std::string gender;
-  int16_t age;
-  int16_t weight;    //weight in g
-  int16_t height;    //height in mm
+  uint16_t age;
+  uint16_t ageCounter;
+  uint16_t weight;    //weight in g
+  uint16_t height;    //height in mm
 
   std::string naturalHairColour;
   std::string currentHairColour;

@@ -77,6 +77,13 @@ void Event::incrementTime()
   {
     time.hour = 0;
     time.day++;
+    mCharacter.profile.cosmetic.ageCounter++;
+
+    if (mCharacter.profile.cosmetic.ageCounter == 120)
+    {
+      mCharacter.profile.cosmetic.age++;
+      mCharacter.profile.cosmetic.ageCounter = 0;
+    }
   }
   if (time.day == 120)
   {
