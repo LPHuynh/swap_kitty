@@ -26,8 +26,6 @@ public:
     int16_t quenchUsed;
   };
 
-  uint16_t rollActivitySucessLevel(World::Stat stat, World::Skill skill, Activity activity);
-
   Activity getActivity(const std::string& name);
   Activity getActivity(uint8_t id);
 

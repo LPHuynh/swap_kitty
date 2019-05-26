@@ -82,6 +82,10 @@ public:
     Skill operator-(const Skill& rhs);
   };
 
+  uint16_t getStatByID(World::Stat stat, uint8_t id);
+  uint16_t getSkillByID(World::Skill skill, uint8_t id);
+  std::string getStatNameByID(uint8_t id);
+  std::string getSkillNameByID(uint8_t id);
   int16_t calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement);
   Stat shiftStat(const Stat& stat, int8_t bitwiseShift);
   Skill shiftSkill(const Skill& skill, int8_t bitwiseShift);
@@ -92,10 +96,13 @@ public:
   void freeID(uint16_t id);
   std::string generateNonce();
 
+
+
   uint16_t currentRulesetVersion;
   uint64_t startingHeight;
   uint64_t currentWorldHeight;
   uint16_t localTimeOffset;
+  std::map<uint64_t, std::string> blockhashCache;
 private:
   uint32_t generateHash(const std::string& seed);
 

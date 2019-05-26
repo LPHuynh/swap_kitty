@@ -153,7 +153,7 @@ void Potion::loadPotion()
   potion.name = "Potential";
   potion.price = 5000;
   potion.nutrient = 5;
-  potion.quench = 400;
+  potion.quench = 200;
   potion.stamina = 0;
   potion.toxicity = 10;
   potion.bonusStat = World::Stat{ 100,100,100,100,100,100,100,100,100,100 };

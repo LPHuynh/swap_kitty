@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\TGUI-0.8\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
@@ -104,7 +104,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>c:\local\SFML-2.5.1\lib;c:\local\TGUI-0.8\lib;c:\local\curlcpp\lib;c:\local\curl\lib</AdditionalLibraryDirectories>
@@ -119,7 +119,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -136,7 +136,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>c:\local\SFML-2.5.1\include;c:\local\TGUI-0.8\include;c:\local\curlcpp\include;c:\local\curl\include;$(ProjectDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

@@ -3,7 +3,7 @@
 #include "json.hpp"
 
 
-App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), mCharacter(mWorld), mEvent(mWorld, mCharacter, mDaemonAPI), mCommandProcessor(mDaemonAPI, mWalletAPI, mWorld, mCharacter)
+App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), mCharacter(Character(mWorld)), mEvent(Event(mWorld, mCharacter, mDaemonAPI)), mCommandProcessor(CommandProcessor(mDaemonAPI, mWalletAPI, mWorld, mCharacter))
 {
   std::ifstream inFile("config.json");
   nlohmann::json jsonDatabase;
@@ -51,6 +51,18 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
     gameState = GameState::exit;
   }
 
+  inFile.open("blockhash.cache");
+  if (inFile.is_open())
+  {
+    jsonDatabase.clear();
+    inFile >> jsonDatabase;
+
+    for (auto& element : jsonDatabase)
+    {
+      mWorld.blockhashCache[element["height"]] = element["hash"].get<std::string>();
+    }
+  }
+
   mLoadTitleScreen();
 }
 
@@ -70,7 +82,17 @@ App::~App()
 
   std::ofstream outFile("config.json");
   outFile << std::setw(2) << jsonDatabase << std::endl;
+  jsonDatabase.clear();
   outFile.close();
+  
+  for (auto& element : mWorld.blockhashCache)
+  {
+    jsonDatabase[std::to_string(element.first)]["height"] = element.first;
+    jsonDatabase[std::to_string(element.first)]["hash"] = element.second;
+  }
+
+  outFile.open("blockhash.cache");
+  outFile << std::setw(2) << jsonDatabase << std::endl;
 
   mWalletAPI.closeWallet();
 }
@@ -100,12 +122,11 @@ void App::run()
     }
     else if (gameState == GameState::loading)
     {
-      if (mClock.getElapsedTime().asSeconds() > 5)
+      if (mClock.getElapsedTime().asSeconds() > 1)
       {
         mClock.restart();
         uint64_t daemonHeight = mDaemonAPI.getBlockCount();
         uint64_t walletHeight = mWalletAPI.getBlockHeight();
-
         if (daemonHeight > walletHeight + 10)
         {
           mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
@@ -116,6 +137,8 @@ void App::run()
 
           if (mCommandProcessor.scanForCharacterCreationCommand())
           {
+            mCommandProcessor.processCommand();
+            mEvent.init();
             mGui.get<tgui::Label>("LabelWalletHeight")->setText("Processing Graphics and Events...");
 
             //Process Commands in own Thread, while displaying and loading graphics
@@ -124,7 +147,7 @@ void App::run()
 
             while (!t1.joinable() && !t2.joinable())
             {
-              std::this_thread::sleep_for(std::chrono::seconds(15));
+              std::this_thread::sleep_for(std::chrono::seconds(1));
               //Display Graphics
             }            
 
@@ -195,8 +218,9 @@ void App::mRunTurns()
   mCommandProcessor.scanForCommands();
   while (mWorld.currentWorldHeight < topHeight)
   {
-    mEvent.processEvent();
+    //std::cout << mWorld.currentWorldHeight << "\n";
     mCommandProcessor.processCommand();
+    mEvent.processEvent();
     mWorld.currentWorldHeight++;
   }
 }

@@ -95,13 +95,32 @@ void CommandProcessor::submitAssignScheduleCommand(uint8_t activity[24])
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitAssignBookCommand(uint16_t ID[13])
+void CommandProcessor::submitAddBookCommand(uint16_t ID[13])
 {
   //Specification(Param): (2 byte ID)x13
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
   command.commandCode = "AB";
+  command.param = "";
+
+  for (int i = 0; i < 13; i++)
+  {
+    command.param += convertIntToHex(ID[i]);
+  }
+
+  std::string commandHex = convertCommandToHex(command);
+  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
+}
+
+void CommandProcessor::submitRemoveBookCommand(uint16_t ID[13])
+{
+  //Specification(Param): (2 byte ID)x13
+
+  Command command;
+  command.rulesetVersion = mWorld.currentRulesetVersion;
+  command.commandCode = "RB";
   command.param = "";
 
   for (int i = 0; i < 13; i++)
@@ -249,7 +268,6 @@ bool CommandProcessor::scanForCharacterCreationCommand()
       {
         mCurrentScanHeight = element.height + 1;
         mWorld.currentWorldHeight = (element.height);
-        std::cout << "Recieved Command: " << element.paymentID << "\n";
         mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
         return true;
       }
@@ -299,6 +317,11 @@ bool CommandProcessor::sortCommand(Command i, Command j)
 
 void CommandProcessor::processCommand()
 {
+  if (mCommandQueue.empty())
+  {
+    return;
+  }
+
   if (mCommandQueue.front().first == mWorld.currentWorldHeight)
   {
     std::deque<Command> commands;
@@ -317,16 +340,16 @@ void CommandProcessor::processCommand()
     }
     //if more than 1 commands are on the same block, process them in alphabetical order of their security hash
     std::sort(commands.begin(), commands.end(), sortCommand);
+
     while (!commands.empty())
     {
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
         //New Character
-        mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
-        mWorld.startingHeight = mWorld.currentWorldHeight;
+        mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
         mIsCharacterLoaded = true;
-        std::cout << "\n\nCharacter Loaded:\n" << mCharacter.fluffText << "\n\n";
+        std::cout << "\n..::Created New Character::..\n" << mCharacter.fluffText << "\n";
       }
       else if (commands.front().commandCode == "RC")
       {
@@ -334,6 +357,7 @@ void CommandProcessor::processCommand()
         if (mLastTimeResyncRequest < mWorld.currentWorldHeight + 40320)
         {
           mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
+          std::cout << "\n..::Adjusted In-Game Clock::..\n";
         }
         else
         {
@@ -346,12 +370,13 @@ void CommandProcessor::processCommand()
         for (int i = 0; i < 24; i++)
         {
           mCharacter.dailySchedule[i] = mCharacter.job.getActivity(std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16));
+          std::cout << "\n..::Made Changes to Daily Schedule::..\n";
         }
       }
       else if (commands.front().commandCode == "AB")
       {
-        //Assign Books to Library
-        mCharacter.library.clear();
+        //Add Books to Library
+        std::vector<Book::BookItem> newBookInventory;
 
         for (int i = 0; i < 13; i++)
         {
@@ -361,62 +386,112 @@ void CommandProcessor::processCommand()
             {
               mCharacter.library.push_back(element);
             }
+            else
+            {
+              newBookInventory.push_back(element);
+            }
           }
+          
+          mCharacter.bookInventory = newBookInventory;
+
+          std::cout << "\n..::Added Some Books to Library::..\n";
+        }
+      }
+      else if (commands.front().commandCode == "RB")
+      {
+        //Remove Books from Library
+        std::vector<Book::BookItem> newLibraryInventory;
+
+        for (int i = 0; i < 13; i++)
+        {
+          for (auto& element : mCharacter.bookInventory)
+          {
+            if (element.id == std::stoi(commands.front().param.substr(i * 4, 4), 0, 16))
+            {
+              mCharacter.bookInventory.push_back(element);
+            }
+            else
+            {
+              newLibraryInventory.push_back(element);
+            }
+          }
+
+          mCharacter.library = newLibraryInventory;
+
+          std::cout << "\n..::Removed Some Books from Library::..\n";
         }
       }
       else if (commands.front().commandCode == "BW")
       {
+        std::cout << "\n..::Bought Some Weapons::..\n";
       }
       else if (commands.front().commandCode == "SW")
       {
+        std::cout << "\n..::Sold Some Weapon::..\n";
       }
       else if (commands.front().commandCode == "DW")
       {
+        std::cout << "\n..::Discarded Some Weapon::..\n";
       }
       else if (commands.front().commandCode == "BD")
       {
+        std::cout << "\n..::Bought Some Dress::..\n";
       }
       else if (commands.front().commandCode == "SD")
       {
+        std::cout << "\n..::Sold Some Dress::..\n";
       }
       else if (commands.front().commandCode == "DD")
       {
+        std::cout << "\n..::Discarded Some Dress::..\n";
       }
       else if (commands.front().commandCode == "BF")
       {
+        std::cout << "\n..::Bought Some Food::..\n";
       }
       else if (commands.front().commandCode == "SF")
       {
+        std::cout << "\n..::Sold Some Food::..\n";
       }
       else if (commands.front().commandCode == "DF")
       {
+        std::cout << "\n..::Discarded Some Food::..\n";
       }
       else if (commands.front().commandCode == "BP")
       {
+        std::cout << "\n..::Bought Some Potions::..\n";
       }
       else if (commands.front().commandCode == "SP")
       {
+        std::cout << "\n..::Sold Some Potion::..\n";
       }
       else if (commands.front().commandCode == "DP")
       {
+        std::cout << "\n..::Discarded Some Potion::..\n";
       }
       else if (commands.front().commandCode == "BB")
       {
+        std::cout << "\n..::Bought Some Books::..\n";
       }
       else if (commands.front().commandCode == "SB")
       {
+        std::cout << "\n..::Sold Some Book::..\n";
       }
       else if (commands.front().commandCode == "DB")
       {
+      std::cout << "\n..::Discarded Some Books::..\n";
       }
       else if (commands.front().commandCode == "BT")
       {
+        std::cout << "\n..::Bought Some Toys::..\n";
       }
       else if (commands.front().commandCode == "ST")
       {
+        std::cout << "\n..::Sold Some Toys::..\n";
       }
       else if (commands.front().commandCode == "DT")
       {
+        std::cout << "\n..::Discarded Some Toys::..\n";
       }
 
       commands.pop_front();
@@ -454,7 +529,7 @@ CommandProcessor::Command CommandProcessor::convertHexToCommand(const std::strin
   commandResult.commandCode = "";
   commandResult.param = "";
 
-  if (hexadecimalString.substr(0, 4) == convertStringToHex("SM") || (mIsBetaVersion && hexadecimalString.substr(0, 4) == convertStringToHex("SB")))
+  if (convertHexToString(hexadecimalString.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(hexadecimalString.substr(0, 4)) == "SB"))
   {
     commandResult.rulesetVersion = std::stoi(hexadecimalString.substr(4, 4), 0, 16);
     commandResult.commandCode = convertHexToString(hexadecimalString.substr(8, 4));
@@ -483,7 +558,7 @@ std::string CommandProcessor::convertHexToString(const std::string& hexadecimalS
 
 std::string CommandProcessor::convertStringToHex(const std::string& textString)
 {
-  static const char* const lut = "0123456789ABCDEF";
+  static const char* const lut = "0123456789abcdef";
   size_t len = textString.length();
 
   std::string output;
@@ -499,7 +574,17 @@ std::string CommandProcessor::convertStringToHex(const std::string& textString)
 
 std::string CommandProcessor::getBlockHash()
 {
-  return mDaemonAPI.getBlockHash(mWorld.currentWorldHeight - 5);
+  std::map<uint64_t, std::string>::iterator it = mWorld.blockhashCache.find(mWorld.currentWorldHeight - 5);
+  if (it != mWorld.blockhashCache.end())
+  {
+    return it->second;
+  }
+  else
+  {
+    std::string blockHash = mDaemonAPI.getBlockHash(mWorld.currentWorldHeight - 5);
+    mWorld.blockhashCache[mWorld.currentWorldHeight - 5] = blockHash;
+    return blockHash;
+  }
 }
 
 template<typename INT_T>

@@ -23,7 +23,6 @@ void Shop::refreshInventory(const std::string & seed)
   bookInventory.clear();
   toyInventory.clear();
 
-
   for (int i = 0; i < 5; i++)
   {
     dressInventory.push_back(mDress.randomizeDress(seed));

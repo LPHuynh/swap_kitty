@@ -60,23 +60,21 @@ public:
   Weapon::WeaponItem equipedWeapon;
   Dress::DressItem equipedDress;
   std::vector<Book::BookItem> library;
-  std::vector<Toy::ToyItem> playRoom;
+  std::vector<Toy::ToyItem> toyRoom;
   std::vector<Weapon::WeaponItem> weaponInventory;
   std::vector<Dress::DressItem> dressInventory;
   std::vector<Food::FoodItem> foodInventory;
   std::vector<Potion::PotionItem> potionInventory;
   std::vector<Book::BookItem> bookInventory;
-  std::vector<Toy::ToyItem>ToyInventory;
+  std::vector<Toy::ToyItem>toyInventory;
   
   Job::Activity currentActivity;
   Job::Activity dailySchedule[24];
 
   Weapon::WeaponType favouriteWeaponType;
-  std::string favouriteFruit;
-  std::string favouriteFruitDish;
-  int16_t favouriteFruitDishLevel;
-  std::string favouriteVegatable;
-  std::string favouriteJunkFood;
+  Food::FoodItem favouriteFruitDish;
+  Food::FoodItem favouriteVegatable;
+  Food::FoodItem favouriteJunkFood;
   Job::ActivityType favouriteActivityType;
 
   std::string fluffText;

@@ -693,7 +693,7 @@ void Weapon::loadAbility()
   WeaponAbility ability;
 
   ability = prototype;
-  ability.name = ""; //No Attribute
+  ability.name = "\b"; //No Attribute
   ability.costMultplier = 10;
   ability.bonusDice.face = 0;
   ability.bonusDice.roll = 0;
@@ -810,7 +810,7 @@ void Weapon::loadStatBonus()
   WeaponStatBonus statBonus;
 
   statBonus = prototype;
-  statBonus.name = ""; //No Extra Stats
+  statBonus.name = "\b"; //No Extra Stats
   statBonus.costMultplier = 10;
   mStatBonuses.push_back(statBonus);
 

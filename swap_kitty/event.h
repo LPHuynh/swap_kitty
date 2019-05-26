@@ -11,13 +11,15 @@ class Event
 public:
   Event(World& world, Character& character, DaemonAPI& daemonAPI);
   ~Event();
+  void init();
 
   struct Time
   {
-    uint16_t year;
-    uint16_t day;
-    uint16_t hour;
-    uint16_t minute;
+    uint8_t year;
+    uint8_t day;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t quarterminute;
   };
 
   void processEvent();
@@ -29,10 +31,23 @@ private:
   World& mWorld;
   Character& mCharacter;
 
-  void updateTime();
+  void incrementTime();
   void processDailyEvent();
-  void processHourlyEvent();
+  void processHourlyEvent(const std::string& seed);
   void processTenthHourlyEvent(const std::string& seed);
+  void updateTime();
+  void updateCheckedStat();
   std::string getBlockHash();
+
+  uint16_t mEffectiveStat[11];
+  uint16_t mEffectiveSkill[30];
+  uint64_t mEarning;
+  uint16_t mCookingProgress;
+  uint16_t mFishingProgress;
+  uint16_t mGatheringProgress;
+  std::vector<std::string> mFoundItem;
+  World::Stat mTotalActivityStatGained;
+  std::vector<std::string> mFishingResults;
+  std::vector<std::string> mPlantGatheringResults;
 };
 

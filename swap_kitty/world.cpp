@@ -145,6 +145,116 @@ World::Skill World::Skill::operator-(const Skill& rhs)
   return skill;
 }
 
+uint16_t World::getStatByID(World::Stat stat, uint8_t id)
+{
+  switch (id)
+  {
+  case 0: return stat.str; 
+  case 1: return stat.con; 
+  case 3: return stat.dex; 
+  case 4: return stat.per; 
+  case 5: return stat.lrn; 
+  case 6: return stat.wil; 
+  case 7: return stat.mag; 
+  case 8: return stat.chr; 
+  case 9: return stat.acc; 
+  case 10: return stat.cri; 
+  }
+  return 0;
+}
+
+uint16_t World::getSkillByID(World::Skill skill, uint8_t id)
+{
+  switch (id)
+  {
+  case 0: return skill.literacy; 
+  case 1: return skill.cooking; 
+  case 2: return skill.cleaning; 
+  case 3: return skill.service; 
+  case 4: return skill.music; 
+  case 5: return skill.art; 
+  case 6: return skill.tailor; 
+  case 7: return skill.stoneWorking; 
+  case 8: return skill.woodWorking; 
+  case 9: return skill.metalworking; 
+  case 10: return skill.farming; 
+  case 11: return skill.fishing; 
+  case 12: return skill.crafting; 
+  case 13: return skill.sword; 
+  case 14: return skill.axe; 
+  case 15: return skill.bludgeon; 
+  case 16: return skill.stave; 
+  case 17: return skill.polearm; 
+  case 18: return skill.evasion; 
+  case 19: return skill.fire; 
+  case 21: return skill.water; 
+  case 22: return skill.earth; 
+  case 23: return skill.air; 
+  case 24: return skill.lightning; 
+  case 25: return skill.holy; 
+  case 26: return skill.dark; 
+  case 27: return skill.machine; 
+  case 28: return skill.poison; 
+  case 29: return skill.choas; 
+  default: return 0;
+  }
+}
+
+std::string World::getStatNameByID(uint8_t id)
+{
+  switch (id)
+  {
+  case 0: return "STR";
+  case 1: return "CON";
+  case 3: return "DEX";
+  case 4: return "PER";
+  case 5: return "LRN";
+  case 6: return "WIL";
+  case 7: return "MAG";
+  case 8: return "CHR";
+  case 9: return "ACC";
+  case 10: return "CRI";
+  default: return "";
+  }
+}
+
+std::string World::getSkillNameByID(uint8_t id)
+{
+  switch (id)
+  {
+  case 0: return "Literacy";
+  case 1: return "Cooking";
+  case 2: return "Cleaning";
+  case 3: return "Service";
+  case 4: return "Music";
+  case 5: return "Art";
+  case 6: return "Tailor";
+  case 7: return "StoneWorking";
+  case 8: return "WoodWorking";
+  case 9: return "Metalworking";
+  case 10: return "Farming";
+  case 11: return "Fishing";
+  case 12: return "Crafting";
+  case 13: return "Sword";
+  case 14: return "Axe";
+  case 15: return "Bludgeon";
+  case 16: return "Stave";
+  case 17: return "Polearm";
+  case 18: return "Evasion";
+  case 19: return "Fire";
+  case 21: return "Water";
+  case 22: return "Earth";
+  case 23: return "Air";
+  case 24: return "Lightning";
+  case 25: return "Holy";
+  case 26: return "Dark";
+  case 27: return "Machine";
+  case 28: return "Poison";
+  case 29: return "Choas";
+  default: return 0;
+  }
+}
+
 int16_t World::calculateElementAttackBonus(Element attackerElement, const std::vector<Element>& defenderElement)
 {
   int16_t damageBonus = 100;

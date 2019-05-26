@@ -96,19 +96,19 @@ void Character::generateStartingStats(const std::string& seed)
   dailySchedule[0] = job.getActivity("Sleep");
   dailySchedule[1] = job.getActivity("Sleep");
   dailySchedule[2] = job.getActivity("Sleep");
-  dailySchedule[3] = job.getActivity("Sleep");
-  dailySchedule[4] = job.getActivity("Cooking");
-  dailySchedule[5] = job.getActivity("Cleaning");
-  dailySchedule[6] = job.getActivity("Nap");
-  dailySchedule[7] = job.getActivity("Playing");
+  dailySchedule[3] = job.getActivity("Cooking");
+  dailySchedule[4] = job.getActivity("Cleaning");
+  dailySchedule[5] = job.getActivity("Waitress");
+  dailySchedule[6] = job.getActivity("Waitress");
+  dailySchedule[7] = job.getActivity("Waitress");
   dailySchedule[8] = job.getActivity("Nap");
   dailySchedule[9] = job.getActivity("Playing");
   dailySchedule[10] = job.getActivity("Read Book");
-  dailySchedule[11] = job.getActivity("Cooking");
-  dailySchedule[12] = job.getActivity("Cleaning");
+  dailySchedule[11] = job.getActivity("Fishing");
+  dailySchedule[12] = job.getActivity("Fishing");
   dailySchedule[13] = job.getActivity("Nap");
-  dailySchedule[14] = job.getActivity("Read Book");
-  dailySchedule[15] = job.getActivity("Bath");
+  dailySchedule[14] = job.getActivity("Plant Gatherer");
+  dailySchedule[15] = job.getActivity("Plant Gatherer");
   dailySchedule[16] = job.getActivity("Cooking");
   dailySchedule[17] = job.getActivity("Cleaning");
   dailySchedule[18] = job.getActivity("Playing");
@@ -117,10 +117,9 @@ void Character::generateStartingStats(const std::string& seed)
   dailySchedule[21] = job.getActivity("Sleep");
   dailySchedule[22] = job.getActivity("Sleep");
   dailySchedule[23] = job.getActivity("Sleep");
-  dailySchedule[24] = job.getActivity("Sleep");
 
   uint16_t timeOfDay = (mWorld.currentWorldHeight + mWorld.localTimeOffset) % 5760;
-  uint16_t currentHour = timeOfDay / (24 * 4);
+  uint16_t currentHour = timeOfDay / 240;
   currentActivity = dailySchedule[currentHour];
   favouriteActivityType = Job::ActivityType(mWorld.getRandomNumber(seed, 1, 4));
 }
@@ -132,22 +131,20 @@ void Character::generateStartingItems(const std::string& seed)
   equipedWeapon = weaponInventory.at(0);
   favouriteWeaponType = weaponInventory.at(0).type;
 
-  Dress::DressItem startingDress = dress.generateDress("Basic Dress");
+  Dress::DressItem startingDress = dress.randomizeDress(seed);
   dressInventory.push_back(startingDress);
   equipedDress = dressInventory.at(0);
 
   Food::FoodItem fruitDish = food.randomizeRawFood(seed, Food::FoodType::fruit);
   food.randomizeCookedFood(seed, fruitDish);
+  favouriteFruitDish = fruitDish;
   foodInventory.push_back(fruitDish);
-  favouriteFruit = fruitDish.nameRaw;
-  favouriteFruitDish = fruitDish.nameCooked;
-  favouriteFruitDishLevel = fruitDish.dishLevel;
 
   for (int i = 0; i < 5; i++)
   {
     Food::FoodItem vegatable = food.randomizeRawFood(seed, Food::FoodType::vegatable);
+    favouriteVegatable = vegatable;
     foodInventory.push_back( vegatable);
-    favouriteVegatable = vegatable.nameRaw;
   }
   for (int i = 0; i < 5; i++)
   {
@@ -156,7 +153,7 @@ void Character::generateStartingItems(const std::string& seed)
   }
 
   Food::FoodItem junkfood = food.randomizeRawFood(seed, Food::FoodType::junkFood);
-  favouriteJunkFood = junkfood.nameRaw;
+  favouriteJunkFood = junkfood;
   mWorld.freeID(junkfood.id);
 
   for (int i = 0; i < 10; i++)
@@ -173,7 +170,7 @@ void Character::generateStartingItems(const std::string& seed)
   for (int i = 0; i < 3; i++)
   {
     Toy::ToyItem startingToy = toy.randomizeToy(seed);
-    playRoom.push_back(startingToy);
+    toyRoom.push_back(startingToy);
   }
 }
 
@@ -242,7 +239,7 @@ void Character::generateFluffText()
   fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + " "
     + "with " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
     + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall.\n\n"
-    + "Her favourite food are " + favouriteVegatable + ", " + favouriteFruitDish + ", and " + favouriteJunkFood + ".\n"
+    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.nameCooked + ", and " + favouriteJunkFood.nameRaw + ".\n"
     + activityText + weaponText + "\n"
     + elementText;
 }

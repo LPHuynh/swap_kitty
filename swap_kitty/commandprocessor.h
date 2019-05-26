@@ -22,7 +22,8 @@ public:
   void submitCharacterCreationCommand(const std::string& characterName);
   void submitResyncGameClock(uint16_t offset);
   void submitAssignScheduleCommand(uint8_t activity[24]);
-  void submitAssignBookCommand(uint16_t ID[13]);
+  void submitAddBookCommand(uint16_t ID[13]);
+  void submitRemoveBookCommand(uint16_t ID[13]);
   void submitManageItemCommand(World::ItemAction itemAction, World::ItemType itemType, uint16_t ID[13]);
   void submitGiftCommand(uint16_t toyID[13]);
   void submitFeedCommand(uint16_t foodID, uint16_t potionID);

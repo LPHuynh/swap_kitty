@@ -10,13 +10,6 @@ Job::~Job()
 {
 }
 
-uint16_t Job::rollActivitySucessLevel(World::Stat stat, World::Skill skill, Activity activity)
-{
-
-
-
-}
-
 Job::Activity Job::getActivity(const std::string& name)
 {
   for (auto& element : mActivity)
@@ -76,7 +69,7 @@ void Job::loadActivity()
   activity = prototype;
   activity.name = "Cleaning";
   activity.isNightActivity = true;
-  activity.payment = 1;
+  activity.payment = 0;
   activity.activityType = ActivityType::domestic;
   activity.workLevel = 1;
   activity.workStat.dex = 40;
@@ -84,19 +77,6 @@ void Job::loadActivity()
   activity.workSkill.cleaning = 40;
   activity.workSkill.stave = 40;
   activity.staminaUsed = 10;
-  activity.quenchUsed = 5;
-  mActivity.push_back(activity);
-
-  activity = prototype;
-  activity.name = "Read Book";
-  activity.isNightActivity = true;
-  activity.payment = 0;
-  activity.activityType = ActivityType::self;
-  activity.workLevel = 1;
-  activity.workStat.wil = 40;
-  activity.workStat.lrn = 40;
-  activity.workSkill.literacy = 60;
-  activity.staminaUsed = 5;
   activity.quenchUsed = 5;
   mActivity.push_back(activity);
 
@@ -115,12 +95,25 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
+  activity.name = "Read Book";
+  activity.isNightActivity = true;
+  activity.payment = 0;
+  activity.activityType = ActivityType::self;
+  activity.workLevel = 1;
+  activity.workStat.wil = 40;
+  activity.workStat.lrn = 40;
+  activity.workSkill.literacy = 60;
+  activity.staminaUsed = 5;
+  activity.quenchUsed = 5;
+  mActivity.push_back(activity);
+
+  activity = prototype;
   activity.name = "Bath";
   activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::self;
   activity.workLevel = 1;
-  activity.workStat.wil = 0;
+  activity.workStat.wil = 20;
   activity.staminaUsed = 5;
   activity.quenchUsed = 5;
   mActivity.push_back(activity);
@@ -130,7 +123,7 @@ void Job::loadActivity()
   activity.payment = 0;
   activity.activityType = ActivityType::self;
   activity.workLevel = 1;
-  activity.workStat.wil = 60;
+  activity.workStat.wil = 40;
   activity.staminaUsed = 5;
   activity.quenchUsed = 5;
   mActivity.push_back(activity);
@@ -141,7 +134,7 @@ void Job::loadActivity()
   activity.payment = 0;
   activity.activityType = ActivityType::self;
   activity.workLevel = 1;
-  activity.workStat.wil = 40;
+  activity.workStat.wil = 20;
   activity.staminaUsed = 5;
   activity.quenchUsed = 5;
   mActivity.push_back(activity);

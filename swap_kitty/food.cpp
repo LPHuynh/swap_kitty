@@ -130,7 +130,7 @@ void Food::randomizeCookedFood(const std::string& seed, FoodItem& cookableFood)
     }
     else if (cookableFood.dishLevel == 4)
     {
-      cookableFood.nameCooked = "Creme of " + cookableFood.nameRaw;
+      cookableFood.nameCooked = "Cream of " + cookableFood.nameRaw + " Soup";
       cookableFood.price *= 5;
       cookableFood.nutrient *= 3;
       cookableFood.quench += 30;
@@ -688,7 +688,7 @@ void Food::loadRawFood()
   rawFood.quench = 0;
   rawFood.bonusStat.str = 30;
   rawFood.bonusStat.con = 15;
-  mRawFish.push_back(rawFood);
+  mRawCorpse.push_back(rawFood);
 
   rawFood = prototype;
   rawFood.nameRaw = "Beef";
@@ -699,7 +699,7 @@ void Food::loadRawFood()
   rawFood.quench = 0;
   rawFood.bonusStat.str = 40;
   rawFood.bonusStat.con = 20;
-  mRawFish.push_back(rawFood);
+  mRawCorpse.push_back(rawFood);
 
   //Flour
   rawFood = prototype;
