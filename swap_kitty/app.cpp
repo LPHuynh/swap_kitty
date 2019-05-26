@@ -8,6 +8,7 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   std::ifstream inFile("config.json");
   nlohmann::json jsonDatabase;
   inFile >> jsonDatabase;
+  inFile.close();
 
   mSetting.windowHeight = 400;
   mSetting.windowWidth = 600;
@@ -23,8 +24,6 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   mSetting.txPriority = jsonDatabase["config"]["wallet"]["txpriority"];
   mSetting.mixin = jsonDatabase["config"]["wallet"]["mixin"];
   mSetting.frameRate = jsonDatabase["config"]["game"]["framerate"];
-
-  inFile.close();
 
   mWindow.create(sf::VideoMode(mSetting.windowWidth, mSetting.windowHeight), mSetting.windowTitle);
   mWindow.setFramerateLimit(mSetting.frameRate);
@@ -63,6 +62,8 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
     }
   }
 
+  inFile.close();
+
   mLoadTitleScreen();
 }
 
@@ -93,6 +94,7 @@ App::~App()
 
   outFile.open("blockhash.cache");
   outFile << std::setw(2) << jsonDatabase << std::endl;
+  outFile.close();
 
   mWalletAPI.closeWallet();
 }

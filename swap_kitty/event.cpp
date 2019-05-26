@@ -59,7 +59,6 @@ void Event::processEvent()
   incrementTime();
 }
 
-
 void Event::incrementTime()
 {
   time.quarterminute++;
@@ -83,6 +82,7 @@ void Event::incrementTime()
     {
       mCharacter.profile.cosmetic.age++;
       mCharacter.profile.cosmetic.ageCounter = 0;
+      mWorld.logging.addToMainLog(mCharacter.profile.name + " is now " + std::to_string(mCharacter.profile.cosmetic.age) + " years old!");
     }
   }
   if (time.day == 120)

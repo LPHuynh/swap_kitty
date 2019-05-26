@@ -5,6 +5,9 @@ Logging::Logging()
 {
   std::string statusMessage = "";
   std::string progress = "";
+  std::ofstream logFile;
+  logFile.open("log.txt");
+  logFile.close();
 }
 
 Logging::~Logging()
@@ -40,7 +43,7 @@ void Logging::clearProgress()
 void Logging::writeToFile(std::string text)
 {
   std::ofstream logFile;
-  logFile.open("log.txt", std::ofstream::trunc);
+  logFile.open("log.txt", std::ofstream::app);
   logFile << text << "\n";
   logFile.close();
 }
