@@ -12,6 +12,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include "logging.h"
 
 
 class World
@@ -96,8 +97,7 @@ public:
   void freeID(uint16_t id);
   std::string generateNonce();
 
-
-
+  Logging logging;
   uint16_t currentRulesetVersion;
   uint64_t startingHeight;
   uint64_t currentWorldHeight;

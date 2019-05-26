@@ -35,19 +35,19 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
 
   if (!mDaemonAPI.init(mSetting.daemonHost, mSetting.daemonPort))
   {
-    std::cout << "Cannot connect to Daemon.\n";
+    mWorld.logging.addToMainLog("Cannot connect to Daemon.");
     gameState = GameState::exit;
   }
   if (!mWalletAPI.init(mSetting.daemonHost, mSetting.daemonPort, mSetting.walletPort))
   {
-    std::cout << "Cannot connect to RPC Wallet.\n";
+    mWorld.logging.addToMainLog("Cannot connect to RPC Wallet.");
     gameState = GameState::exit;
   }
 
   DaemonAPI::SyncStatus syncStatus = mDaemonAPI.getSyncInfo();
   if (syncStatus.height + 5 < syncStatus.targetHeight)
   {
-    std::cout << "Daemon not fully syncd.\n";
+    mWorld.logging.addToMainLog("Daemon not fully syncd.");
     gameState = GameState::exit;
   }
 
@@ -184,7 +184,7 @@ void App::startGame()
   {
     if (!mWalletAPI.createWallet(characterName, password, "English"))
     {
-      std::cout << "Error Creating wallet.\n";
+      mWorld.logging.addToMainLog("Error Creating wallet.");
       gameState = GameState::exit;
     }
   }
@@ -192,7 +192,7 @@ void App::startGame()
   {
     if (!mWalletAPI.openWallet(characterName, password))
     {
-      std::cout << "Error opening wallet.\n";
+      mWorld.logging.addToMainLog("Error opening wallet.");
       gameState = GameState::exit;
     }
   }
@@ -200,7 +200,7 @@ void App::startGame()
   {
     if (!mWalletAPI.restoreWallet(characterName, password, seed, "English", mSetting.restoreHeight))
     {
-      std::cout << "Error restoring wallet.\n";
+      mWorld.logging.addToMainLog("Error restoring wallet.");
       gameState = GameState::exit;
     }
   }
@@ -218,7 +218,6 @@ void App::mRunTurns()
   mCommandProcessor.scanForCommands();
   while (mWorld.currentWorldHeight < topHeight)
   {
-    //std::cout << mWorld.currentWorldHeight << "\n";
     mCommandProcessor.processCommand();
     mEvent.processEvent();
     mWorld.currentWorldHeight++;

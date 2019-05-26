@@ -23,16 +23,16 @@ void Event::init()
 
   switch (mCharacter.currentActivity.id)
   {
-  case 0: std::cout << mCharacter.profile.name << " began Cooking...\n\t["; break;
-  case 1: std::cout << mCharacter.profile.name << " began Cleaning the house...\n\t["; break;
-  case 2: std::cout << mCharacter.profile.name << " began Reading in the library...\n\t["; break;
-  case 3: std::cout << mCharacter.profile.name << " began Playing...\n\t["; break;
-  case 4: std::cout << mCharacter.profile.name << " began Bathing...\n\t["; break;
-  case 5: std::cout << mCharacter.profile.name << " began Napping...\n\t["; break;
-  case 6: std::cout << mCharacter.profile.name << " began Sleeping...\n\t["; break;
-  case 14: std::cout << mCharacter.profile.name << " began Fishing...\n\t["; break;
-  case 15: std::cout << mCharacter.profile.name << " began Gathering Plants...\n\t["; break;
-  default: std::cout << mCharacter.profile.name << " began working as a " << mCharacter.currentActivity.name << "...\n\t["; break;
+  case 0: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cooking..."); break;
+  case 1: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cleaning the house..."); break;
+  case 2: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Reading in the library..."); break;
+  case 3: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Playing..."); break;
+  case 4: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Bathing..."); break;
+  case 5: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Napping..."); break;
+  case 6: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Sleeping..."); break;
+  case 14: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Fishing..."); break;
+  case 15: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Gathering Plants..."); break;
+  default: mWorld.logging.addToMainLog(mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "..."); break;
   }
 }
 
@@ -137,16 +137,21 @@ void Event::processHourlyEvent(const std::string& seed)
   if (mCharacter.currentActivity.id != mCharacter.dailySchedule[time.hour].id)
   {
     //Summerize Previous Job
-    std::cout << "]";
+    
+    std::string summary = "[" + mWorld.logging.progress + "]";
+    mWorld.logging.clearProgress();
+
     if (mEarning > 0)
     {
-      std::cout << " +" << mEarning * 0.01f << "G";
+      std::ostringstream formatedEarning;
+      formatedEarning << (mEarning * 0.01f);
+      summary += " +" + formatedEarning.str() + "G";
       mCharacter.profile.money += mEarning;
       mEarning = 0;
     }
     for (auto& element : mFoundItem)
     {
-      std::cout << " +(" << element << ")";
+      summary += " +(" + element + ")";
     }
     mFoundItem.clear();
 
@@ -155,11 +160,11 @@ void Event::processHourlyEvent(const std::string& seed)
     {
       if (mWorld.getStatByID(mTotalActivityStatGained, i) > 100)
       {
-        std::cout << " +" << mWorld.getStatByID(mTotalActivityStatGained, i) / 100 << mWorld.getStatNameByID(i);
+        summary += " +" + std::to_string(mWorld.getStatByID(mTotalActivityStatGained, i) / 100) + mWorld.getStatNameByID(i);
       }
     }
 
-    std::cout << "\n";
+    mWorld.logging.addToMainLog(summary);
     mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
 
     //Chance of catching vermins on the way home from agricultural jobs, heavy industry jobs, cooking, cleaning, or playing
@@ -170,7 +175,7 @@ void Event::processHourlyEvent(const std::string& seed)
         Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
         mCharacter.foodInventory.push_back(caughtVermin);
         mCharacter.profile.domesticated -= 10;
-        std::cout << mCharacter.profile.name << " brought home a " << caughtVermin.nameCooked << "...\n";
+        mWorld.logging.addToMainLog(mCharacter.profile.name + " brought home a " + caughtVermin.nameCooked + "...");
       }
     }
 
@@ -179,16 +184,16 @@ void Event::processHourlyEvent(const std::string& seed)
 
     switch (mCharacter.currentActivity.id)
     {
-    case 0: std::cout << mCharacter.profile.name << " began Cooking...\n\t["; break;
-    case 1: std::cout << mCharacter.profile.name << " began Cleaning the house...\n\t["; break;
-    case 2: std::cout << mCharacter.profile.name << " began Reading in the library...\n\t["; break;
-    case 3: std::cout << mCharacter.profile.name << " began Playing...\n\t["; break;
-    case 4: std::cout << mCharacter.profile.name << " began Bathing...\n\t["; break;
-    case 5: std::cout << mCharacter.profile.name << " began Napping...\n\t["; break;
-    case 6: std::cout << mCharacter.profile.name << " began Sleeping...\n\t["; break;
-    case 14: std::cout << mCharacter.profile.name << " began Fishing...\n\t["; break;
-    case 15: std::cout << mCharacter.profile.name << " began Gathering Plant...\n\t["; break;
-    default: std::cout << mCharacter.profile.name << " began Working as a " << mCharacter.currentActivity.name << "...\n\t["; break;
+    case 0: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cooking..."); break;
+    case 1: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cleaning the house..."); break;
+    case 2: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Reading in the library..."); break;
+    case 3: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Playing..."); break;
+    case 4: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Bathing..."); break;
+    case 5: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Napping..."); break;
+    case 6: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Sleeping..."); break;
+    case 14: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Fishing..."); break;
+    case 15: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Gathering Plant..."); break;
+    default: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Working as a " + mCharacter.currentActivity.name + "..."); break;
     }
   }
 }
@@ -225,7 +230,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
 
     if (mWorld.rollDie(seed, 2, 6) <= targetRoll)
     {
-      std::cout << "\n" << mCharacter.profile.name << " puked.\n";
+      mWorld.logging.addToMainLog(mCharacter.profile.name + " puked.");
       mCharacter.profile.satiation -= 200;
       mCharacter.profile.quench -= 200;
       failedRoll = 100;
@@ -247,13 +252,13 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       //TODO process eating caught vermin
       mCharacter.profile.domesticated -= 20;
       mCharacter.profile.happiness -= 100;
-      std::cout << "\n" << mCharacter.profile.name << " caught and ate a " << caughtVermin.nameCooked << ".\n";
+      mWorld.logging.addToMainLog(mCharacter.profile.name + " caught and ate a " + caughtVermin.nameCooked + ".");
       failedRoll = 100;
     }
     else
     {
       //TODO: process eating food
-      std::cout << "\n" << mCharacter.profile.name << " helped herself to some " << mCharacter.foodInventory.at(0).nameCooked << ".\n";
+      mWorld.logging.addToMainLog(mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).nameCooked + ".");
       failedRoll++;
     }
   }
@@ -472,7 +477,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     }
 
     mEarning += mCharacter.currentActivity.payment;
-    std::cout << "*";
+    mWorld.logging.addToProgress("*");
   }
   else if (successRoll > failedRoll)
   {
@@ -504,7 +509,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     }
 
     mEarning += mCharacter.currentActivity.payment / 2;
-    std::cout << "+";
+    mWorld.logging.addToProgress("+");
 
     //Learn from minor mistakes
     mCharacter.profile.happiness -= 50;
@@ -551,7 +556,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
 
     mCharacter.profile.happiness -= 100;
     mEarning += mCharacter.currentActivity.payment / 8;
-    std::cout << "-";
+    mWorld.logging.addToProgress("-");
   }
 
   //Reduce to max stat if over

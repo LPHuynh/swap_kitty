@@ -58,7 +58,8 @@ void CommandProcessor::submitCharacterCreationCommand(const std::string& charact
   command.param = convertStringToHex(characterName) + convertIntToHex(blockOffset);
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.changeStatusMessage("Submitted Character Creation Command");
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -72,7 +73,7 @@ void CommandProcessor::submitResyncGameClock(uint16_t offset)
   command.param = convertIntToHex(offset);
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile ("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -91,7 +92,7 @@ void CommandProcessor::submitAssignScheduleCommand(uint8_t activity[24])
   }
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -110,7 +111,7 @@ void CommandProcessor::submitAddBookCommand(uint16_t ID[13])
   }
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -129,7 +130,7 @@ void CommandProcessor::submitRemoveBookCommand(uint16_t ID[13])
   }
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -198,7 +199,7 @@ void CommandProcessor::submitManageItemCommand(World::ItemAction itemAction, Wor
   }
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -218,7 +219,7 @@ void CommandProcessor::submitGiftCommand(uint16_t toyID[13])
   }
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -232,7 +233,7 @@ void CommandProcessor::submitFeedCommand(uint16_t foodID, uint16_t potionID)
   command.param = convertIntToHex(foodID) + convertIntToHex(potionID);
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -246,7 +247,7 @@ void CommandProcessor::submitEquipCommand(uint16_t weaponID, uint16_t dressID)
   command.param = convertIntToHex(weaponID) + convertIntToHex(dressID);
 
   std::string commandHex = convertCommandToHex(command);
-  std::cout << "Submitted Command: " << commandHex << "\n";
+  mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
@@ -285,7 +286,7 @@ void CommandProcessor::scanForCommands()
   {
     if (convertHexToString(element.paymentID.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.paymentID.substr(0, 4)) == "SB"))
     {
-      std::cout << "Recieved Command: " << element.paymentID << "\n";
+      mWorld.logging.writeToFile("Recieved Command: " + element.paymentID);
       if (std::stol(element.paymentID.substr(4, 4), 0, 16) >= mWorld.currentRulesetVersion)
       {
         if (element.height >= mCurrentScanHeight)
@@ -297,12 +298,12 @@ void CommandProcessor::scanForCommands()
           }
           else
           {
-            std::cout << "Duplicate New Character Command detected; Ignoring...";
+            mWorld.logging.addToMainLog ("Duplicate New Character Command detected; Ignoring...");
           }
         }
         else
         {
-          std::cout << "Something went wrong: Commands were obtained in the incorrect order.";
+          mWorld.logging.addToMainLog("Something went wrong: Commands were obtained in the incorrect order.");
         }
       }
     }
@@ -349,7 +350,7 @@ void CommandProcessor::processCommand()
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
         mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
         mIsCharacterLoaded = true;
-        std::cout << "\n..::Created New Character::..\n" << mCharacter.fluffText << "\n";
+        mWorld.logging.addToMainLog("..::Created New Character::..\n" + mCharacter.fluffText);
       }
       else if (commands.front().commandCode == "RC")
       {
@@ -357,11 +358,11 @@ void CommandProcessor::processCommand()
         if (mLastTimeResyncRequest < mWorld.currentWorldHeight + 40320)
         {
           mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
-          std::cout << "\n..::Adjusted In-Game Clock::..\n";
+          mWorld.logging.addToMainLog ("..::Adjusted In-Game Clock::..");
         }
         else
         {
-          std::cout << "Time Resync Request Denied. Command already processed recently.";
+          mWorld.logging.addToMainLog("Time Resync Request Denied. Command processed too recently.");
         }
       }
       else if (commands.front().commandCode == "AS")
@@ -370,7 +371,7 @@ void CommandProcessor::processCommand()
         for (int i = 0; i < 24; i++)
         {
           mCharacter.dailySchedule[i] = mCharacter.job.getActivity(std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16));
-          std::cout << "\n..::Made Changes to Daily Schedule::..\n";
+          mWorld.logging.addToMainLog("..::Made Changes to Daily Schedule::..");
         }
       }
       else if (commands.front().commandCode == "AB")
@@ -394,7 +395,7 @@ void CommandProcessor::processCommand()
           
           mCharacter.bookInventory = newBookInventory;
 
-          std::cout << "\n..::Added Some Books to Library::..\n";
+          mWorld.logging.addToMainLog("..::Added Some Books to Library::..");
         }
       }
       else if (commands.front().commandCode == "RB")
@@ -418,85 +419,85 @@ void CommandProcessor::processCommand()
 
           mCharacter.library = newLibraryInventory;
 
-          std::cout << "\n..::Removed Some Books from Library::..\n";
+          mWorld.logging.addToMainLog("..::Removed Some Books from Library::..");
         }
       }
       else if (commands.front().commandCode == "BW")
       {
-        std::cout << "\n..::Bought Some Weapons::..\n";
+        mWorld.logging.addToMainLog("..::Bought Some Weapons::..");
       }
       else if (commands.front().commandCode == "SW")
       {
-        std::cout << "\n..::Sold Some Weapon::..\n";
+        mWorld.logging.addToMainLog("..::Sold Some Weapon::..");
       }
       else if (commands.front().commandCode == "DW")
       {
-        std::cout << "\n..::Discarded Some Weapon::..\n";
+        mWorld.logging.addToMainLog("..::Discarded Some Weapon::..");
       }
       else if (commands.front().commandCode == "BD")
       {
-        std::cout << "\n..::Bought Some Dress::..\n";
+        mWorld.logging.addToMainLog("..::Bought Some Dress::..");
       }
       else if (commands.front().commandCode == "SD")
       {
-        std::cout << "\n..::Sold Some Dress::..\n";
+        mWorld.logging.addToMainLog("..::Sold Some Dress::..");
       }
       else if (commands.front().commandCode == "DD")
       {
-        std::cout << "\n..::Discarded Some Dress::..\n";
+        mWorld.logging.addToMainLog("..::Discarded Some Dress::..");
       }
       else if (commands.front().commandCode == "BF")
       {
-        std::cout << "\n..::Bought Some Food::..\n";
+        mWorld.logging.addToMainLog("..::Bought Some Food::..");
       }
       else if (commands.front().commandCode == "SF")
       {
-        std::cout << "\n..::Sold Some Food::..\n";
+        mWorld.logging.addToMainLog("..::Sold Some Food::..");
       }
       else if (commands.front().commandCode == "DF")
       {
-        std::cout << "\n..::Discarded Some Food::..\n";
+        mWorld.logging.addToMainLog("..::Discarded Some Food::..");
       }
       else if (commands.front().commandCode == "BP")
       {
-        std::cout << "\n..::Bought Some Potions::..\n";
+        mWorld.logging.addToMainLog("..::Bought Some Potions::..");
       }
       else if (commands.front().commandCode == "SP")
       {
-        std::cout << "\n..::Sold Some Potion::..\n";
+        mWorld.logging.addToMainLog("..::Sold Some Potion::..");
       }
       else if (commands.front().commandCode == "DP")
       {
-        std::cout << "\n..::Discarded Some Potion::..\n";
+        mWorld.logging.addToMainLog("..::Discarded Some Potion::..");
       }
       else if (commands.front().commandCode == "BB")
       {
-        std::cout << "\n..::Bought Some Books::..\n";
+        mWorld.logging.addToMainLog("..::Bought Some Books::..");
       }
       else if (commands.front().commandCode == "SB")
       {
-        std::cout << "\n..::Sold Some Book::..\n";
+        mWorld.logging.addToMainLog("..::Sold Some Book::..");
       }
       else if (commands.front().commandCode == "DB")
       {
-      std::cout << "\n..::Discarded Some Books::..\n";
+        mWorld.logging.addToMainLog("..::Discarded Some Books::..");
       }
       else if (commands.front().commandCode == "BT")
       {
-        std::cout << "\n..::Bought Some Toys::..\n";
+        mWorld.logging.addToMainLog("..::Bought Some Toys::..");
       }
       else if (commands.front().commandCode == "ST")
       {
-        std::cout << "\n..::Sold Some Toys::..\n";
+        mWorld.logging.addToMainLog("..::Sold Some Toys::..");
       }
       else if (commands.front().commandCode == "DT")
       {
-        std::cout << "\n..::Discarded Some Toys::..\n";
+        mWorld.logging.addToMainLog("..::Discarded Some Toys::..");
       }
 
       commands.pop_front();
     }
-  }  
+  }
 }
 
 std::string CommandProcessor::convertCommandToHex(const CommandProcessor::Command& command)
@@ -605,6 +606,6 @@ uint8_t CommandProcessor::lookupItemTable(World::ItemType itemType)
   case World::ItemType::potion: return 3;
   case World::ItemType::book: return 4;
   case World::ItemType::toy: return 5;
-  default: std::cout << "Item Lookup error\n"; return uint8_t(-1);
+  default: mWorld.logging.addToMainLog("Item Lookup error"); return uint8_t(-1);
   }
 }
