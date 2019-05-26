@@ -7,6 +7,8 @@ Event::Event(World& world, Character& character, DaemonAPI& daemonAPI) : mWorld(
   mEarning = 0;
   mCookingProgress = 0;
   mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
+  mHeatStrokeCoolDown = 0;
+  mCommonColdCoolDown = 0;
 }
 
 Event::~Event()
@@ -85,9 +87,9 @@ void Event::incrementTime()
       mWorld.logging.addToMainLog(mCharacter.profile.name + " is now " + std::to_string(mCharacter.profile.cosmetic.age) + " years old!");
     }
   }
-  if (time.day == 120)
+  if (time.day == 121)
   {
-    time.day = 0;
+    time.day = 1;
     time.year++;
   }
 }
@@ -98,7 +100,24 @@ void Event::processDailyEvent()
   mCharacter.stat = mCharacter.stat - mWorld.shiftStat(mCharacter.stat, -8);
   mCharacter.skill = mCharacter.skill - mWorld.shiftSkill(mCharacter.skill, -8);
   mCharacter.profile.domesticated -= mCharacter.profile.domesticated >> 8;
+
+  //Cosmetic normalization
   mCharacter.profile.cosmetic.weight -= mCharacter.profile.cosmetic.weight >> 10;
+  if (mCharacter.profile.cosmetic.currentSkinTone < mCharacter.profile.cosmetic.naturalSkinTone)
+  {
+    mCharacter.profile.cosmetic.currentSkinTone += 100;
+  }
+  else
+  {
+    mCharacter.profile.cosmetic.currentSkinTone -= 100;
+  }
+
+  //Detoxification
+  mCharacter.profile.toxicity /= 2;
+  if (mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire)
+  {
+    mCharacter.profile.toxicity /= 2;
+  }
 
   //Height and weight Gain/Loss at midnight if satiated
   if (mCharacter.profile.satiation > 75000 )
@@ -140,11 +159,105 @@ void Event::processHourlyEvent(const std::string& seed)
   mCharacter.residence.cleaniness -= 100 + mCharacter.residence.houseLevel;
   mCharacter.profile.domesticated += 10;
 
-  //Change job
-  if (mCharacter.currentActivity.id != mCharacter.dailySchedule[time.hour].id)
+  if (time.day > 30 && time.day < 61)
   {
-    //Summerize Previous Job
-    
+    //Summer
+    if (mCharacter.currentActivity.isOutdoorActivity)
+    {
+      mCharacter.profile.cosmetic.currentSkinTone += 40;
+      mCharacter.profile.quench -= 40;
+
+      if (mCharacter.equipedDress.isWinterEquip)
+      {
+        if (mWorld.getRandomNumber(seed, 0, 25) == 0)
+        {
+          mHeatStrokeCoolDown += mWorld.getRandomNumber(seed, 1, 6);
+        }
+      }
+      else if (!mCharacter.equipedDress.isSummerEquip)
+      {
+        if (mWorld.getRandomNumber(seed, 0, 100) == 0)
+        {
+          mHeatStrokeCoolDown += mWorld.getRandomNumber(seed, 1, 4);
+        }
+      }
+    }
+    else if (mCharacter.currentActivity.isNearHeatSource)
+    {
+      mCharacter.profile.cosmetic.currentSkinTone += 20;
+
+      if (mCharacter.equipedDress.isWinterEquip)
+      {
+        if (mWorld.getRandomNumber(seed, 0, 100) == 0)
+        {
+          mHeatStrokeCoolDown += mWorld.getRandomNumber(seed, 1, 2);
+        }
+      }
+    }
+  }
+  else if (time.day > 90)
+  {
+    //Winter
+    if (!mCharacter.currentActivity.isOutdoorActivity || !mCharacter.currentActivity.isNearHeatSource)
+    {
+      mCharacter.profile.cosmetic.currentSkinTone -= 10;
+    }
+    else if (mCharacter.currentActivity.isNearHeatSource)
+    {
+      mCharacter.profile.cosmetic.currentSkinTone += 20;
+    }
+
+    if (mCharacter.currentActivity.isOutdoorActivity)
+    {
+      if (mCharacter.equipedDress.isSummerEquip)
+      {
+        if (mWorld.getRandomNumber(seed, 0, 25) == 0)
+        {
+          mCommonColdCoolDown += mWorld.getRandomNumber(seed, 1, 6);
+        }
+      }
+      else if (!mCharacter.equipedDress.isWinterEquip)
+      {
+        if (mWorld.getRandomNumber(seed, 0, 100) == 0)
+        {
+          mCommonColdCoolDown += mWorld.getRandomNumber(seed, 1, 4);
+        }
+      }
+    }
+  }
+  else
+  {
+    //Spring and Autumn
+    if (mCharacter.currentActivity.isOutdoorActivity || mCharacter.currentActivity.isNearHeatSource)
+    {
+      mCharacter.profile.cosmetic.currentSkinTone += 20;
+    }
+  }
+
+  if (mCharacter.profile.toxicity > 100)
+  {
+    if (mCharacter.profile.toxicity - 100 > mWorld.getRandomNumber(seed, 0, 100))
+    {
+      mCommonColdCoolDown = mWorld.getRandomNumber(seed, 1, 3);
+      mCharacter.profile.toxicity /= 2;
+    }
+  }
+
+  //Change job
+  Job::Activity nextJob;
+
+  if (mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
+  {
+    nextJob = mCharacter.job.getActivity("Sleep");
+  }
+  else
+  {
+    nextJob = mCharacter.dailySchedule[time.hour];
+  }
+
+  if (mCharacter.currentActivity.id != nextJob.id)
+  {
+    //Summerize Previous Job    
     std::string summary = "[" + mWorld.logging.progress + "]";
     mWorld.logging.clearProgress();
 
@@ -182,12 +295,39 @@ void Event::processHourlyEvent(const std::string& seed)
         Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
         mCharacter.foodInventory.push_back(caughtVermin);
         mCharacter.profile.domesticated -= 10;
-        mWorld.logging.addToMainLog(mCharacter.profile.name + " brought home a " + caughtVermin.nameCooked + "...");
+
+        switch (mCharacter.currentActivity.id)
+        {
+        case 0: mWorld.logging.addToMainLog(mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while cooking... +(" + caughtVermin.nameCooked + ")"); break;
+        case 1: mWorld.logging.addToMainLog(mCharacter.profile.name + " found a " + caughtVermin.nameCooked + " while cleaning... +(" + caughtVermin.nameCooked + ")"); break;
+        case 2: mWorld.logging.addToMainLog(mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while playing... +(" + caughtVermin.nameCooked + ")"); break;
+        default: mWorld.logging.addToMainLog(mCharacter.profile.name + " brought home a " + caughtVermin.nameCooked + " from work... +(" + caughtVermin.nameCooked + ")"); break;
+        }
+      }
+    }
+
+    //Notify if character is sick
+    if (mCommonColdCoolDown > 0)
+    {
+      mWorld.logging.addToMainLog(mCharacter.profile.name + " came down with the flu and needs to rest...");
+      mCommonColdCoolDown--;
+      if ((mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire) && mHeatStrokeCoolDown > 0)
+      {
+        mCommonColdCoolDown--;
+      }
+    }
+    if (mHeatStrokeCoolDown > 0)
+    {
+      mWorld.logging.addToMainLog(mCharacter.profile.name + " collapsed from the heat and needs to rest...");
+      mHeatStrokeCoolDown--;
+      if ((mCharacter.profile.primaryElement == World::Element::water || mCharacter.profile.secondaryElement == World::Element::water) && mHeatStrokeCoolDown > 0)
+      {
+        mHeatStrokeCoolDown--;
       }
     }
 
     //Start New Job
-    mCharacter.currentActivity = mCharacter.dailySchedule[time.hour];
+    mCharacter.currentActivity = nextJob;
 
     switch (mCharacter.currentActivity.id)
     {

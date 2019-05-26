@@ -17,6 +17,8 @@ public:
     uint8_t id;
     bool isDayActivity;
     bool isNightActivity;
+    bool isOutdoorActivity;
+    bool isNearHeatSource;
     int16_t payment;
     ActivityType activityType;
     int16_t workLevel;

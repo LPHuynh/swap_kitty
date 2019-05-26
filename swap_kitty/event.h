@@ -45,6 +45,8 @@ private:
   uint16_t mCookingProgress;
   uint16_t mFishingProgress;
   uint16_t mGatheringProgress;
+  uint16_t mHeatStrokeCoolDown;
+  uint16_t mCommonColdCoolDown;
   std::vector<std::string> mFoundItem;
   World::Stat mTotalActivityStatGained;
   std::vector<std::string> mFishingResults;

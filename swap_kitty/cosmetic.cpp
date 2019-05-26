@@ -162,35 +162,35 @@ std::string Cosmetic::randomizeEyeStyle(const std::string& seed)
 
 std::string Cosmetic::getSkinToneDescription(int16_t skinTone)
 {
-  if (skinTone < 10)
+  if (skinTone < 1000)
   {
     return "Ghastly White";
   }
-  else if (skinTone < 20)
+  else if (skinTone < 2000)
   {
     return "Snow White";
   }
-  else if (skinTone < 30)
+  else if (skinTone < 3000)
   {
     return "Pale";
   }
-  else if (skinTone < 40)
+  else if (skinTone < 4000)
   {
     return "Fair";
   }
-  else if (skinTone < 50)
+  else if (skinTone < 5000)
   {
     return "Medium Toned";
   }
-  else if (skinTone < 70)
+  else if (skinTone < 7000)
   {
     return "Toned";
   }
-  else if (skinTone < 80)
+  else if (skinTone < 8000)
   {
     return "Tanned";
   }
-  else if (skinTone < 90)
+  else if (skinTone < 9000)
   {
     return "Dark";
   }

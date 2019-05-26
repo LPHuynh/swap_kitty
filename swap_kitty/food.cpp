@@ -386,8 +386,8 @@ void Food::loadRawFood()
   prototype.type = FoodType::fruit;
   prototype.dishLevel = 0;
   prototype.price = 100;
-  prototype.nutrient = 100;
-  prototype.quench = 100;
+  prototype.nutrient = 1000;
+  prototype.quench = 1000;
   prototype.stamina = 0;
   prototype.bonusStat = World::Stat{ 0,0,0,0,0,0,0,0,0,0 };
 
@@ -399,7 +399,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 200;
+  rawFood.nutrient = 2000;
   rawFood.quench = 0;
   rawFood.bonusStat.con = 10;
   rawFood.bonusStat.mag = 20;
@@ -410,8 +410,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 190;
-  rawFood.quench = 10;
+  rawFood.nutrient = 1900;
+  rawFood.quench = 100;
   rawFood.bonusStat.per = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -422,8 +422,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 180;
-  rawFood.quench = 20;
+  rawFood.nutrient = 1800;
+  rawFood.quench = 200;
   rawFood.bonusStat.per = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -434,8 +434,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 150;
-  rawFood.quench = 50;
+  rawFood.nutrient = 1500;
+  rawFood.quench = 500;
   rawFood.bonusStat.wil = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -446,8 +446,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 180;
-  rawFood.quench = 20;
+  rawFood.nutrient = 1800;
+  rawFood.quench = 200;
   rawFood.bonusStat.per = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -458,8 +458,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 170;
-  rawFood.quench = 30;
+  rawFood.nutrient = 1700;
+  rawFood.quench = 300;
   rawFood.bonusStat.per = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -470,8 +470,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 170;
-  rawFood.quench = 30;
+  rawFood.nutrient = 1700;
+  rawFood.quench = 300;
   rawFood.bonusStat.per = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -482,8 +482,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::fruit;
   rawFood.price = 200;
-  rawFood.nutrient = 50;
-  rawFood.quench = 150;
+  rawFood.nutrient = 500;
+  rawFood.quench = 1500;
   rawFood.bonusStat.per = 10;
   rawFood.bonusStat.mag = 10;
   rawFood.bonusStat.chr = 10;
@@ -495,8 +495,8 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::vegatable;
   rawFood.price = 100;
-  rawFood.nutrient = 20;
-  rawFood.quench = 80;
+  rawFood.nutrient = 200;
+  rawFood.quench = 800;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
   mRawVegatables.push_back(rawFood);
@@ -506,7 +506,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::vegatable;
   rawFood.price = 100;
-  rawFood.nutrient = 100;
+  rawFood.nutrient = 1000;
   rawFood.quench = 0;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -517,7 +517,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::vegatable;
   rawFood.price = 100;
-  rawFood.nutrient = 90;
+  rawFood.nutrient = 900;
   rawFood.quench = 10;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -528,7 +528,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::vegatable;
   rawFood.price = 100;
-  rawFood.nutrient = 100;
+  rawFood.nutrient = 1000;
   rawFood.quench = 0;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -539,7 +539,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::vegatable;
   rawFood.price = 100;
-  rawFood.nutrient = 100;
+  rawFood.nutrient = 1000;
   rawFood.quench = 0;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -551,7 +551,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 150;
-  rawFood.nutrient = 150;
+  rawFood.nutrient = 1500;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 10;
   rawFood.bonusStat.per = 15;
@@ -562,7 +562,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 200;
-  rawFood.nutrient = 200;
+  rawFood.nutrient = 2000;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 10;
   rawFood.bonusStat.per = 20;
@@ -573,7 +573,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 210;
-  rawFood.nutrient = 210;
+  rawFood.nutrient = 2100;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 20;
   rawFood.bonusStat.per = 10;
@@ -584,7 +584,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 230;
-  rawFood.nutrient = 230;
+  rawFood.nutrient = 2300;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 20;
   rawFood.bonusStat.per = 15;
@@ -595,7 +595,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 240;
-  rawFood.nutrient = 240;
+  rawFood.nutrient = 2400;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 20;
   rawFood.bonusStat.per = 15;
@@ -606,7 +606,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 270;
-  rawFood.nutrient = 270;
+  rawFood.nutrient = 2700;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 20;
   rawFood.bonusStat.per = 15;
@@ -617,7 +617,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 310;
-  rawFood.nutrient = 310;
+  rawFood.nutrient = 3100;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 25;
   rawFood.bonusStat.per = 15;
@@ -628,7 +628,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::fish;
   rawFood.price = 350;
-  rawFood.nutrient = 350;
+  rawFood.nutrient = 3500;
   rawFood.quench = 0;
   rawFood.bonusStat.dex = 30;
   rawFood.bonusStat.per = 15;
@@ -640,7 +640,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Dead " + rawFood.nameRaw;
   rawFood.type = FoodType::corpse;
   rawFood.price = 10;
-  rawFood.nutrient = 100;
+  rawFood.nutrient = 1000;
   rawFood.quench = 0;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -651,7 +651,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Dead " + rawFood.nameRaw;
   rawFood.type = FoodType::corpse;
   rawFood.price = 10;
-  rawFood.nutrient = 100;
+  rawFood.nutrient = 1000;
   rawFood.quench = 0;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -662,7 +662,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Dead " + rawFood.nameRaw;
   rawFood.type = FoodType::corpse;
   rawFood.price = 10;
-  rawFood.nutrient = 100;
+  rawFood.nutrient = 1000;
   rawFood.quench = 0;
   rawFood.bonusStat.lrn = 10;
   rawFood.bonusStat.wil = 10;
@@ -673,7 +673,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::corpse;
   rawFood.price = 240;
-  rawFood.nutrient = 240;
+  rawFood.nutrient = 2400;
   rawFood.quench = 0;
   rawFood.bonusStat.str = 20;
   rawFood.bonusStat.con = 15;
@@ -684,7 +684,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::corpse;
   rawFood.price = 350;
-  rawFood.nutrient = 350;
+  rawFood.nutrient = 3500;
   rawFood.quench = 0;
   rawFood.bonusStat.str = 30;
   rawFood.bonusStat.con = 15;
@@ -695,7 +695,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = "Raw " + rawFood.nameRaw;
   rawFood.type = FoodType::corpse;
   rawFood.price = 400;
-  rawFood.nutrient = 400;
+  rawFood.nutrient = 4000;
   rawFood.quench = 0;
   rawFood.bonusStat.str = 40;
   rawFood.bonusStat.con = 20;
@@ -707,7 +707,7 @@ void Food::loadRawFood()
   rawFood.nameCooked = rawFood.nameRaw;
   rawFood.type = FoodType::flour;
   rawFood.price = 100;
-  rawFood.nutrient = 75;
+  rawFood.nutrient = 750;
   rawFood.quench = 0;
   mRawFlour = rawFood;
 
@@ -718,7 +718,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 5000;
-  rawFood.nutrient = 500;
+  rawFood.nutrient = 5000;
   rawFood.quench = 0;
   mRawJunkFood.push_back(rawFood);
 
@@ -728,7 +728,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 5500;
-  rawFood.nutrient = 500;
+  rawFood.nutrient = 5000;
   rawFood.quench = 0;
   mRawJunkFood.push_back(rawFood);
 
@@ -738,7 +738,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 7500;
-  rawFood.nutrient = 500;
+  rawFood.nutrient = 5000;
   rawFood.quench = 0;
   rawFood.stamina = 300;
   mRawJunkFood.push_back(rawFood);
@@ -749,7 +749,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 1000;
-  rawFood.nutrient = 200;
+  rawFood.nutrient = 2000;
   rawFood.quench = 0;
   mRawJunkFood.push_back(rawFood);
 
@@ -759,7 +759,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 1500;
-  rawFood.nutrient = 200;
+  rawFood.nutrient = 2000;
   rawFood.quench = 0;
   mRawJunkFood.push_back(rawFood);
 
@@ -769,7 +769,7 @@ void Food::loadRawFood()
   rawFood.type = FoodType::junkFood;
   rawFood.dishLevel = 99;
   rawFood.price = 2000;
-  rawFood.nutrient = 500;
+  rawFood.nutrient = 5000;
   rawFood.quench = 0;
   mRawJunkFood.push_back(rawFood);
 }

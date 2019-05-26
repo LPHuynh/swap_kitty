@@ -85,77 +85,77 @@ void Potion::loadPotion()
   potion = prototype;
   potion.name = "Pond Water";
   potion.price = 10;
-  potion.nutrient = 5;
-  potion.quench = 400;
-  potion.toxicity = 10;
+  potion.nutrient = 50;
+  potion.quench = 4000;
+  potion.toxicity = 100;
   mCommonPotions.push_back(potion);
 
   potion = prototype;
   potion.name = "Water";
   potion.price = 10;
-  potion.quench = 600;
+  potion.quench = 6000;
   mCommonPotions.push_back(potion);
 
   potion = prototype;
   potion.name = "Milk";
   potion.price = 500;
   potion.nutrient = 20;
-  potion.quench = 800;
-  potion.stamina = 40;
+  potion.quench = 8000;
+  potion.stamina = 400;
   mCommonPotions.push_back(potion);
 
   potion = prototype;
   potion.name = "Juice";
   potion.price = 400;
-  potion.nutrient = 15;
-  potion.quench = 700;
-  potion.stamina = 40;
+  potion.nutrient = 150;
+  potion.quench = 7000;
+  potion.stamina = 400;
   mCommonPotions.push_back(potion);
 
   potion = prototype;
   potion.name = "Soda";
   potion.price = 500;
-  potion.nutrient = 15;
-  potion.quench = 600;
-  potion.stamina = 50;
+  potion.nutrient = 150;
+  potion.quench = 6000;
+  potion.stamina = 500;
   mCommonPotions.push_back(potion);
 
   //Ruleset v1: uncommon potion slot 0-2
   potion = prototype;
-  potion.name = "Coffee";
-  potion.price = 900;
-  potion.nutrient = 15;
-  potion.quench = 300;
-  potion.stamina = 100;
-  potion.toxicity = 5;
+  potion.name = "Green Tea";
+  potion.price = 500;
+  potion.quench = 8000;
+  potion.toxicity = -25;
   mUncommonPotions.push_back(potion);
 
   potion = prototype;
-  potion.name = "Beer";
-  potion.price = 800;
-  potion.nutrient = 25;
-  potion.quench = 300;
-  potion.stamina = 30;
-  potion.toxicity = 20;
+  potion.name = "Coffee";
+  potion.price = 900;
+  potion.nutrient = 150;
+  potion.quench = 3000;
+  potion.stamina = 1000;
+  potion.toxicity = 50;
   mUncommonPotions.push_back(potion);
 
   potion = prototype;
   potion.name = "Energy Drink";
   potion.price = 1000;
-  potion.nutrient = 25;
-  potion.quench = 400;
-  potion.stamina = 200;
-  potion.toxicity = 10;
+  potion.nutrient = 250;
+  potion.quench = 4000;
+  potion.stamina = 2000;
+  potion.toxicity = 100;
+  potion.bonusStat.str = 100;
+  potion.bonusStat.wil = 100;
   mUncommonPotions.push_back(potion);
 
   //Ruleset v1: rare potion slot 0-0
   potion = prototype;
   potion.name = "Potential";
   potion.price = 5000;
-  potion.nutrient = 5;
-  potion.quench = 200;
+  potion.nutrient = 50;
+  potion.quench = 2000;
   potion.stamina = 0;
-  potion.toxicity = 10;
+  potion.toxicity = 200;
   potion.bonusStat = World::Stat{ 100,100,100,100,100,100,100,100,100,100 };
   mRarePotions.push_back(potion);
 }

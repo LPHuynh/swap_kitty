@@ -41,6 +41,8 @@ void Job::loadActivity()
   prototype.name =  "";
   prototype.isDayActivity = true;
   prototype.isNightActivity = false;
+  prototype.isOutdoorActivity = false;
+  prototype.isNearHeatSource = false;
   prototype.payment = 0;
   prototype.activityType = ActivityType::domestic;
   prototype.workLevel = 0;
@@ -62,8 +64,8 @@ void Job::loadActivity()
   activity.workStat.lrn = 40;
   activity.workSkill.cooking = 40;
   activity.workSkill.sword = 40;
-  prototype.staminaUsed = 10;
-  prototype.quenchUsed = 5;
+  activity.staminaUsed = 100;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -76,8 +78,8 @@ void Job::loadActivity()
   activity.workStat.lrn = 40;
   activity.workSkill.cleaning = 40;
   activity.workSkill.stave = 40;
-  activity.staminaUsed = 10;
-  activity.quenchUsed = 5;
+  activity.staminaUsed = 100;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -90,8 +92,8 @@ void Job::loadActivity()
   activity.workStat.dex = 40;
   activity.workSkill.art = 30;
   activity.workSkill.music = 30;
-  activity.staminaUsed = 10;
-  activity.quenchUsed = 10;
+  activity.staminaUsed = 100;
+  activity.quenchUsed = 100;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -103,8 +105,8 @@ void Job::loadActivity()
   activity.workStat.wil = 40;
   activity.workStat.lrn = 40;
   activity.workSkill.literacy = 60;
-  activity.staminaUsed = 5;
-  activity.quenchUsed = 5;
+  activity.staminaUsed = 50;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -114,8 +116,8 @@ void Job::loadActivity()
   activity.activityType = ActivityType::self;
   activity.workLevel = 1;
   activity.workStat.wil = 20;
-  activity.staminaUsed = 5;
-  activity.quenchUsed = 5;
+  activity.staminaUsed = 50;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -124,8 +126,8 @@ void Job::loadActivity()
   activity.activityType = ActivityType::self;
   activity.workLevel = 1;
   activity.workStat.wil = 40;
-  activity.staminaUsed = 5;
-  activity.quenchUsed = 5;
+  activity.staminaUsed = 50;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -135,8 +137,8 @@ void Job::loadActivity()
   activity.activityType = ActivityType::self;
   activity.workLevel = 1;
   activity.workStat.wil = 20;
-  activity.staminaUsed = 5;
-  activity.quenchUsed = 5;
+  activity.staminaUsed = 50;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -148,8 +150,8 @@ void Job::loadActivity()
   activity.workStat.lrn = 40;
   activity.workSkill.cleaning = 40;
   activity.workSkill.service = 60;
-  activity.staminaUsed = 15;
-  activity.quenchUsed = 10;
+  activity.staminaUsed = 150;
+  activity.quenchUsed = 100;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -163,8 +165,8 @@ void Job::loadActivity()
   activity.workStat.lrn = 70;
   activity.workSkill.cleaning = 30;
   activity.workSkill.service = 60;
-  activity.staminaUsed = 10;
-  activity.quenchUsed = 5;
+  activity.staminaUsed = 100;
+  activity.quenchUsed = 50;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -176,20 +178,21 @@ void Job::loadActivity()
   activity.workStat.lrn = 80;
   activity.workSkill.cleaning = 80;
   activity.workSkill.service = 70;
-  activity.staminaUsed = 15;
-  activity.quenchUsed = 10;
+  activity.staminaUsed = 150;
+  activity.quenchUsed = 100;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Street Artist";
+  activity.isOutdoorActivity = true;
   activity.payment = 80;
   activity.workLevel = 1;
   activity.activityType = ActivityType::entertainment;
   activity.workStat.chr = 40;
   activity.workStat.lrn = 40;
   activity.workSkill.art = 60;
-  activity.staminaUsed = 10;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 100;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -202,8 +205,8 @@ void Job::loadActivity()
   activity.workStat.dex = 70;
   activity.workSkill.art = 70;
   activity.workSkill.music = 60;
-  activity.staminaUsed = 15;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 150;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -216,8 +219,8 @@ void Job::loadActivity()
   activity.workStat.mag = 70;
   activity.workSkill.stave = 50;
   activity.workSkill.art = 70;
-  activity.staminaUsed = 20;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 200;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -230,12 +233,13 @@ void Job::loadActivity()
   activity.workStat.dex = 70;
   activity.workSkill.art = 80;
   activity.workSkill.music = 90;
-  activity.staminaUsed = 20;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 200;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Fishing";
+  activity.isOutdoorActivity = true;
   activity.payment = 0;
   activity.workLevel = 1;
   activity.activityType = ActivityType::agriculture;
@@ -243,12 +247,13 @@ void Job::loadActivity()
   activity.workStat.dex = 40;
   activity.workSkill.fishing = 80;
   activity.workSkill.water = 40;
-  activity.staminaUsed = 15;
-  activity.quenchUsed = 25;
+  activity.staminaUsed = 150;
+  activity.quenchUsed = 250;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Plant Gatherer";
+  activity.isOutdoorActivity = true;
   activity.payment = 0;
   activity.workLevel = 1;
   activity.activityType = ActivityType::agriculture;
@@ -256,12 +261,13 @@ void Job::loadActivity()
   activity.workStat.lrn = 40;
   activity.workSkill.farming = 40;
   activity.workSkill.earth = 20;
-  activity.staminaUsed = 15;
-  activity.quenchUsed = 20;
+  activity.staminaUsed = 150;
+  activity.quenchUsed = 200;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Industrial Fisher";
+  activity.isOutdoorActivity = true;
   activity.payment = 150;
   activity.workLevel = 2;
   activity.activityType = ActivityType::agriculture;
@@ -269,12 +275,13 @@ void Job::loadActivity()
   activity.workStat.dex = 70;
   activity.workSkill.fishing = 60;
   activity.workSkill.water = 20;
-  activity.staminaUsed = 20;
-  activity.quenchUsed = 25;
+  activity.staminaUsed = 200;
+  activity.quenchUsed = 250;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Farm";
+  activity.isOutdoorActivity = true;
   activity.payment = 150;
   activity.workLevel = 2;
   activity.activityType = ActivityType::agriculture;
@@ -282,8 +289,8 @@ void Job::loadActivity()
   activity.workStat.con = 70;
   activity.workSkill.farming = 60;
   activity.workSkill.earth = 20;
-  activity.staminaUsed = 25;
-  activity.quenchUsed = 25;
+  activity.staminaUsed = 250;
+  activity.quenchUsed = 250;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -295,12 +302,13 @@ void Job::loadActivity()
   activity.workStat.wil = 70;
   activity.workSkill.sword = 60;
   activity.workSkill.choas = 20;
-  activity.staminaUsed = 20;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 200;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Hunting";
+  activity.isOutdoorActivity = true;
   activity.payment = 200;
   activity.workLevel = 3;
   activity.activityType = ActivityType::agriculture;
@@ -308,12 +316,13 @@ void Job::loadActivity()
   activity.workStat.wil = 90;
   activity.workSkill.choas = 40;
   activity.workSkill.evasion = 80;
-  activity.staminaUsed = 20;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 200;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Wood Cutter";
+  activity.isOutdoorActivity = true;
   activity.payment = 170;
   activity.workLevel = 1;
   activity.activityType = ActivityType::heavyIndustry;
@@ -321,8 +330,8 @@ void Job::loadActivity()
   activity.workStat.con = 60;
   activity.workSkill.axe = 70;
   activity.workSkill.woodWorking = 70;
-  activity.staminaUsed = 15;
-  activity.quenchUsed = 15;
+  activity.staminaUsed = 150;
+  activity.quenchUsed = 150;
   mActivity.push_back(activity);
 
   activity = prototype;
@@ -334,12 +343,13 @@ void Job::loadActivity()
   activity.workStat.con = 80;
   activity.workSkill.earth = 70;
   activity.workSkill.stoneWorking = 70;
-  activity.staminaUsed = 30;
-  activity.quenchUsed = 20;
+  activity.staminaUsed = 300;
+  activity.quenchUsed = 200;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Black Smither";
+  activity.isNearHeatSource = true;
   activity.payment = 210;
   activity.workLevel = 2;
   activity.activityType = ActivityType::heavyIndustry;
@@ -347,12 +357,13 @@ void Job::loadActivity()
   activity.workStat.con = 60;
   activity.workSkill.fire = 60;
   activity.workSkill.metalworking = 70;
-  activity.staminaUsed = 25;
-  activity.quenchUsed = 25;
+  activity.staminaUsed = 250;
+  activity.quenchUsed = 250;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Ship Wright";
+  prototype.isOutdoorActivity = true;
   activity.payment = 220;
   activity.workLevel = 2;
   activity.activityType = ActivityType::heavyIndustry;
@@ -360,12 +371,13 @@ void Job::loadActivity()
   activity.workStat.dex = 60;
   activity.workSkill.bludgeon = 70;
   activity.workSkill.woodWorking = 70;
-  activity.staminaUsed = 25;
-  activity.quenchUsed = 25;
+  activity.staminaUsed = 250;
+  activity.quenchUsed = 250;
   mActivity.push_back(activity);
 
   activity = prototype;
   activity.name = "Iron Smelter";
+  activity.isNearHeatSource = true;
   activity.payment = 280;
   activity.workLevel = 3;
   activity.activityType = ActivityType::heavyIndustry;
@@ -373,8 +385,8 @@ void Job::loadActivity()
   activity.workStat.dex = 50;
   activity.workSkill.fire = 50;
   activity.workSkill.metalworking = 80;
-  activity.staminaUsed = 25;
-  activity.quenchUsed = 25;
+  activity.staminaUsed = 250;
+  activity.quenchUsed = 250;
   mActivity.push_back(activity);
 
   uint8_t i = 0;
