@@ -214,19 +214,19 @@ void App::runLoadingState()
 
               if (mIsCharacterCreated)
               {
-                mGui.get<tgui::ChildWindow>("ChildWindowNewChara")->setEnabled(false);
+                mGui.get<tgui::Button>("ButtonNewCharaCreate")->setEnabled(false);
+                mGui.get<tgui::Label>("LabelBottom")->setText("New Being generated. This process may take a few minute...");
                 if (mCommandProcessor.scanForCharacterCreationCommand())
                 {
                   mCommandProcessor.processCommand();
                   mEvent.init();
                   mGui.removeAllWidgets();
                   gameState = GameState::mainGame;
-                  mGui.get<tgui::TextBox>("TextBoxNewCharaBottom")->setText("New Being generated. This process may take a few minute...");
                 }
               }
-              else if (mSwapBalance.unlockedBalance > 1000000000)
+              else if (mSwapBalance.unlockedBalance > 100000000)
               {
-                mGui.get<tgui::ChildWindow>("ChildWindowNewChara")->setEnabled(true);
+                mGui.get<tgui::Button>("ButtonNewCharaCreate")->setEnabled(true);
               }
             }
 

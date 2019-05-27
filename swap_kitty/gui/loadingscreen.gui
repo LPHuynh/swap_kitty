@@ -75,11 +75,6 @@ ChildWindow.ChildWindowNewChara {
             textcolor = #3C3C3C;
             textcolordown = black;
             textcolorhover = black;
-            texture = None;
-            texturedisabled = None;
-            texturedown = None;
-            texturefocused = None;
-            texturehover = None;
         }
     }
 
@@ -129,27 +124,21 @@ ChildWindow.ChildWindowNewChara {
         }
     }
 
-    Label.Label1 {
+    Label.LabelTop {
         Position = (20, 19.3683);
         ScrollbarPolicy = Never;
         Size = (477.2, 68.6317);
-        Text = "No character detected at this wallet address...\nTo begin your adventure, you'll need to deposit at least 0.001XWP to your Game Wallet.";
+        Text = "No character detected at this wallet address...\nTo begin your adventure, you'll need to deposit at least 0.0001XWP to your Game Wallet.";
         TextSize = 13;
         renderer = &1;
     }
 
-    Label.Label2 {
+    Label.LabelBottom {
         Position = (20, 250);
         ScrollbarPolicy = Never;
         Size = (477.2, 38);
         Text = "Please write down and keep your mnemonic seed safe. You'll need it to restore your game or access the balance via the Swap GUI/CLI Wallet.";
         TextSize = 13;
-
-        Renderer {
-            backgroundcolor = transparent;
-            bordercolor = #3C3C3C;
-            borders = (0, 0, 0, 0);
-            textcolor = #3C3C3C;
-        }
+        renderer = &1;
     }
 }
