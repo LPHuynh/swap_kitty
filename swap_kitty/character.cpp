@@ -55,7 +55,7 @@ void Character::consumeFood(uint16_t id)
       {
         profile.domesticated -= 100;
         profile.happiness -= 100;
-        mWorld.logging.addToMainLog("\t" + profile.name + " was forced to eat a small vermin! Yuck!");
+        mWorld.logging.addToMainLog("\t\t" + profile.name + " was forced to eat a small vermin! Yuck!");
       }
     }
     else if (foodInventory.at(i).type == Food::FoodType::fruit)
@@ -64,13 +64,13 @@ void Character::consumeFood(uint16_t id)
       {
         profile.domesticated += 100;
         profile.happiness += 200;
-        mWorld.logging.addToMainLog("\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
+        mWorld.logging.addToMainLog("\t\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
       }
       else if (foodInventory.at(i).nameRaw == favouriteFruitDish.nameRaw || foodInventory.at(i).dishLevel == favouriteFruitDish.dishLevel)
       {
         profile.domesticated += 20;
         profile.happiness += 100;
-        mWorld.logging.addToMainLog("\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
+        mWorld.logging.addToMainLog("\t\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
       }
     }
     else if (foodInventory.at(i).type == Food::FoodType::vegatable)
@@ -79,7 +79,7 @@ void Character::consumeFood(uint16_t id)
       {
         profile.domesticated += 20;
         profile.happiness += 100;
-        mWorld.logging.addToMainLog("\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
+        mWorld.logging.addToMainLog("\t\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
       }
     }
     else if (foodInventory.at(i).type == Food::FoodType::flour)
@@ -92,7 +92,7 @@ void Character::consumeFood(uint16_t id)
       {
         profile.domesticated += 500;
         profile.happiness += 500;
-        mWorld.logging.addToMainLog("\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
+        mWorld.logging.addToMainLog("\t\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
       }
     }
 
@@ -101,7 +101,7 @@ void Character::consumeFood(uint16_t id)
     profile.satiation += foodInventory.at(i).nutrient;
     profile.quench += foodInventory.at(i).quench;
 
-    std::string text = "\t";
+    std::string text = "\t\t";
     if (foodInventory.at(i).stamina > 0)
     {
       text += "+" + std::to_string(foodInventory.at(i).stamina) + "Stamina ";
@@ -140,7 +140,7 @@ void Character::consumePotion(uint16_t id)
     if (potionInventory.at(i).name == "Milk")
     {
       profile.cosmetic.milkDrinkingCounter += 10;
-      mWorld.logging.addToMainLog("\tThis is good for " + profile.name + "'s growth!");
+      mWorld.logging.addToMainLog("\t\tThis is good for " + profile.name + "'s growth!");
     }
     else if (potionInventory.at(i).name == "Pond Water")
     {
@@ -149,7 +149,7 @@ void Character::consumePotion(uint16_t id)
       {
         profile.domesticated -= 100;
         profile.happiness -= 100;
-        mWorld.logging.addToMainLog("\t" + profile.name + " was forced to drick out of a nearby pond! Yuck!");
+        mWorld.logging.addToMainLog("\t\t" + profile.name + " was forced to drick out of a nearby pond! Yuck!");
       }
     }
 
@@ -158,7 +158,7 @@ void Character::consumePotion(uint16_t id)
     profile.satiation += potionInventory.at(i).nutrient;
     profile.quench += potionInventory.at(i).quench;
 
-    std::string text = "\t";
+    std::string text = "\t\t";
     if (potionInventory.at(i).stamina > 0)
     {
       text += "+" + std::to_string(potionInventory.at(i).stamina) + "Stamina ";
@@ -248,11 +248,11 @@ void Character::updateFluffText()
   }
   else if (profile.domesticated < 2500)
   {
-    domesticationText = "Her hunting insticts are strong.";
+    domesticationText = "Her hunting instincts are strong.";
   }
   else if (profile.domesticated < 5000)
   {
-    domesticationText = "She still retained some of her hunting insticts.";
+    domesticationText = "She still retained some of her hunting instincts.";
   }
   else if (profile.domesticated < 7500)
   {
@@ -350,7 +350,7 @@ void Character::generateStartingStats(const std::string& seed)
   dailySchedule[2] = job.getActivity("Sleep");
   dailySchedule[3] = job.getActivity("Cooking");
   dailySchedule[4] = job.getActivity("Cleaning");
-  dailySchedule[5] = job.getActivity("Waitress");
+  dailySchedule[5] = job.getActivity("Read Book");
   dailySchedule[6] = job.getActivity("Waitress");
   dailySchedule[7] = job.getActivity("Waitress");
   dailySchedule[8] = job.getActivity("Nap");

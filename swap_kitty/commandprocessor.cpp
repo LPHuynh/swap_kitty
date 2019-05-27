@@ -350,7 +350,7 @@ void CommandProcessor::processCommand()
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
         mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
         mIsCharacterLoaded = true;
-        mWorld.logging.addToMainLog("..::Created New Character::..\n" + mCharacter.fluffText);
+        mWorld.logging.addToMainLog("..::New Character Created::..\n" + mCharacter.fluffText);
       }
       else if (commands.front().commandCode == "RC")
       {

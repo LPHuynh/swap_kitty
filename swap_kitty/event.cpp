@@ -21,20 +21,55 @@ void Event::init()
   updateTime();
   updateCheckedStat();
 
+  //Date announcement
+  std::string dayOfMonthText = std::to_string(time.day);
+  std::string monthText = "";
+
+  switch (time.day)
+  {
+  case 1: case 21: dayOfMonthText += "st"; break;
+  case 2: case 22: dayOfMonthText += "nd"; break;
+  case 3: case 23: dayOfMonthText += "rd"; break;
+  default: dayOfMonthText += "th"; break;
+  }
+
+  switch (time.month)
+  {
+  case 1: monthText = "Spring"; break;
+  case 2: monthText = "Sumner"; break;
+  case 3: monthText = "Fall"; break;
+  case 4: monthText = "Winter"; break;
+  }
+
+  mWorld.logging.addToMainLog("--::-::-- " + dayOfMonthText + " of " + monthText + ", year " + std::to_string(time.year) + " --::-::--");
+
+  if (time.day == 1)
+  {
+    if (time.month == 1)
+    {
+      mWorld.logging.addToMainLog("It's the first day of the New Year!");
+    }
+    else
+    {
+      mWorld.logging.addToMainLog("It's the first day of " + monthText + "!");
+    }
+  }
+
+  //Initial Job
   mCharacter.currentActivity = mCharacter.dailySchedule[time.hour];
 
   switch (mCharacter.currentActivity.id)
   {
-  case 0: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cooking..."); break;
-  case 1: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cleaning the house..."); break;
-  case 2: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Reading in the library..."); break;
-  case 3: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Playing..."); break;
-  case 4: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Bathing..."); break;
-  case 5: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Napping..."); break;
-  case 6: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Sleeping..."); break;
-  case 14: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Fishing..."); break;
-  case 15: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Gathering Plants..."); break;
-  default: mWorld.logging.addToMainLog(mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "..."); break;
+  case 0: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cooking..."); break;
+  case 1: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cleaning the house..."); break;
+  case 2: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Reading in the library..."); break;
+  case 3: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Playing..."); break;
+  case 4: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Bathing..."); break;
+  case 5: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Napping..."); break;
+  case 6: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Sleeping..."); break;
+  case 14: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Fishing..."); break;
+  case 15: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Gathering Plants..."); break;
+  default: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "..."); break;
   }
 }
 
@@ -67,38 +102,69 @@ void Event::incrementTime()
   {
     time.quarterminute = 0;
     time.minute++;
-  }
-  if (time.minute == 60)
-  {
-    time.minute = 0;
-    time.hour++;
-  }
-  if (time.hour == 24)
-  {
-    time.hour = 0;
-    time.day++;
-  }
-  if (time.day == 121)
-  {
-    time.day = 1;
-    time.year++;
+    if (time.minute == 60)
+    {
+      time.minute = 0;
+      time.hour++;
+
+      if (time.hour == 24)
+      {
+        time.hour = 0;
+        time.day++;
+        if (time.day == 31)
+        {
+          time.day = 1;
+          time.month++;
+          if (time.month == 4)
+          {
+            time.month = 1;
+            time.year++;
+          }
+        }
+      }
+    }
   }
 }
 
 void Event::processDailyEvent()
 {
-  //Seasonal announcement
+  //Date announcement
+  std::string dayOfMonthText = std::to_string(time.day);
+  std::string monthText = "";
+
   switch (time.day)
   {
-  case 1: mWorld.logging.addToMainLog("It's Spring!"); break;
-  case 31: mWorld.logging.addToMainLog("It's Summer!"); break;
-  case 61: mWorld.logging.addToMainLog("It's Autumn!"); break;
-  case 91: mWorld.logging.addToMainLog("It's Winter!"); break;
+  case 1: case 21: dayOfMonthText += "st"; break;
+  case 2: case 22: dayOfMonthText += "nd"; break;
+  case 3: case 23: dayOfMonthText += "rd"; break;
+  default: dayOfMonthText += "th"; break;
   }
 
-  mCharacter.profile.cosmetic.ageCounter++;
+  switch (time.month)
+  {
+  case 1: monthText = "Spring"; break;
+  case 2: monthText = "Sumner"; break;
+  case 3: monthText = "Fall"; break;
+  case 4: monthText = "Winter"; break;
+  }
+
+  mWorld.logging.addToMainLog ("--::-::-- " + dayOfMonthText + " of " + monthText + ", year " + std::to_string(time.year) + " --::-::--");
+  
+  if (time.day == 1)
+  {
+    if (time.month == 1)
+    {
+      mWorld.logging.addToMainLog("It's the first day of the New Year!");
+    }
+    else
+    {
+      mWorld.logging.addToMainLog("It's the first day of " + monthText + "!");
+    }
+  }
 
   //Birthday announcement
+  mCharacter.profile.cosmetic.ageCounter++;
+
   if (mCharacter.profile.cosmetic.ageCounter == 120)
   {
     mCharacter.profile.cosmetic.age++;
@@ -198,7 +264,7 @@ void Event::processHourlyEvent(const std::string& seed)
     }
   }
 
-  if (time.day > 30 && time.day < 61)
+  if (time.month == 2)
   {
     //Summer
     if (mCharacter.currentActivity.isOutdoorActivity && !mWorld.isNighttime)
@@ -234,7 +300,7 @@ void Event::processHourlyEvent(const std::string& seed)
       }
     }
   }
-  else if (time.day > 90)
+  else if (time.month == 4)
   {
     //Winter
     if (!mCharacter.currentActivity.isOutdoorActivity || !mCharacter.currentActivity.isNearHeatSource)
@@ -287,7 +353,7 @@ void Event::processHourlyEvent(const std::string& seed)
 
   if (mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
   {
-    if (time.hour > 5 || time.hour < 20)
+    if (time.hour > 5 || time.hour < 20) //6:00AM to 7:59PM
     {
       nextJob = mCharacter.job.getActivity("Nap");
     }
@@ -333,7 +399,7 @@ void Event::processHourlyEvent(const std::string& seed)
   //Notify if character is sick
   if (mCommonColdCoolDown > 0)
   {
-    mWorld.logging.addToMainLog(mCharacter.profile.name + " came down with the flu and needs to rest...");
+    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " came down with the flu and needs to rest...");
     mCommonColdCoolDown--;
     if ((mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire) && mHeatStrokeCoolDown > 0)
     {
@@ -342,7 +408,7 @@ void Event::processHourlyEvent(const std::string& seed)
   }
   if (mHeatStrokeCoolDown > 0)
   {
-    mWorld.logging.addToMainLog(mCharacter.profile.name + " collapsed from the heat and needs to rest...");
+    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " collapsed from the heat and needs to rest...");
     mHeatStrokeCoolDown--;
     if ((mCharacter.profile.primaryElement == World::Element::water || mCharacter.profile.secondaryElement == World::Element::water) && mHeatStrokeCoolDown > 0)
     {
@@ -353,27 +419,27 @@ void Event::processHourlyEvent(const std::string& seed)
   //Time announcement
   switch (time.hour)
   {
-  case 6: mWorld.logging.addToMainLog("It's Morning!"); mWorld.isNighttime = false; break;
-  case 20: mWorld.logging.addToMainLog("It's Nighttime!"); mWorld.isNighttime = true; break;
+  case 6: mWorld.logging.addToMainLog("It's Morning!"); mWorld.isNighttime = false; break; //6AM
+  case 20: mWorld.logging.addToMainLog("It's Nighttime!"); mWorld.isNighttime = true; break; //8PM
   }
 
+  //Start New Job
   if (mCharacter.currentActivity.id != nextJob.id)
   {
-    //Start New Job
     mCharacter.currentActivity = nextJob;
 
     switch (mCharacter.currentActivity.id)
     {
-    case 0: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cooking..."); break;
-    case 1: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Cleaning the house..."); break;
-    case 2: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Reading in the library..."); break;
-    case 3: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Playing..."); break;
-    case 4: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Bathing..."); break;
-    case 5: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Napping..."); break;
-    case 6: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Sleeping..."); break;
-    case 14: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Fishing..."); break;
-    case 15: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Gathering Plant..."); break;
-    default: mWorld.logging.addToMainLog(mCharacter.profile.name + " began Working as a " + mCharacter.currentActivity.name + "..."); break;
+    case 0: mWorld.logging.addToMainLog("[" +std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cooking..."); break;
+    case 1: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cleaning the house..."); break;
+    case 2: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Reading in the library..."); break;
+    case 3: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Playing..."); break;
+    case 4: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Bathing..."); break;
+    case 5: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Napping..."); break;
+    case 6: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Sleeping..."); break;
+    case 14: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Fishing..."); break;
+    case 15: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Gathering Plant..."); break;
+    default: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Working as a " + mCharacter.currentActivity.name + "..."); break;
     }
   }
 }
@@ -410,7 +476,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
 
     if (mWorld.rollDie(seed, 2, 6) <= targetRoll)
     {
-      mWorld.logging.addToMainLog(mCharacter.profile.name + " puked.");
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " puked.");
       mCharacter.profile.satiation -= 200;
       mCharacter.profile.quench -= 200;
       failedRoll = 100;
@@ -430,13 +496,13 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     {
       Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
       mCharacter.foodInventory.push_back(caughtVermin);
-      mWorld.logging.addToMainLog(mCharacter.profile.name + " caught and ate a " + caughtVermin.nameCooked + ".");
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught and ate a " + caughtVermin.nameCooked + ".");
       mCharacter.consumeFood(caughtVermin.id);
       failedRoll = 100;
     }
     else
     {
-      mWorld.logging.addToMainLog(mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).nameCooked + ".");
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).nameCooked + ".");
       mCharacter.consumeFood(mCharacter.foodInventory.at(0).id);
       failedRoll++;
     }
@@ -471,7 +537,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
         selectedName = water.name;
       }
     }
-    mWorld.logging.addToMainLog(mCharacter.profile.name + " helped herself to some " + selectedName + ".");
+    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + selectedName + ".");
     mCharacter.consumePotion(selectedID);
     failedRoll++;
   }
@@ -814,7 +880,8 @@ void Event::updateTime()
 {
   uint64_t offsetedHeight = mWorld.currentWorldHeight - mWorld.localTimeOffset;
   time.year = uint8_t(offsetedHeight / uint64_t(691200));       //There are 120 in-game days per year (30 days per season)
-  time.day = uint8_t(offsetedHeight % uint64_t(691200) / 5760 + 1);
+  time.month = uint8_t(offsetedHeight % uint64_t(691200) / 172800 + 1);
+  time.day = uint8_t(offsetedHeight % uint64_t(172800) / 5760 + 1);
   time.hour = uint8_t((offsetedHeight % 5760) / 240);
   time.minute = uint8_t((offsetedHeight % 240) / 4);
   time.quarterminute = uint8_t((offsetedHeight % 4));
