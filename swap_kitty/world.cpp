@@ -10,6 +10,7 @@ World::World()
   isNighttime = false;
   localTimeOffset = 0;
   mIDCounter = 1; //0 is used to indicate non-existing items
+  mNonceCounter = 0;
 }
 
 World::~World()

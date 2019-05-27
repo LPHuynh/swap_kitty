@@ -21,6 +21,8 @@ public:
     uint8_t hour;
     uint8_t minute;
     uint8_t quarterminute;
+    std::string timeString;
+    std::string dateString;
   };
 
   void processEvent();

@@ -10,8 +10,8 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   inFile >> jsonDatabase;
   inFile.close();
 
-  mSetting.windowHeight = 400;
-  mSetting.windowWidth = 600;
+  mSetting.windowWidth = 800;
+  mSetting.windowHeight = 600;
   mSetting.windowTitle = "Swap Kitty";
   mSetting.lastestRulesetVersion = 1;
   mSetting.isBetaVersion = false;
@@ -25,14 +25,9 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   mSetting.mixin = jsonDatabase["config"]["wallet"]["mixin"];
   mSetting.frameRate = jsonDatabase["config"]["game"]["framerate"];
 
-  mWorld.lastestRulesetVersion = mSetting.lastestRulesetVersion;
-
   mWindow.create(sf::VideoMode(mSetting.windowWidth, mSetting.windowHeight), mSetting.windowTitle);
   mWindow.setFramerateLimit(mSetting.frameRate);
   mGui.setTarget(mWindow);
-
-  gameState = GameState::newGameMenu;
-  newGameOption = NewGameOption::waiting;
 
   if (!mDaemonAPI.init(mSetting.daemonHost, mSetting.daemonPort))
   {
@@ -66,7 +61,12 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
 
   inFile.close();
 
-  mLoadTitleScreen();
+  mSwapBalance = { 0,0 };  
+  mWorld.lastestRulesetVersion = mSetting.lastestRulesetVersion;
+  gameState = GameState::titleScreen;
+  newGameOption = NewGameOption::waiting;
+  isGUILoaded = false;
+  mIsCharacterCreated = false;
 }
 
 App::~App()
@@ -103,73 +103,25 @@ App::~App()
 
 void App::run()
 {
+  mClock.restart();
+
   while (mWindow.isOpen())
   {
-    sf::Event event;
-    while (mWindow.pollEvent(event))
+    while (mWindow.pollEvent(mWindowEvent))
     {
-      if (event.type == sf::Event::Closed || gameState == GameState::exit)
+      if (mWindowEvent.type == sf::Event::Closed || gameState == GameState::exit)
       {
         mWindow.close();
       }
 
-      mGui.handleEvent(event);
+      mGui.handleEvent(mWindowEvent);
     }
 
-    if (gameState == GameState::mainGame)
+    switch (gameState)
     {
-      //TODO: Process command, daily event, hourly event, tenthhourly event; minutely event (fluff)
-    }
-    else if (gameState == GameState::newGameMenu)
-    {
-      mDisplayNewGameSubWindow();
-    }
-    else if (gameState == GameState::loading)
-    {
-      if (mClock.getElapsedTime().asSeconds() > 1)
-      {
-        mClock.restart();
-        uint64_t daemonHeight = mDaemonAPI.getBlockCount();
-        uint64_t walletHeight = mWalletAPI.getBlockHeight();
-        if (daemonHeight > walletHeight + 10)
-        {
-          mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
-        }
-        else
-        {
-          mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(daemonHeight) + "/" + std::to_string(daemonHeight) + "...");
-
-          if (mCommandProcessor.scanForCharacterCreationCommand())
-          {
-            mCommandProcessor.processCommand();
-            mEvent.init();
-            mGui.get<tgui::Label>("LabelWalletHeight")->setText("Processing Graphics and Events...");
-
-            //Process Commands in own Thread, while displaying and loading graphics
-            std::thread t1(&App::mRunTurns, this);
-            std::thread t2(&App::mLoadGraphics, this);
-
-            while (!t1.joinable() && !t2.joinable())
-            {
-              std::this_thread::sleep_for(std::chrono::seconds(1));
-              //Display Graphics
-            }            
-
-            t1.join();
-            t2.join();
-            ////
-
-            mGui.removeAllWidgets();
-            mLoadMainScreen();
-            gameState = GameState::mainGame;
-          }
-          else
-          {
-            //TODO show dialog explaining the game with button for character creation
-            mCommandProcessor.submitCharacterCreationCommand(mSetting.characterName);
-          }
-        }
-      }
+    case GameState::mainGame: runMainGameState(); break;
+    case GameState::loading: runLoadingState(); break;
+    case GameState::titleScreen: runTitleState(); break;
     }
 
     mWindow.clear();
@@ -177,6 +129,190 @@ void App::run()
     mWindow.display();
   }
 }
+
+void App::runMainGameState()
+{
+  if (mClock.getElapsedTime().asSeconds() > 1)
+  {
+    setWindowTitle();
+    mClock.restart();
+  }
+
+  loadMainScreenGUI();
+  runTurns();
+}
+
+void App::loadMainScreenGUI()
+{
+}
+
+void App::runLoadingState()
+{
+  loadLoadingScreenGUI();
+  if (mClock.getElapsedTime().asSeconds() > 1)
+  {
+    mClock.restart();
+    uint64_t daemonHeight = mDaemonAPI.getBlockCount();
+    uint64_t walletHeight = mWalletAPI.getBlockHeight();
+    setWindowTitle();
+
+    //Scan for Character; Failing that, wait for wallet to fully sync and try again
+    if (mCommandProcessor.scanForCharacterCreationCommand())
+    {
+      mIsCharacterCreated = true;
+      mCommandProcessor.processCommand();
+      mEvent.init();
+      mGui.removeAllWidgets();
+      gameState = GameState::mainGame;
+    }
+    else
+    {
+      if (daemonHeight > walletHeight + 10)
+      {
+        mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(walletHeight) + "/" + std::to_string(daemonHeight) + "...");
+        mGui.get<tgui::ProgressBar>("ProgressBarWallet")->setValue(uint16_t((walletHeight - mSetting.restoreHeight) / (daemonHeight - mSetting.restoreHeight)));
+      }
+      else
+      {
+        mGui.get<tgui::Label>("LabelWalletHeight")->setText("Syncing Wallet: " + std::to_string(daemonHeight) + "/" + std::to_string(daemonHeight) + "...");
+        mGui.get<tgui::ProgressBar>("ProgressBarWallet")->setValue(100);
+
+        //Scan for character after fully syncing
+        if (mCommandProcessor.scanForCharacterCreationCommand())
+        {
+          mIsCharacterCreated = true;
+          mCommandProcessor.processCommand();
+          mEvent.init();
+          mGui.removeAllWidgets();
+          gameState = GameState::mainGame;
+        }
+        else
+        {
+          mGui.get<tgui::ChildWindow>("ChildWindowNewChara")->setVisible(true);
+          std::string walletAddress = mWalletAPI.getAddress();
+          std::string mnemonicSeed = mWalletAPI.getMnemonicSeed();
+          std::string middleTextBox = "Your Game Wallet Address:\n" + walletAddress + "\n\nMnemonic Seed:\n" + mnemonicSeed;
+          mGui.get<tgui::TextBox>("TextBoxNewCharaMiddle")->setText(middleTextBox);
+
+          //Mini loop
+          while (mWindow.isOpen() && gameState == GameState::loading)
+          {
+            while (mWindow.pollEvent(mWindowEvent))
+            {
+              if (mWindowEvent.type == sf::Event::Closed || gameState == GameState::exit)
+              {
+                mWindow.close();
+              }
+
+              mGui.handleEvent(mWindowEvent);
+            }
+
+            if (mClock.getElapsedTime().asSeconds() > 1)
+            {
+              mClock.restart();
+              setWindowTitle();
+
+              if (mIsCharacterCreated)
+              {
+                mGui.get<tgui::ChildWindow>("ChildWindowNewChara")->setEnabled(false);
+                if (mCommandProcessor.scanForCharacterCreationCommand())
+                {
+                  mCommandProcessor.processCommand();
+                  mEvent.init();
+                  mGui.removeAllWidgets();
+                  gameState = GameState::mainGame;
+                  mGui.get<tgui::TextBox>("TextBoxNewCharaBottom")->setText("New Being generated. This process may take a few minute...");
+                }
+              }
+              else if (mSwapBalance.unlockedBalance > 1000000000)
+              {
+                mGui.get<tgui::ChildWindow>("ChildWindowNewChara")->setEnabled(true);
+              }
+            }
+
+            mWindow.clear();
+            mGui.draw();
+            mWindow.display();
+          }
+        }
+      }
+    }
+  }
+}
+
+void App::loadLoadingScreenGUI()
+{
+  if (!isGUILoaded)
+  {
+    mGui.loadWidgetsFromFile("gui/loadingscreen.gui");
+    mGui.get<tgui::Button>("ButtonNewCharaCreate")->connect("pressed", &App::createCharacter, this);
+    isGUILoaded = true;
+  }
+}
+
+void App::createCharacter()
+{
+  mCommandProcessor.submitCharacterCreationCommand(mSetting.characterName);
+  mIsCharacterCreated = true;
+}
+
+void App::runTitleState()
+{
+  loadTitleScreenGUI();
+  loadNewGameSubWindow();
+}
+
+void App::loadTitleScreenGUI()
+{
+  if (!isGUILoaded)
+  {
+    mGui.loadWidgetsFromFile("gui/titlescreen.gui");
+    mGui.get<tgui::Button>("ButtonNewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::newWallet; });
+    mGui.get<tgui::Button>("ButtonLoadGame")->connect("pressed", [&]() { newGameOption = NewGameOption::loadWallet; });
+    mGui.get<tgui::Button>("ButtonRestoreGame")->connect("pressed", [&]() { newGameOption = NewGameOption::restoreWallet; });
+    mGui.get<tgui::Button>("ButtonViewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::viewWallet; });
+    mGui.get<tgui::Button>("ButtonExitGame")->connect("pressed", [&]() { gameState = GameState::exit; });
+    mGui.get<tgui::Button>("ButtonStartWallet")->connect("pressed", &App::startGame, this);
+    mGui.get<tgui::Button>("ButtonCancelWallet")->connect("pressed", [&]() { newGameOption = NewGameOption::waiting; });
+    mGui.get<tgui::EditBox>("EditBoxCharacterName")->setText(mSetting.characterName);
+    mGui.get<tgui::Button>("ButtonViewGame")->setEnabled("false"); //TODO
+    isGUILoaded = true;
+  }
+}
+
+void App::loadNewGameSubWindow()
+{
+  if (newGameOption == NewGameOption::newWallet)
+  {
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(true);
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setTitle("New Game Wallet");
+    mGui.get<tgui::Label>("LabelSeed")->setVisible(false);
+    mGui.get<tgui::EditBox>("EditBoxSeed")->setVisible(false);
+  }
+  else if (newGameOption == NewGameOption::loadWallet)
+  {
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(true);
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setTitle("Load Game Wallet");
+    mGui.get<tgui::Label>("LabelSeed")->setVisible(false);
+    mGui.get<tgui::EditBox>("EditBoxSeed")->setVisible(false);
+  }
+  else if (newGameOption == NewGameOption::restoreWallet)
+  {
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(true);
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setTitle("Restore Game Wallet");
+    mGui.get<tgui::Label>("LabelSeed")->setVisible(true);
+    mGui.get<tgui::EditBox>("EditBoxSeed")->setVisible(true);
+  }
+  else if (newGameOption == NewGameOption::viewWallet)
+  {
+    //TODO
+  }
+  else
+  {
+    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(false);
+  }
+}
+
 
 void App::startGame()
 {
@@ -208,15 +344,18 @@ void App::startGame()
       gameState = GameState::exit;
     }
   }
+  else if (newGameOption == NewGameOption::viewWallet)
+  {
+  }
   mSetting.characterName = characterName;
   gameState = GameState::loading;
   mGui.removeAllWidgets();
-  mLoadLoadingScreen();
+  isGUILoaded = false;
   mCommandProcessor.init(mSetting.txAmount, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
   mClock.restart();
 }
 
-void App::mRunTurns()
+void App::runTurns()
 {
   uint64_t topHeight = mDaemonAPI.getBlockCount();
   if (!mCommandProcessor.scanForCommands())
@@ -224,7 +363,8 @@ void App::mRunTurns()
     //Exit game when scanned commands are critically invalid
     gameState = GameState::exit;
   }
-  while (mWorld.currentWorldHeight < topHeight)
+
+  while (mWorld.currentWorldHeight < topHeight && mClock.getElapsedTime().asSeconds() < 1)
   {
     mCommandProcessor.processCommand();
     mEvent.processEvent();
@@ -232,57 +372,18 @@ void App::mRunTurns()
   }
 }
 
-void App::mLoadGraphics()
+void App::loadGraphics()
 {
   //TODO
 }
 
-void App::mDisplayNewGameSubWindow()
+void App::setWindowTitle()
 {
-  if (newGameOption == NewGameOption::newWallet)
-  {
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(true);
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setTitle("New Game Wallet");
-    mGui.get<tgui::Label>("LabelSeed")->setVisible(false);
-    mGui.get<tgui::EditBox>("EditBoxSeed")->setVisible(false);
-  }
-  else if (newGameOption == NewGameOption::loadWallet)
-  {
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(true);
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setTitle("Load Game Wallet");
-    mGui.get<tgui::Label>("LabelSeed")->setVisible(false);
-    mGui.get<tgui::EditBox>("EditBoxSeed")->setVisible(false);
-  }
-  else if (newGameOption == NewGameOption::restoreWallet)
-  {
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(true);
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setTitle("Restore Game Wallet");
-    mGui.get<tgui::Label>("LabelSeed")->setVisible(true);
-    mGui.get<tgui::EditBox>("EditBoxSeed")->setVisible(true);
-  }
-  else
-  {
-    mGui.get<tgui::ChildWindow>("ChildWindowNewWallet")->setVisible(false);
-  }
-}
+  mSwapBalance = mWalletAPI.getBalance();
+  std::string statusText;
 
-void App::mLoadTitleScreen()
-{
-  mGui.loadWidgetsFromFile("gui/titlescreen.gui");
-  mGui.get<tgui::Button>("ButtonNewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::newWallet; });
-  mGui.get<tgui::Button>("ButtonLoadGame")->connect("pressed", [&]() { newGameOption = NewGameOption::loadWallet; });
-  mGui.get<tgui::Button>("ButtonRestoreGame")->connect("pressed", [&]() { newGameOption = NewGameOption::restoreWallet; });
-  mGui.get<tgui::Button>("ButtonExitGame")->connect("pressed", [&]() { mWindow.close(); });
-  mGui.get<tgui::Button>("ButtonStartWallet")->connect("pressed", &App::startGame, this);
-  mGui.get<tgui::Button>("ButtonCancelWallet")->connect("pressed", [&]() { newGameOption = NewGameOption::waiting; });
-  mGui.get<tgui::EditBox>("EditBoxCharacterName")->setText(mSetting.characterName);
-}
 
-void App::mLoadLoadingScreen()
-{
-  mGui.loadWidgetsFromFile("gui/loadingscreen.gui");
-}
-
-void App::mLoadMainScreen()
-{
+  statusText += "          " + mEvent.time.dateString + ", " + mEvent.time.timeString;
+  statusText += "          (Balance: " + std::to_string(mSwapBalance.unlockedBalance / pow(10, 12)) + " / " + std::to_string(mSwapBalance.totalBalance / pow(10, 12)) + "XWP )";
+  mWindow.setTitle(mSetting.windowTitle + statusText);
 }

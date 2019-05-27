@@ -3,7 +3,7 @@
 
 Event::Event(World& world, Character& character, DaemonAPI& daemonAPI) : mWorld(world), mCharacter(character), mDaemonAPI(daemonAPI)
 {
-  time = { 0,0,0,0 };
+  time = { 0,0,0,0,0,0,"","" };
   mEarning = 0;
   mCookingProgress = 0;
   mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
@@ -21,7 +21,23 @@ void Event::init()
   updateTime();
   updateCheckedStat();
 
-  //Date announcement
+  //Time/Date announcement
+  int timeHour = time.hour;
+  std::string timeSuffix = "AM";
+  std::stringstream timeMinute;
+  timeMinute << std::setfill('0') << std::setw(2) << std::to_string(time.minute);
+
+  if (timeHour > 11)
+  {
+    timeHour -= 12;
+    timeSuffix = "PM";
+  }
+  if (timeHour == 0)
+  {
+    timeHour = 12;
+  }
+  time.timeString = std::to_string(timeHour) + ":" + timeMinute.str() + timeSuffix;
+
   std::string dayOfMonthText = std::to_string(time.day);
   std::string monthText = "";
 
@@ -41,17 +57,18 @@ void Event::init()
   case 4: monthText = "Winter"; break;
   }
 
-  mWorld.logging.addToMainLog("--::-::-- " + dayOfMonthText + " of " + monthText + ", Year " + std::to_string(time.year) + " --::-::--");
+  time.dateString = dayOfMonthText + " of " + monthText + ", Year " + std::to_string(time.year);
+  mWorld.logging.addToMainLog("--::-::-- " + time.dateString + " --::-::--");
 
   if (time.day == 1)
   {
     if (time.month == 1)
     {
-      mWorld.logging.addToMainLog("It's the first day of the New Year!");
+      mWorld.logging.addToMainLog("[" + time.timeString + "] " + "It's the first day of the New Year!");
     }
     else
     {
-      mWorld.logging.addToMainLog("It's the first day of " + monthText + "!");
+      mWorld.logging.addToMainLog("[" + time.timeString + "] " + "It's the first day of " + monthText + "!");
     }
   }
 
@@ -60,16 +77,16 @@ void Event::init()
 
   switch (mCharacter.currentActivity.id)
   {
-  case 0: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cooking..."); break;
-  case 1: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cleaning the house..."); break;
-  case 2: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Reading in the library..."); break;
-  case 3: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Playing..."); break;
-  case 4: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Bathing..."); break;
-  case 5: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Napping..."); break;
-  case 6: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Sleeping..."); break;
-  case 14: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Fishing..."); break;
-  case 15: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Gathering Plants..."); break;
-  default: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "..."); break;
+  case 0: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cooking..."); break;
+  case 1: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cleaning the house..."); break;
+  case 2: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library..."); break;
+  case 3: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing..."); break;
+  case 4: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing..."); break;
+  case 5: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Napping..."); break;
+  case 6: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Sleeping..."); break;
+  case 14: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Fishing..."); break;
+  case 15: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Gathering Plants..."); break;
+  default: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "..."); break;
   }
 }
 
@@ -102,10 +119,33 @@ void Event::incrementTime()
   {
     time.quarterminute = 0;
     time.minute++;
+
+    //Update time text every minute
+    int timeHour = time.hour;
+    std::string timeSuffix = "AM";
+    std::stringstream timeMinute;
+    timeMinute << std::setfill('0') << std::setw(2) << std::to_string(time.minute);
+
+    if (timeHour > 11)
+    {
+      timeHour -= 12;
+      timeSuffix = "PM";
+    }
+    if (timeHour == 0)
+    {
+      timeHour = 12;
+    }
+    time.timeString = std::to_string(timeHour) + ":" + timeMinute.str() + timeSuffix;
+
     if (time.minute == 60)
     {
       time.minute = 0;
       time.hour++;
+
+      //Catch any minutes that rolled over to :00
+      std::stringstream timeMinute;
+      timeMinute << std::setfill('0') << std::setw(2) << std::to_string(time.minute);
+      time.timeString = std::to_string(timeHour) + ":" + timeMinute.str() + timeSuffix;
 
       if (time.hour == 24)
       {
@@ -148,7 +188,8 @@ void Event::processDailyEvent(const std::string& seed)
   case 4: monthText = "Winter"; break;
   }
 
-  mWorld.logging.addToMainLog ("--::-::-- " + dayOfMonthText + " of " + monthText + ", Year " + std::to_string(time.year) + " --::-::--");
+  time.dateString = dayOfMonthText + " of " + monthText + ", Year " + std::to_string(time.year);
+  mWorld.logging.addToMainLog("--::-::-- " + time.dateString + " --::-::--");
   
   if (time.day == 1)
   {
@@ -359,8 +400,8 @@ void Event::processHourlyEvent(const std::string& seed)
 
   if (mEarning > 0)
   {
-    std::ostringstream formatedEarning;
-    formatedEarning << (mEarning * 0.01f);
+    std::stringstream formatedEarning;
+    formatedEarning << std::setfill('0') << std::setw(std::to_string(mEarning).length() + 1) << std::left << (mEarning * 0.01f);
     summary += " +" + formatedEarning.str() + "G";
     mCharacter.profile.money += mEarning;
     mEarning = 0;
@@ -436,16 +477,16 @@ void Event::processHourlyEvent(const std::string& seed)
 
     switch (mCharacter.currentActivity.id)
     {
-    case 0: mWorld.logging.addToMainLog("[" +std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cooking..."); break;
-    case 1: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Cleaning the house..."); break;
-    case 2: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Reading in the library..."); break;
-    case 3: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Playing..."); break;
-    case 4: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Bathing..."); break;
-    case 5: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Napping..."); break;
-    case 6: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Sleeping..."); break;
-    case 14: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Fishing..."); break;
-    case 15: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Gathering Plant..."); break;
-    default: mWorld.logging.addToMainLog("[" + std::to_string(time.hour) + ":00] " + mCharacter.profile.name + " began Working as a " + mCharacter.currentActivity.name + "..."); break;
+    case 0: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cooking..."); break;
+    case 1: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cleaning the house..."); break;
+    case 2: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library..."); break;
+    case 3: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing..."); break;
+    case 4: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing..."); break;
+    case 5: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Napping..."); break;
+    case 6: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Sleeping..."); break;
+    case 14: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Fishing..."); break;
+    case 15: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Gathering Plant..."); break;
+    default: mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Working as a " + mCharacter.currentActivity.name + "..."); break;
     }
   }
 }

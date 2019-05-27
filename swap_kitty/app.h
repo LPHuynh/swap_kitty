@@ -12,8 +12,8 @@
 class App
 {
 public:
-  enum class GameState { newGameMenu, loading, mainGame, exit };
-  enum class NewGameOption { newWallet, loadWallet, restoreWallet, waiting };
+  enum class GameState { titleScreen, loading, mainGame, exit };
+  enum class NewGameOption { newWallet, loadWallet, restoreWallet, viewWallet, waiting };
 
   struct AppSetting
   {
@@ -37,7 +37,6 @@ public:
   ~App();
 
   void run();
-  void startGame();
 
   GameState gameState;
   NewGameOption newGameOption;
@@ -50,16 +49,31 @@ private:
   Event mEvent;
   World mWorld;
 
+  void runMainGameState();
+  void loadMainScreenGUI();
+
+  void runLoadingState();
+  void loadLoadingScreenGUI();
+  void createCharacter();
+
+  void runTitleState();
+  void loadTitleScreenGUI();
+  void loadNewGameSubWindow();
+  void startGame();
+
+  void runTurns();
+  void loadGraphics();
+  void setWindowTitle();
+
   AppSetting mSetting;
   sf::RenderWindow mWindow;
+  sf::Event mWindowEvent;
   tgui::Gui mGui;
   sf::Clock mClock;
 
-  void mRunTurns();
-  void mLoadGraphics();
-  void mDisplayNewGameSubWindow();
-  void mLoadTitleScreen();
-  void mLoadLoadingScreen();
-  void mLoadMainScreen();
+  WalletAPI::Balance mSwapBalance;
+  bool mIsCharacterCreated;
+
+  bool isGUILoaded;
 };
 
