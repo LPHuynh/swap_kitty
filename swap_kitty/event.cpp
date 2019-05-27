@@ -352,8 +352,9 @@ void Event::processHourlyEvent(const std::string& seed)
   //Change job
   Job::Activity nextJob;
 
-  if (mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
+  if (mCharacter.profile.stamina < 0 || mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
   {
+    mCharacter.profile.happiness -= 500;
     if (time.hour > 5 || time.hour < 20) //6:00AM to 7:59PM
     {
       nextJob = mCharacter.job.getActivity("Nap");
@@ -398,7 +399,11 @@ void Event::processHourlyEvent(const std::string& seed)
   mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
 
   //Notify if character is sick
-  if (mCommonColdCoolDown > 0)
+  if (mCharacter.profile.stamina < 0)
+  {
+    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " is exhausted from the overworking and needs to rest...");
+  }
+  else if (mCommonColdCoolDown > 0)
   {
     mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " came down with the flu and needs to rest...");
     mCommonColdCoolDown--;
@@ -407,7 +412,7 @@ void Event::processHourlyEvent(const std::string& seed)
       mCommonColdCoolDown--;
     }
   }
-  if (mHeatStrokeCoolDown > 0)
+  else if (mHeatStrokeCoolDown > 0)
   {
     mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " collapsed from the heat and needs to rest...");
     mHeatStrokeCoolDown--;
