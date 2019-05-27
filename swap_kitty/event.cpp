@@ -41,7 +41,7 @@ void Event::init()
   case 4: monthText = "Winter"; break;
   }
 
-  mWorld.logging.addToMainLog("--::-::-- " + dayOfMonthText + " of " + monthText + ", year " + std::to_string(time.year) + " --::-::--");
+  mWorld.logging.addToMainLog("--::-::-- " + dayOfMonthText + " of " + monthText + ", Year " + std::to_string(time.year) + " --::-::--");
 
   if (time.day == 1)
   {
@@ -87,7 +87,7 @@ void Event::processEvent()
 
         if (time.hour == 0)
         {
-          processDailyEvent();
+          processDailyEvent(getBlockHash());
         }
       }
     }
@@ -126,7 +126,7 @@ void Event::incrementTime()
   }
 }
 
-void Event::processDailyEvent()
+void Event::processDailyEvent(const std::string& seed)
 {
   //Date announcement
   std::string dayOfMonthText = std::to_string(time.day);
@@ -148,7 +148,7 @@ void Event::processDailyEvent()
   case 4: monthText = "Winter"; break;
   }
 
-  mWorld.logging.addToMainLog ("--::-::-- " + dayOfMonthText + " of " + monthText + ", year " + std::to_string(time.year) + " --::-::--");
+  mWorld.logging.addToMainLog ("--::-::-- " + dayOfMonthText + " of " + monthText + ", Year " + std::to_string(time.year) + " --::-::--");
   
   if (time.day == 1)
   {
@@ -234,7 +234,8 @@ void Event::processDailyEvent()
   mCharacter.profile.stat = mCharacter.profile.stat + mCharacter.equipedDress.dailyStatGain;
   mCharacter.profile.skill = mCharacter.profile.skill + mCharacter.equipedDress.dailySkillGain;
 
-  //TODO: Special Events
+  //Refresh Shop Inventory
+  mCharacter.shop.refreshInventory(seed);
 }
 
 void Event::processHourlyEvent(const std::string& seed)
@@ -251,15 +252,15 @@ void Event::processHourlyEvent(const std::string& seed)
     {
       Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
       mCharacter.foodInventory.push_back(caughtVermin);
-      mFoundItem.push_back(caughtVermin.nameCooked);
+      mFoundItem.push_back(caughtVermin.name);
       mCharacter.profile.domesticated -= 10;
 
       switch (mCharacter.currentActivity.id)
       {
       case 0: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while cooking..."); break;
-      case 1: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " found a " + caughtVermin.nameCooked + " while cleaning..."); break;
+      case 1: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " found a " + caughtVermin.name + " while cleaning..."); break;
       case 2: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while playing..."); break;
-      default: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " brought home a " + caughtVermin.nameCooked + " from work..."); break;
+      default: mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " brought home a " + caughtVermin.name + " from work..."); break;
       }
     }
   }
@@ -496,14 +497,14 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     {
       Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
       mCharacter.foodInventory.push_back(caughtVermin);
-      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught and ate a " + caughtVermin.nameCooked + ".");
-      mCharacter.consumeFood(caughtVermin.id);
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught and ate a " + caughtVermin.name + ".");
+      mCharacter.consumeFood(caughtVermin.id, false);
       failedRoll = 100;
     }
     else
     {
-      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).nameCooked + ".");
-      mCharacter.consumeFood(mCharacter.foodInventory.at(0).id);
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).name + ".");
+      mCharacter.consumeFood(mCharacter.foodInventory.at(0).id, false);
       failedRoll++;
     }
   }
@@ -538,7 +539,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       }
     }
     mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + selectedName + ".");
-    mCharacter.consumePotion(selectedID);
+    mCharacter.consumePotion(selectedID, false);
     failedRoll++;
   }
 
@@ -643,7 +644,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
         if (mWorld.getRandomNumber(seed, 0, mCharacter.library.at(randomSelection).health) == 0)
         {
           //Book destroyed due to usage
-          mCharacter.destroyItem(mCharacter.library, mCharacter.library.at(randomSelection).id);
+          mCharacter.destroyItem(mCharacter.library, mCharacter.library.at(randomSelection).id, false);
         }
       }
     }
@@ -662,7 +663,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
         if (mWorld.getRandomNumber(seed, 0, mCharacter.toyRoom.at(randomSelection).health) == 0)
         {
           //Toy destroyed due to usage
-          mCharacter.destroyItem(mCharacter.toyRoom, mCharacter.toyRoom.at(randomSelection).id);
+          mCharacter.destroyItem(mCharacter.toyRoom, mCharacter.toyRoom.at(randomSelection).id, false);
           mCharacter.profile.happiness -= 10;
         }
       }
@@ -809,7 +810,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       if (element.dishLevel == 0)
       {
         mCharacter.food.randomizeCookedFood(seed, element);
-        mFoundItem.push_back(element.nameCooked);
+        mFoundItem.push_back(element.name);
         break;
       }
     }
@@ -819,7 +820,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   {
     Food::FoodItem fish = mCharacter.food.randomizeRawFood(seed, Food::FoodType::fish);
     mCharacter.foodInventory.push_back(fish);
-    mFoundItem.push_back(fish.nameCooked);
+    mFoundItem.push_back(fish.name);
     mFishingProgress = 0;
   }
   else if (mGatheringProgress > 20)
@@ -834,52 +835,52 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       harvest = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vegatable);
     }
     mCharacter.foodInventory.push_back(harvest);
-    mFoundItem.push_back(harvest.nameCooked);
+    mFoundItem.push_back(harvest.name);
     mGatheringProgress = 0;
   }
   else if (mHuntingProgress > 40)
   {
     Food::FoodItem corpse = mCharacter.food.randomizeRawFood(seed, Food::FoodType::corpse);
     mCharacter.foodInventory.push_back(corpse);
-    mFoundItem.push_back(corpse.nameCooked);
+    mFoundItem.push_back(corpse.name);
     mHuntingProgress = 0;
   }
 
-  //Reduce to max stat if over
+  //Reduce stats when over soft-maximum
   if (mCharacter.profile.health > mCharacter.profile.maxHealth)
   {
-    mCharacter.profile.health = mCharacter.profile.maxHealth;
+    mCharacter.profile.health -= (mCharacter.profile.maxHealth - 10000) / 2;
   }
   if (mCharacter.profile.mana > mCharacter.profile.maxMana)
   {
-    mCharacter.profile.mana = mCharacter.profile.maxMana;
+    mCharacter.profile.mana -= (mCharacter.profile.maxMana - 10000) / 2;
   }
   if (mCharacter.profile.stamina > 10000)
   {
-    mCharacter.profile.cleaniness = 10000;
+    mCharacter.profile.stamina -= (mCharacter.profile.stamina - 10000) / 2;
   }
   if (mCharacter.profile.cleaniness > 10000)
   {
-    mCharacter.profile.cleaniness = 10000;
+    mCharacter.profile.cleaniness -= (mCharacter.profile.cleaniness - 10000) / 2;
   }
   if (mCharacter.profile.happiness > 10000)
   {
-    mCharacter.profile.happiness = 10000;
+    mCharacter.profile.happiness -= (mCharacter.profile.happiness - 10000) / 2;
   }
   if (mCharacter.profile.obidence > 10000)
   {
-    mCharacter.profile.obidence = 10000;
+    mCharacter.profile.obidence -= (mCharacter.profile.obidence - 10000) / 2;
   }
   if (mCharacter.residence.cleaniness > 10000)
   {
-    mCharacter.residence.cleaniness = 10000;
+    mCharacter.residence.cleaniness -= (mCharacter.profile.cleaniness - 10000) / 2;
   }
 }
 
 void Event::updateTime()
 {
   uint64_t offsetedHeight = mWorld.currentWorldHeight - mWorld.localTimeOffset;
-  time.year = uint8_t(offsetedHeight / uint64_t(691200));       //There are 120 in-game days per year (30 days per season)
+  time.year = uint8_t(offsetedHeight / uint64_t(691200) + 1);       //There are 120 in-game days per year (30 days per season)
   time.month = uint8_t(offsetedHeight % uint64_t(691200) / 172800 + 1);
   time.day = uint8_t(offsetedHeight % uint64_t(172800) / 5760 + 1);
   time.hour = uint8_t((offsetedHeight % 5760) / 240);

@@ -55,10 +55,10 @@ public:
 
   void generateNewCharacter(const std::string& seed, const std::string& characterName);
   void updateSecondaryStats();
-  void consumeFood(uint16_t id);
-  void consumePotion(uint16_t id);
-  template<class T> void destroyItem(std::vector<T>& source, uint16_t id);
-  template<class T> void transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id);
+  void consumeFood(uint16_t id, bool isLogConsumedItem);
+  void consumePotion(uint16_t id, bool isLogConsumedItem);
+  template<class T> bool destroyItem(std::vector<T>& source, uint16_t id, bool isSelling);
+  template<class T> bool transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id, bool isBuying);
 
   void updateFluffText();
 
@@ -103,8 +103,13 @@ private:
 };
 
 template<typename T>
-void Character::destroyItem(std::vector<T>& source, uint16_t id)
+bool Character::destroyItem(std::vector<T>& source, uint16_t id, bool isSelling)
 {
+  if (id != 0)
+  {
+    return false;
+  }
+
   int i = 0;
   bool isItemFound = false;
 
@@ -112,6 +117,12 @@ void Character::destroyItem(std::vector<T>& source, uint16_t id)
   {
     if (element.id == id)
     {
+      if (isSelling)
+      {
+        int64_t price = element.price >> 3;
+        mWorld.logging.addToMainLog("\t" + element.name + " was sold for " + std::to_string(element.price * 0.01f));
+      }
+
       isItemFound = true;
       break;
     }
@@ -122,12 +133,19 @@ void Character::destroyItem(std::vector<T>& source, uint16_t id)
   {
     mWorld.freeID(id);
     source.erase(source.begin() + i);
+    return true;
   }
+  return false;
 }
 
 template<typename T>
-void Character::transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id)
+bool Character::transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id, bool isBuying)
 {
+  if (id != 0)
+  {
+    return false;
+  }
+
   int i = 0;
   bool isItemFound = false;
 
@@ -135,8 +153,20 @@ void Character::transferItem(std::vector<T>& source, std::vector<T>& destination
   {
     if (element.id == id)
     {
-      destination.push_back(element);
-      isItemFound = true;
+      if (isBuying)
+      {
+        if (element.price < profile.money)
+        {
+          mWorld.logging.addToMainLog("\t" + element.name + " was purchased for " + std::to_string(element.price * 0.01f));
+          destination.push_back(element);
+          isItemFound = true;
+        }
+      }
+      else
+      {
+        destination.push_back(element);
+        isItemFound = true;
+      }
       break;
     }
     i++;
@@ -146,5 +176,7 @@ void Character::transferItem(std::vector<T>& source, std::vector<T>& destination
   {
     mWorld.freeID(id);
     source.erase(source.begin() + i);
+    return true;
   }
+  return false;
 }

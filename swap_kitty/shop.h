@@ -29,6 +29,7 @@ public:
   std::vector<Toy::ToyItem> toyInventory;
 
   void refreshInventory(const std::string& seed);
+  template<class T> void destroyAllItem(std::vector<T>& source);
 
 private:
   World& mWorld;
@@ -40,3 +41,11 @@ private:
   Toy& mToy;
 };
 
+template<class T> void Shop::destroyAllItem(std::vector<T>& source)
+{
+  for (auto& element : source)
+  {
+    mWorld.freeID(element.id);
+  }
+  source.clear();
+}

@@ -223,14 +223,23 @@ void CommandProcessor::submitGiftCommand(uint16_t toyID[13])
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }
 
-void CommandProcessor::submitFeedCommand(uint16_t foodID, uint16_t potionID)
+void CommandProcessor::submitFeedCommand(uint16_t foodID[7], uint16_t potionID[6])
 {
-  //Specification(Param): 22 byte Unused, 2 byte foodID, 2 byte potionID
+  //Specification(Param): (2 byte foodID)x7, (2 byte potionID)x6
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
   command.commandCode = "FD";
 
-  command.param = convertIntToHex(foodID) + convertIntToHex(potionID);
+  command.param = "";
+  
+  for (int i = 0; i < 7; i++)
+  {
+    command.param += convertIntToHex(foodID);
+  }
+  for (int i = 0; i < 6; i++)
+  {
+    command.param += convertIntToHex(potionID);
+  }
 
   std::string commandHex = convertCommandToHex(command);
   mWorld.logging.writeToFile("Submitted Command: " + commandHex);
@@ -346,7 +355,6 @@ void CommandProcessor::processCommand()
     {
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
-        //New Character
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
         mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
         mIsCharacterLoaded = true;
@@ -354,11 +362,10 @@ void CommandProcessor::processCommand()
       }
       else if (commands.front().commandCode == "RC")
       {
-        //Resync Clock
+        mWorld.logging.addToMainLog("..::Adjusted In-Game Clock::..");
         if (mLastTimeResyncRequest < mWorld.currentWorldHeight + 40320)
         {
           mWorld.localTimeOffset = std::stoi(commands.front().param.substr(44, 4), 0, 16);
-          mWorld.logging.addToMainLog ("..::Adjusted In-Game Clock::..");
         }
         else
         {
@@ -367,132 +374,244 @@ void CommandProcessor::processCommand()
       }
       else if (commands.front().commandCode == "AS")
       {
-        //Assign Schedule
+        mWorld.logging.addToMainLog("..::Made Changes to Daily Schedule::..");
+        Job::Activity activity;
+
         for (int i = 0; i < 24; i++)
         {
-          mCharacter.dailySchedule[i] = mCharacter.job.getActivity(std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16));
-          mWorld.logging.addToMainLog("..::Made Changes to Daily Schedule::..");
+          activity = mCharacter.job.getActivity(std::stoi(commands.front().param.substr(4 + i * 2, 2), 0, 16));
+
+          if (activity.isDayActivity && (i > 5 || i < 20) || activity.isNightActivity && (i < 6 || i > 19))
+          {
+            mCharacter.dailySchedule[i] = activity;
+          }
+          else
+          {
+            mWorld.logging.addToMainLog("Error. Invalid schedule item deteced. " + activity.name + " could not be set at " + std::to_string(i) + "h");
+          }
         }
       }
       else if (commands.front().commandCode == "AB")
       {
-        //Add Books to Library
-        std::vector<Book::BookItem> newBookInventory;
-
+        mWorld.logging.addToMainLog("..::Added Some Books to Library::..");
         for (int i = 0; i < 13; i++)
         {
-          for (auto& element : mCharacter.bookInventory)
-          {
-            if (element.id == std::stoi(commands.front().param.substr(i * 4, 4), 0, 16))
-            {
-              mCharacter.library.push_back(element);
-            }
-            else
-            {
-              newBookInventory.push_back(element);
-            }
-          }
-          
-          mCharacter.bookInventory = newBookInventory;
-
-          mWorld.logging.addToMainLog("..::Added Some Books to Library::..");
+          mCharacter.transferItem(mCharacter.bookInventory, mCharacter.library, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
         }
       }
       else if (commands.front().commandCode == "RB")
       {
-        //Remove Books from Library
-        std::vector<Book::BookItem> newLibraryInventory;
-
+        mWorld.logging.addToMainLog("..::Removed Some Books from Library::..");
         for (int i = 0; i < 13; i++)
         {
-          for (auto& element : mCharacter.bookInventory)
-          {
-            if (element.id == std::stoi(commands.front().param.substr(i * 4, 4), 0, 16))
-            {
-              mCharacter.bookInventory.push_back(element);
-            }
-            else
-            {
-              newLibraryInventory.push_back(element);
-            }
-          }
-
-          mCharacter.library = newLibraryInventory;
-
-          mWorld.logging.addToMainLog("..::Removed Some Books from Library::..");
+          mCharacter.transferItem(mCharacter.library, mCharacter.bookInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
         }
       }
       else if (commands.front().commandCode == "BW")
       {
         mWorld.logging.addToMainLog("..::Bought Some Weapons::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.transferItem(mCharacter.shop.weaponInventory, mCharacter.weaponInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "SW")
       {
         mWorld.logging.addToMainLog("..::Sold Some Weapon::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.weaponInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "DW")
       {
         mWorld.logging.addToMainLog("..::Discarded Some Weapon::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.weaponInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
+        }
       }
       else if (commands.front().commandCode == "BD")
       {
         mWorld.logging.addToMainLog("..::Bought Some Dress::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.transferItem(mCharacter.shop.dressInventory, mCharacter.dressInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "SD")
       {
         mWorld.logging.addToMainLog("..::Sold Some Dress::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.dressInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "DD")
       {
         mWorld.logging.addToMainLog("..::Discarded Some Dress::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.dressInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
+        }
       }
       else if (commands.front().commandCode == "BF")
       {
         mWorld.logging.addToMainLog("..::Bought Some Food::..");
+        for (int i = 0; i < 13; i++)
+        {
+          int id = std::stoi(commands.front().param.substr(i * 4, 4), 0, 16);
+          mCharacter.transferItem(mCharacter.shop.fruitInventory, mCharacter.foodInventory, id, true);
+          mCharacter.transferItem(mCharacter.shop.vegatableInventory, mCharacter.foodInventory, id, true);
+          mCharacter.transferItem(mCharacter.shop.fishInventory, mCharacter.foodInventory, id, true);
+          mCharacter.transferItem(mCharacter.shop.corpseInventory, mCharacter.foodInventory, id, true);
+          mCharacter.transferItem(mCharacter.shop.flourInventory, mCharacter.foodInventory, id, true);
+          mCharacter.transferItem(mCharacter.shop.junkfoodInventory, mCharacter.foodInventory, id, true);
+        }
       }
       else if (commands.front().commandCode == "SF")
       {
         mWorld.logging.addToMainLog("..::Sold Some Food::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.foodInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "DF")
       {
         mWorld.logging.addToMainLog("..::Discarded Some Food::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.foodInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
+        }
       }
       else if (commands.front().commandCode == "BP")
       {
         mWorld.logging.addToMainLog("..::Bought Some Potions::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.transferItem(mCharacter.shop.potionInventory, mCharacter.potionInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "SP")
       {
         mWorld.logging.addToMainLog("..::Sold Some Potion::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.potionInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "DP")
       {
         mWorld.logging.addToMainLog("..::Discarded Some Potion::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.potionInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
+        }
       }
       else if (commands.front().commandCode == "BB")
       {
         mWorld.logging.addToMainLog("..::Bought Some Books::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.transferItem(mCharacter.shop.bookInventory, mCharacter.bookInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "SB")
       {
         mWorld.logging.addToMainLog("..::Sold Some Book::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.bookInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "DB")
       {
         mWorld.logging.addToMainLog("..::Discarded Some Books::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.bookInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
+        }
       }
       else if (commands.front().commandCode == "BT")
       {
         mWorld.logging.addToMainLog("..::Bought Some Toys::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.transferItem(mCharacter.shop.toyInventory, mCharacter.toyInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "ST")
       {
         mWorld.logging.addToMainLog("..::Sold Some Toys::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.toyInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+        }
       }
       else if (commands.front().commandCode == "DT")
       {
         mWorld.logging.addToMainLog("..::Discarded Some Toys::..");
+        for (int i = 0; i < 13; i++)
+        {
+          mCharacter.destroyItem(mCharacter.toyInventory, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false);
+        }
+      }
+      else if (commands.front().commandCode == "GT")
+      {
+        mWorld.logging.addToMainLog("..::Gave Some Toys to " + mCharacter.profile.name +"::..");
+        for (int i = 0; i < 13; i++)
+        {
+          if (mCharacter.transferItem(mCharacter.toyInventory, mCharacter.toyRoom, std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), false))
+          {
+            mCharacter.profile.happiness += int16_t(mCharacter.toyRoom.back().price);
+            mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " loves her new " + mCharacter.toyRoom.back().name);
+          }
+        }
+      }
+      else if (commands.front().commandCode == "FD")
+      {
+        mWorld.logging.addToMainLog("..::Feed Some Food/Drink to " + mCharacter.profile.name + "::..");
+        for (int i = 0; i < 13; i++)
+        {
+          if (i < 8)
+          {
+            mCharacter.consumeFood(std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+          }
+          else
+          {
+            mCharacter.consumePotion(std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+          }
+        }
+      }
+      else if (commands.front().commandCode == "EQ")
+      {
+        mWorld.logging.addToMainLog("..::Equipped Some Weapon/Clothing on " + mCharacter.profile.name + "::..");
+        uint16_t weaponID = std::stoi(commands.front().param.substr(44, 4), 0, 16);
+        uint16_t dressID = std::stoi(commands.front().param.substr(48, 4), 0, 16);
+
+        if (weaponID != 0)
+        {
+          for (auto& element : mCharacter.weaponInventory)
+          {
+            if (element.id = weaponID)
+            {
+              mCharacter.equipedWeapon = element;
+              mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " equipped " + mCharacter.equipedWeapon.name);
+            }
+          }
+        }
+        if (dressID != 0)
+        {
+          for (auto& element : mCharacter.weaponInventory)
+          {
+            if (element.id = dressID)
+            {
+              mCharacter.equipedWeapon = element;
+              mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " equipped " + mCharacter.equipedDress.name);
+            }
+          }
+        }
       }
 
       commands.pop_front();

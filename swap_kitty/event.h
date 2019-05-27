@@ -33,7 +33,7 @@ private:
   Character& mCharacter;
 
   void incrementTime();
-  void processDailyEvent();
+  void processDailyEvent(const std::string& seed);
   void processHourlyEvent(const std::string& seed);
   void processTenthHourlyEvent(const std::string& seed);
   void updateTime();

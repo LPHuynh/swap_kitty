@@ -26,7 +26,7 @@ public:
   void submitRemoveBookCommand(uint16_t ID[13]);
   void submitManageItemCommand(World::ItemAction itemAction, World::ItemType itemType, uint16_t ID[13]);
   void submitGiftCommand(uint16_t toyID[13]);
-  void submitFeedCommand(uint16_t foodID, uint16_t potionID);
+  void submitFeedCommand(uint16_t foodID[7], uint16_t potionID[6]);
   void submitEquipCommand(uint16_t weaponID, uint16_t dressID);
   bool scanForCharacterCreationCommand();
   void scanForCommands();

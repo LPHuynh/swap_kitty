@@ -32,7 +32,7 @@ void Character::updateSecondaryStats()
   profile.mana = profile.maxMana;
 }
 
-void Character::consumeFood(uint16_t id)
+void Character::consumeFood(uint16_t id, bool isLogConsumedItem)
 {
   int i = 0;
   bool isItemFound = false;
@@ -48,6 +48,11 @@ void Character::consumeFood(uint16_t id)
 
   if (isItemFound)
   {
+    if (isLogConsumedItem)
+    {
+      mWorld.logging.addToMainLog("\t" + profile.name + " ate some " + foodInventory.at(id).name);
+    }
+
     if (foodInventory.at(i).type == Food::FoodType::vermin)
     {
       profile.domesticated -= 20;
@@ -64,13 +69,13 @@ void Character::consumeFood(uint16_t id)
       {
         profile.domesticated += 100;
         profile.happiness += 200;
-        mWorld.logging.addToMainLog("\t\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
+        mWorld.logging.addToMainLog("\t\t" + foodInventory.at(i).name + "! Her favourite!");
       }
       else if (foodInventory.at(i).nameRaw == favouriteFruitDish.nameRaw || foodInventory.at(i).dishLevel == favouriteFruitDish.dishLevel)
       {
         profile.domesticated += 20;
         profile.happiness += 100;
-        mWorld.logging.addToMainLog("\t\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
+        mWorld.logging.addToMainLog("\t\tThe " + foodInventory.at(i).name + " was delicious!");
       }
     }
     else if (foodInventory.at(i).type == Food::FoodType::vegatable)
@@ -79,7 +84,7 @@ void Character::consumeFood(uint16_t id)
       {
         profile.domesticated += 20;
         profile.happiness += 100;
-        mWorld.logging.addToMainLog("\t\tThe " + foodInventory.at(i).nameCooked + " was delicious!");
+        mWorld.logging.addToMainLog("\t\tThe " + foodInventory.at(i).name + " was delicious!");
       }
     }
     else if (foodInventory.at(i).type == Food::FoodType::flour)
@@ -88,11 +93,11 @@ void Character::consumeFood(uint16_t id)
     }
     else if (foodInventory.at(i).type == Food::FoodType::junkFood)
     {
-      if (foodInventory.at(i).nameCooked == favouriteJunkFood.nameCooked)
+      if (foodInventory.at(i).name == favouriteJunkFood.name)
       {
         profile.domesticated += 500;
         profile.happiness += 500;
-        mWorld.logging.addToMainLog("\t\t" + foodInventory.at(i).nameCooked + "! Her favourite!");
+        mWorld.logging.addToMainLog("\t\t" + foodInventory.at(i).name + "! Her favourite!");
       }
     }
 
@@ -102,17 +107,17 @@ void Character::consumeFood(uint16_t id)
     profile.quench += foodInventory.at(i).quench;
 
     std::string text = "\t\t";
-    if (foodInventory.at(i).stamina > 0)
+    if (foodInventory.at(i).stamina / 100 > 0)
     {
-      text += "+" + std::to_string(foodInventory.at(i).stamina) + "Stamina ";
+      text += "+" + std::to_string(foodInventory.at(i).stamina / 100) + "Stamina ";
     }
     if (foodInventory.at(i).nutrient > 0)
     {
-      text += "+" + std::to_string(foodInventory.at(i).nutrient) + "Nutrient ";
+      text += "+" + std::to_string(foodInventory.at(i).nutrient / 100) + "Nutrient ";
     }
     if (foodInventory.at(i).quench > 0)
     {
-      text += "+" + std::to_string(foodInventory.at(i).quench) + "Quench ";
+      text += "+" + std::to_string(foodInventory.at(i).quench / 100) + "Quench ";
     }
     mWorld.logging.addToMainLog(text);
 
@@ -121,7 +126,7 @@ void Character::consumeFood(uint16_t id)
   }
 }
 
-void Character::consumePotion(uint16_t id)
+void Character::consumePotion(uint16_t id, bool isLogConsumedItem)
 {
   int i = 0;
   bool isItemFound = false;
@@ -137,6 +142,11 @@ void Character::consumePotion(uint16_t id)
 
   if (isItemFound)
   {
+    if (isLogConsumedItem)
+    {
+      mWorld.logging.addToMainLog("\t" + profile.name + " drank some " + potionInventory.at(id).name);
+    }
+
     if (potionInventory.at(i).name == "Milk")
     {
       profile.cosmetic.milkDrinkingCounter += 10;
@@ -159,17 +169,17 @@ void Character::consumePotion(uint16_t id)
     profile.quench += potionInventory.at(i).quench;
 
     std::string text = "\t\t";
-    if (potionInventory.at(i).stamina > 0)
+    if (potionInventory.at(i).stamina / 100 > 0)
     {
-      text += "+" + std::to_string(potionInventory.at(i).stamina) + "Stamina ";
+      text += "+" + std::to_string(potionInventory.at(i).stamina / 100) + "Stamina ";
     }
-    if (potionInventory.at(i).nutrient > 0)
+    if (potionInventory.at(i).nutrient / 100 > 0)
     {
-      text += "+" + std::to_string(potionInventory.at(i).nutrient) + "Nutrient ";
+      text += "+" + std::to_string(potionInventory.at(i).nutrient / 100) + "Nutrient ";
     }
-    if (potionInventory.at(i).quench > 0)
+    if (potionInventory.at(i).quench / 100 > 0)
     {
-      text += "+" + std::to_string(potionInventory.at(i).quench) + "Quench ";
+      text += "+" + std::to_string(potionInventory.at(i).quench / 100) + "Quench ";
     }
     mWorld.logging.addToMainLog(text);
 
@@ -272,7 +282,7 @@ void Character::updateFluffText()
     + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall. "
     + "She have a " + profile.cosmetic.naturalTailStyle + " tail. "
     + "Her eyes are " + profile.cosmetic.naturalEyeStyle + " and " + profile.cosmetic.currentEyeColour + "\n\n"
-    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.nameCooked + ", and " + favouriteJunkFood.nameRaw + ".\n"
+    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.name + ", and " + favouriteJunkFood.nameRaw + ".\n"
     + activityText + weaponText + "\n\n"
     + elementText + " "
     + domesticationText + "\n";

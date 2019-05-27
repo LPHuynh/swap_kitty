@@ -14,8 +14,8 @@ public:
   struct FoodItem
   {
     uint16_t id;
+    std::string name;
     std::string nameRaw;
-    std::string nameCooked;
     FoodType type;
     int16_t dishLevel;
     int64_t price;

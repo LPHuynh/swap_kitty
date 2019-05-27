@@ -11,17 +11,17 @@ Shop::~Shop()
 
 void Shop::refreshInventory(const std::string & seed)
 {
-  weaponInventory.clear();
-  dressInventory.clear();
-  fruitInventory.clear();
-  vegatableInventory.clear();
-  fishInventory.clear();
-  corpseInventory.clear();
-  flourInventory.clear();
-  junkfoodInventory.clear();
-  potionInventory.clear();
-  bookInventory.clear();
-  toyInventory.clear();
+  destroyAllItem(weaponInventory);
+  destroyAllItem(dressInventory);
+  destroyAllItem(fruitInventory);
+  destroyAllItem(vegatableInventory);
+  destroyAllItem(fishInventory);
+  destroyAllItem(corpseInventory);
+  destroyAllItem(flourInventory);
+  destroyAllItem(junkfoodInventory);
+  destroyAllItem(potionInventory);
+  destroyAllItem(bookInventory);
+  destroyAllItem(toyInventory);
 
   for (int i = 0; i < 5; i++)
   {
