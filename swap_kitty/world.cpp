@@ -4,6 +4,7 @@
 World::World()
 {
   currentRulesetVersion = 1;
+  lastestRulesetVersion = 1;
   startingHeight = 0;
   currentWorldHeight = 0;
   isNighttime = false;

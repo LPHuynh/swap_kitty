@@ -99,11 +99,13 @@ public:
 
   Logging logging;
   uint16_t currentRulesetVersion;
+  uint16_t lastestRulesetVersion;
   uint64_t startingHeight;
   uint64_t currentWorldHeight;
   bool isNighttime;
   uint16_t localTimeOffset;
   std::map<uint64_t, std::string> blockhashCache;
+
 private:
   uint32_t generateHash(const std::string& seed);
 

@@ -286,7 +286,7 @@ bool CommandProcessor::scanForCharacterCreationCommand()
   return false;
 }
 
-void CommandProcessor::scanForCommands()
+bool CommandProcessor::scanForCommands()
 {
   std::vector<WalletAPI::PaymentID> paymentIDs;
   paymentIDs = mWalletAPI.getIncomingPaymentID(mCurrentScanHeight, mDaemonAPI.getBlockCount());
@@ -296,33 +296,49 @@ void CommandProcessor::scanForCommands()
     if (convertHexToString(element.paymentID.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.paymentID.substr(0, 4)) == "SB"))
     {
       mWorld.logging.writeToFile("Recieved Command: " + element.paymentID);
-      if (std::stol(element.paymentID.substr(4, 4), 0, 16) >= mWorld.currentRulesetVersion)
+      uint16_t ruleset = std::stoi(element.paymentID.substr(4, 4), 0, 16);
+
+      if (ruleset >= mWorld.currentRulesetVersion)
       {
-        if (element.height >= mCurrentScanHeight)
+        if (ruleset <= mWorld.lastestRulesetVersion)
         {
-          if (element.paymentID.substr(8, 4) != "NC")
+          if (element.height >= mCurrentScanHeight)
           {
-            mCurrentScanHeight = element.height;
-            mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
+            if (element.paymentID.substr(8, 4) != "NC")
+            {
+              mCurrentScanHeight = element.height;
+              mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
+            }
+            else
+            {
+              mWorld.logging.addToMainLog("Duplicate New Character Command detected; Ignoring...");
+            }
           }
           else
           {
-            mWorld.logging.addToMainLog ("Duplicate New Character Command detected; Ignoring...");
+            mWorld.logging.addToMainLog("Error: Commands were obtained in the incorrect order.");
+            return false;
           }
         }
         else
         {
-          mWorld.logging.addToMainLog("Something went wrong: Commands were obtained in the incorrect order.");
+          mWorld.logging.addToMainLog("Error: Commands with a Ruleset Version that is higher than supported version was detected. Please upgrade to the latest version.");
+          return false;
         }
+      }
+      else
+      {
+        mWorld.logging.addToMainLog("Warning: Commands with a Ruleset Version that is lower than the current Ruleset was detected. Ignoring...");
       }
     }
   }
   mCurrentScanHeight++;
+  return true;
 }
 
 bool CommandProcessor::sortCommand(Command i, Command j)
 {
-  return (i.param.substr(60, 4) < j.param.substr(60, 4));
+  return (i.param.substr(0, 64) < j.param.substr(0, 64));
 }
 
 void CommandProcessor::processCommand()
@@ -348,7 +364,7 @@ void CommandProcessor::processCommand()
         }
       }
     }
-    //if more than 1 commands are on the same block, process them in alphabetical order of their security hash
+    //if more than 1 commands are on the same block, process them in alphabetical order
     std::sort(commands.begin(), commands.end(), sortCommand);
 
     while (!commands.empty())
@@ -613,7 +629,7 @@ void CommandProcessor::processCommand()
           }
         }
       }
-
+      mWorld.currentRulesetVersion = commands.front().rulesetVersion;
       commands.pop_front();
     }
   }

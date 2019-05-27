@@ -29,7 +29,7 @@ public:
   void submitFeedCommand(uint16_t foodID[7], uint16_t potionID[6]);
   void submitEquipCommand(uint16_t weaponID, uint16_t dressID);
   bool scanForCharacterCreationCommand();
-  void scanForCommands();
+  bool scanForCommands();
   bool static sortCommand(Command i, Command j);
   void processCommand();
 

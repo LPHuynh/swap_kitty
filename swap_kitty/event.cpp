@@ -37,7 +37,7 @@ void Event::init()
   {
   case 1: monthText = "Spring"; break;
   case 2: monthText = "Sumner"; break;
-  case 3: monthText = "Fall"; break;
+  case 3: monthText = "Autumn"; break;
   case 4: monthText = "Winter"; break;
   }
 
@@ -144,7 +144,7 @@ void Event::processDailyEvent(const std::string& seed)
   {
   case 1: monthText = "Spring"; break;
   case 2: monthText = "Sumner"; break;
-  case 3: monthText = "Fall"; break;
+  case 3: monthText = "Autumn"; break;
   case 4: monthText = "Winter"; break;
   }
 
@@ -265,6 +265,7 @@ void Event::processHourlyEvent(const std::string& seed)
     }
   }
 
+  //Seaonal effects
   if (time.month == 2)
   {
     //Summer
@@ -352,23 +353,6 @@ void Event::processHourlyEvent(const std::string& seed)
   //Change job
   Job::Activity nextJob;
 
-  if (mCharacter.profile.stamina < 0 || mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
-  {
-    mCharacter.profile.happiness -= 500;
-    if (time.hour > 5 || time.hour < 20) //6:00AM to 7:59PM
-    {
-      nextJob = mCharacter.job.getActivity("Nap");
-    }
-    else
-    {
-      nextJob = mCharacter.job.getActivity("Sleep");
-    }
-  }
-  else
-  {
-    nextJob = mCharacter.dailySchedule[time.hour];
-  }
-
   //Summerize Previous Job    
   std::string summary = "\t[" + mWorld.logging.progress + "]";
   mWorld.logging.clearProgress();
@@ -398,35 +382,51 @@ void Event::processHourlyEvent(const std::string& seed)
   mWorld.logging.addToMainLog(summary);
   mTotalActivityStatGained = { 0,0,0,0,0,0,0,0,0,0 };
 
-  //Notify if character is sick
-  if (mCharacter.profile.stamina < 0)
-  {
-    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " is exhausted from the overworking and needs to rest...");
-  }
-  else if (mCommonColdCoolDown > 0)
-  {
-    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " came down with the flu and needs to rest...");
-    mCommonColdCoolDown--;
-    if ((mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire) && mHeatStrokeCoolDown > 0)
-    {
-      mCommonColdCoolDown--;
-    }
-  }
-  else if (mHeatStrokeCoolDown > 0)
-  {
-    mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " collapsed from the heat and needs to rest...");
-    mHeatStrokeCoolDown--;
-    if ((mCharacter.profile.primaryElement == World::Element::water || mCharacter.profile.secondaryElement == World::Element::water) && mHeatStrokeCoolDown > 0)
-    {
-      mHeatStrokeCoolDown--;
-    }
-  }
-
   //Time announcement
   switch (time.hour)
   {
   case 6: mWorld.logging.addToMainLog("It's Morning!"); mWorld.isNighttime = false; break; //6AM
   case 20: mWorld.logging.addToMainLog("It's Nighttime!"); mWorld.isNighttime = true; break; //8PM
+  }
+
+  //Check if character is sick
+  if (mCharacter.profile.stamina < 0 || mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
+  {
+    mCharacter.profile.happiness -= 500;
+    if (mWorld.isNighttime)
+    {
+      nextJob = mCharacter.job.getActivity("Sleep");
+    }
+    else
+    {
+      nextJob = mCharacter.job.getActivity("Nap");
+    }
+    if (mCharacter.profile.stamina < 0)
+    {
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " is exhausted from the overworking and needs to rest...");
+    }
+    else if (mCommonColdCoolDown > 0)
+    {
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " came down with the flu and needs to rest...");
+      mCommonColdCoolDown--;
+      if ((mCharacter.profile.primaryElement == World::Element::fire || mCharacter.profile.secondaryElement == World::Element::fire) && mHeatStrokeCoolDown > 0)
+      {
+        mCommonColdCoolDown--;
+      }
+    }
+    else if (mHeatStrokeCoolDown > 0)
+    {
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " collapsed from the heat and needs to rest...");
+      mHeatStrokeCoolDown--;
+      if ((mCharacter.profile.primaryElement == World::Element::water || mCharacter.profile.secondaryElement == World::Element::water) && mHeatStrokeCoolDown > 0)
+      {
+        mHeatStrokeCoolDown--;
+      }
+    }
+  }
+  else
+  {
+    nextJob = mCharacter.dailySchedule[time.hour];
   }
 
   //Start New Job

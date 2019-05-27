@@ -25,6 +25,8 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   mSetting.mixin = jsonDatabase["config"]["wallet"]["mixin"];
   mSetting.frameRate = jsonDatabase["config"]["game"]["framerate"];
 
+  mWorld.lastestRulesetVersion = mSetting.lastestRulesetVersion;
+
   mWindow.create(sf::VideoMode(mSetting.windowWidth, mSetting.windowHeight), mSetting.windowTitle);
   mWindow.setFramerateLimit(mSetting.frameRate);
   mGui.setTarget(mWindow);
@@ -217,7 +219,11 @@ void App::startGame()
 void App::mRunTurns()
 {
   uint64_t topHeight = mDaemonAPI.getBlockCount();
-  mCommandProcessor.scanForCommands();
+  if (!mCommandProcessor.scanForCommands())
+  {
+    //Exit game when scanned commands are critically invalid
+    gameState = GameState::exit;
+  }
   while (mWorld.currentWorldHeight < topHeight)
   {
     mCommandProcessor.processCommand();
