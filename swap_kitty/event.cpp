@@ -79,43 +79,43 @@ void Event::init()
   {
   case 0: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cooking..."); 
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Cooking...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Cooking...", mCharacter.currentActivity.name);
     break;
   case 1: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cleaning the house..."); 
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Cleaning the house...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Cleaning the house...", mCharacter.currentActivity.name);
     break;
   case 2:
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library..."); 
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Reading in the library...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
     break;
   case 3:
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing...");
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Playing in the toyroom...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Playing in the toyroom...", mCharacter.currentActivity.name);
     break;
   case 4: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing...");
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Bathing...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Bathing...", mCharacter.currentActivity.name);
     break;
   case 5: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Napping..."); 
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Napping...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Napping...", mCharacter.currentActivity.name);
     break;
   case 6:
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Sleeping...");
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Sleeping...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Sleeping...", mCharacter.currentActivity.name);
     break;
   case 14:
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Fishing..."); 
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Fishing...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Fishing...", mCharacter.currentActivity.name);
     break;
   case 15: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Gathering Plants..."); 
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is Gathering Plants...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Gathering Plants...", mCharacter.currentActivity.name);
     break;
   default: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "...");
-    mWorld.logging.statusMessage = mCharacter.profile.name + " is working as a " + mCharacter.currentActivity.name + "...";
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is working as a " + mCharacter.currentActivity.name + "...", mCharacter.currentActivity.name);
     break;
   }
 }
@@ -329,21 +329,20 @@ void Event::processHourlyEvent(const std::string& seed)
       switch (mCharacter.currentActivity.id)
       {
       case 0: 
-        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while cooking..."); 
-        mWorld.logging.statusMessage = mCharacter.profile.name + " caught a " + caughtVermin.nameRaw;
+        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw) + " while cooking..."); 
+        mWorld.logging.addStatusMessage(mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw), "catch_" + caughtVermin.nameRaw);
         break;
       case 1: 
-        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " found a " + caughtVermin.name + " while cleaning..."); 
-        mWorld.logging.statusMessage = mCharacter.profile.name + " found a " + caughtVermin.nameRaw;
+        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " found " + mWorld.makeSingularNoun(caughtVermin.name) + " while cleaning...");
+        mWorld.logging.addStatusMessage(mCharacter.profile.name + " found " + mWorld.makeSingularNoun(caughtVermin.nameRaw), "catch_" + caughtVermin.nameRaw);
         break;
       case 2: 
-        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught a " + caughtVermin.nameRaw + " while playing..."); 
-        mWorld.logging.statusMessage = mCharacter.profile.name + " caught a " + caughtVermin.nameRaw;
-
+        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw) + " while playing...");
+        mWorld.logging.addStatusMessage(mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw), "catch_" + caughtVermin.nameRaw);
         break;
       default: 
-        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " brought home a " + caughtVermin.name + " from work..."); 
-        mWorld.logging.statusMessage = mCharacter.profile.name + " caught a " + caughtVermin.nameRaw;
+        mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " brought home " + mWorld.makeSingularNoun(caughtVermin.name) + " from work...");
+        mWorld.logging.addStatusMessage(mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw), "catch_" + caughtVermin.nameRaw);
         break;
       }
     }
@@ -476,15 +475,9 @@ void Event::processHourlyEvent(const std::string& seed)
   //Check if character is sick
   if (mCharacter.profile.stamina < 0 || mCommonColdCoolDown > 0 || mHeatStrokeCoolDown > 0)
   {
+    mWorld.logging.addStatusMessage(mCharacter.profile.name + " is sick", "sick");
     mCharacter.profile.happiness -= 500;
-    if (mWorld.isNighttime)
-    {
-      nextJob = mCharacter.job.getActivity("Sleep");
-    }
-    else
-    {
-      nextJob = mCharacter.job.getActivity("Nap");
-    }
+    nextJob = mCharacter.job.getActivity("Sleep");
     if (mCharacter.profile.stamina < 0)
     {
       mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " is exhausted from the overworking and needs to rest...");
@@ -522,43 +515,43 @@ void Event::processHourlyEvent(const std::string& seed)
     {
     case 0:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cooking...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Cooking...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Cooking...", mCharacter.currentActivity.name);
       break;
     case 1:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Cleaning the house...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Cleaning the house...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Cleaning the house...", mCharacter.currentActivity.name);
       break;
     case 2:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Reading in the library...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
       break;
     case 3:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Playing in the toyroom...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Playing in the toyroom...", mCharacter.currentActivity.name);
       break;
     case 4:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Bathing...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Bathing...", mCharacter.currentActivity.name);
       break;
     case 5:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Napping...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Napping...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Napping...", mCharacter.currentActivity.name);
       break;
     case 6:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Sleeping...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Sleeping...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Sleeping...", mCharacter.currentActivity.name);
       break;
     case 14:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Fishing...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Fishing...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Fishing...", mCharacter.currentActivity.name);
       break;
     case 15:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Gathering Plants...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is Gathering Plants...";
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Gathering Plants...", mCharacter.currentActivity.name);
       break;
     default:
-      mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began working as a " + mCharacter.currentActivity.name + "...");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " is working as a " + mCharacter.currentActivity.name + "...";
+      mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began working as " + mWorld.makeSingularNoun(mCharacter.currentActivity.name) + "...");
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is working as " + mWorld.makeSingularNoun(mCharacter.currentActivity.name) + "...", mCharacter.currentActivity.name);
       break;
     }
   }
@@ -587,7 +580,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   //Check Satation/Thirst Status
   if (mCharacter.profile.satiation > 10000 || mCharacter.profile.quench > 10000)
   {
-    int targetRoll = 1;
+    int targetRoll = 2;
 
     if (mCharacter.profile.satiation > 15000 || mCharacter.profile.quench > 15000)
     {
@@ -597,7 +590,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     if (mWorld.rollDie(seed, 2, 6) <= targetRoll)
     {
       mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " puked.");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " puked.";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is thowing up her lunch.", "puke");
       mCharacter.profile.satiation -= 200;
       mCharacter.profile.quench -= 200;
       failedRoll = 100;
@@ -617,15 +610,16 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     {
       Food::FoodItem caughtVermin = mCharacter.food.randomizeRawFood(seed, Food::FoodType::vermin);
       mCharacter.foodInventory.push_back(caughtVermin);
-      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught and ate a " + caughtVermin.name + ".");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " caught and ate a " + caughtVermin.name + ".";
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " caught and ate " + mWorld.makeSingularNoun(caughtVermin.name) + ".");
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw + "."), "catch_" + caughtVermin.nameRaw);
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is eating " + mWorld.makeSingularNoun(caughtVermin.nameRaw + "."), "eat_" + caughtVermin.nameRaw);
       mCharacter.consumeFood(caughtVermin.id, false);
       failedRoll = 100;
     }
     else
     {
       mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + mCharacter.foodInventory.at(0).name + ".");
-      mWorld.logging.statusMessage = mCharacter.profile.name + " ate a " + mCharacter.foodInventory.at(0).name + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is eating " + mWorld.makeSingularNoun(mCharacter.foodInventory.at(0).name) + ".", "eat");
       mCharacter.consumeFood(mCharacter.foodInventory.at(0).id, false);
       failedRoll++;
     }
@@ -661,7 +655,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       }
     }
     mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " helped herself to some " + selectedName + ".");
-    mWorld.logging.statusMessage = mCharacter.profile.name + " drank some " + selectedName + ".";
+    mWorld.logging.addStatusMessage (mCharacter.profile.name + " is drinking " + selectedName + ".", "drink");
     mCharacter.consumePotion(selectedID, false);
     failedRoll++;
   }
@@ -675,6 +669,8 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   {
     if (mCharacter.profile.obidence < mWorld.getRandomNumber(seed, 0, 1000 * mCharacter.currentActivity.workLevel))
     {
+      mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " refused to work.");
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is refusing to work.", "refuse_work");
       mCharacter.profile.obidence += 10;
       failedRoll = 100;
     }
@@ -933,7 +929,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       if (element.dishLevel == 0)
       {
         mCharacter.food.randomizeCookedFood(seed, element);
-        mWorld.logging.statusMessage = mCharacter.profile.name + " cooked some " + element.name + ".";
+        mWorld.logging.addStatusMessage(mCharacter.profile.name + " is cooking " + mWorld.makeSingularNoun(element.name) + ".", "cook");
         mFoundItem.push_back(element.name);
         break;
       }
@@ -946,11 +942,11 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     mCharacter.foodInventory.push_back(fish);
     if (mCharacter.currentActivity.id == 15)
     {
-      mWorld.logging.statusMessage = mCharacter.profile.name + " caught a " + fish.nameRaw + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(fish.nameRaw) + ".", "caught_fish");
     }
     else
     {
-      mWorld.logging.statusMessage = mCharacter.profile.name + " was given a " + fish.nameRaw + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is being given " + mWorld.makeSingularNoun(fish.nameRaw) + ".", "given_fish");
     }
     mFoundItem.push_back(fish.name);
     mFishingProgress = 0;
@@ -968,11 +964,11 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     }
     if (mCharacter.currentActivity.id == 15 )
     {
-      mWorld.logging.statusMessage = mCharacter.profile.name + " harvested a " + harvest.nameRaw + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " harvested " + mWorld.makeSingularNoun(harvest.nameRaw) + ".", "harvest");
     }
     else
     {
-      mWorld.logging.statusMessage = mCharacter.profile.name + " was given a " + harvest.nameRaw + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " was given " + mWorld.makeSingularNoun(harvest.nameRaw) + ".", "harvest");
     }
     mCharacter.foodInventory.push_back(harvest);
     mFoundItem.push_back(harvest.name);
@@ -983,11 +979,11 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     Food::FoodItem corpse = mCharacter.food.randomizeRawFood(seed, Food::FoodType::corpse);
     if (mCharacter.currentActivity.id == 18)
     {
-      mWorld.logging.statusMessage = mCharacter.profile.name + " took home some " + corpse.name + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is taking home some " + corpse.name + ".", "get_corpse");
     }
     else
     {
-      mWorld.logging.statusMessage = mCharacter.profile.name + " hunted a " + corpse.nameRaw + ".";
+      mWorld.logging.addStatusMessage(mCharacter.profile.name + " is hunting down " + mWorld.makeSingularNoun(corpse.nameRaw) + ".", "hunt_" + corpse.nameRaw);
     }
 
     mCharacter.foodInventory.push_back(corpse);

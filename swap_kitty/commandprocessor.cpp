@@ -58,7 +58,7 @@ void CommandProcessor::submitCharacterCreationCommand(const std::string& charact
   command.param = convertStringToHex(characterName) + convertIntToHex(blockOffset);
 
   std::string commandHex = convertCommandToHex(command);
-  mWorld.logging.changeStatusMessage("Submitted Character Creation Command");
+  mWorld.logging.changeDefaultStatusMessage("Submitted Character Creation Command", "none");
   mWorld.logging.writeToFile("Submitted Command: " + commandHex);
   mWalletAPI.transfer(mWalletAddress, commandHex, mTxAmount, mTxPriority, mMixin);
 }

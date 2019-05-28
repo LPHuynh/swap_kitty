@@ -67,7 +67,8 @@ private:
   sf::RenderWindow mWindow;
   sf::Event mWindowEvent;
   tgui::Gui mGui;
-  sf::Clock mClock;
+  sf::Clock mClockMain;
+  sf::Clock mClockStatus;
 
   WalletAPI::Balance mSwapBalance;
   bool mIsCharacterCreated;

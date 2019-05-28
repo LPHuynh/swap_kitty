@@ -106,7 +106,8 @@ App::~App()
 
 void App::run()
 {
-  mClock.restart();
+  mClockMain.restart();
+  mClockStatus.restart();
 
   while (mWindow.isOpen())
   {
@@ -135,13 +136,18 @@ void App::run()
 
 void App::runMainGameState()
 {
-  if (mClock.getElapsedTime().asSeconds() > 1)
+  if (mClockMain.getElapsedTime().asSeconds() > 1)
   {
-    mClock.restart();
+    mClockMain.restart();
     setWindowTitle();
     runTurns();
 
-    mGui.get<tgui::Label>("LabelStatus")->setText(mWorld.logging.statusMessage);
+    if (mClockStatus.getElapsedTime().asSeconds() > 5)
+    {
+      mClockStatus.restart();
+      mGui.get<tgui::Label>("LabelStatus")->setText(mWorld.logging.getStatusMessage());
+      mWorld.logging.popStatus();
+    }
 
     if (mWorld.logging.isLogTextUpdated)
     {
@@ -164,9 +170,9 @@ void App::runMainGameState()
 void App::runLoadingState()
 {
   loadGUI();
-  if (mClock.getElapsedTime().asSeconds() > 1)
+  if (mClockMain.getElapsedTime().asSeconds() > 1)
   {
-    mClock.restart();
+    mClockMain.restart();
     uint64_t daemonHeight = mDaemonAPI.getBlockCount();
     uint64_t walletHeight = mWalletAPI.getBlockHeight();
     setWindowTitle();
@@ -224,9 +230,9 @@ void App::runLoadingState()
               mGui.handleEvent(mWindowEvent);
             }
 
-            if (mClock.getElapsedTime().asSeconds() > 1)
+            if (mClockMain.getElapsedTime().asSeconds() > 1)
             {
-              mClock.restart();
+              mClockMain.restart();
               setWindowTitle();
 
               if (mIsCharacterCreated)
@@ -342,7 +348,7 @@ void App::startGame()
   mGui.removeAllWidgets();
   isGUILoaded = false;
   mCommandProcessor.init(mSetting.txAmount, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
-  mClock.restart();
+  mClockMain.restart();
 }
 
 void App::loadGUI()
@@ -424,7 +430,7 @@ void App::runTurns()
     gameState = GameState::exit;
   }
 
-  while (mWorld.currentWorldHeight < topHeight && mClock.getElapsedTime().asSeconds() < 1)
+  while (mWorld.currentWorldHeight < topHeight && mClockMain.getElapsedTime().asSeconds() < 1)
   {
     mCommandProcessor.processCommand();
     mEvent.processEvent();

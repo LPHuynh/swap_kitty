@@ -50,8 +50,8 @@ void Character::consumeFood(uint16_t id, bool isLogConsumedItem)
   {
     if (isLogConsumedItem)
     {
-      mWorld.logging.addToMainLog("\t" + profile.name + " ate some " + foodInventory.at(id).name);
-      mWorld.logging.statusMessage = profile.name + " ate some " + foodInventory.at(id).name;
+      mWorld.logging.addToMainLog("\t" + profile.name + " ate  " + mWorld.makeSingularNoun(foodInventory.at(id).name));
+      mWorld.logging.addStatusMessage(profile.name + " is eating " + mWorld.makeSingularNoun(foodInventory.at(id).name), "eat");
     }
 
     if (foodInventory.at(i).type == Food::FoodType::vermin)
@@ -120,7 +120,7 @@ void Character::consumeFood(uint16_t id, bool isLogConsumedItem)
     {
       text += "+" + std::to_string(foodInventory.at(i).quench / 100) + "Quench ";
     }
-    mWorld.logging.statusMessage += text;
+    mWorld.logging.addToMainLog(text);
 
     mWorld.freeID(id);
     foodInventory.erase(foodInventory.begin() + i);
@@ -145,8 +145,8 @@ void Character::consumePotion(uint16_t id, bool isLogConsumedItem)
   {
     if (isLogConsumedItem)
     {
-      mWorld.logging.addToMainLog("\t" + profile.name + " drank some " + potionInventory.at(id).name);
-      mWorld.logging.statusMessage = profile.name + " drank some " + potionInventory.at(id).name;
+      mWorld.logging.addToMainLog("\t" + profile.name + " drank  " + potionInventory.at(id).name);
+      mWorld.logging.addStatusMessage(profile.name + " is drinking " + potionInventory.at(id).name, "drink");
     }
 
     if (potionInventory.at(i).name == "Milk")
@@ -183,7 +183,7 @@ void Character::consumePotion(uint16_t id, bool isLogConsumedItem)
     {
       text += "+" + std::to_string(potionInventory.at(i).quench / 100) + "Quench ";
     }
-    mWorld.logging.statusMessage += text;
+    mWorld.logging.addToMainLog(text);
 
     mWorld.freeID(id);
     potionInventory.erase(potionInventory.begin() + i);

@@ -3,7 +3,7 @@
 
 Logging::Logging()
 {
-  statusMessage = "";
+  mDefaultStatus = "";
   progress = "";
   isLogTextUpdated = false;
   std::ofstream logFile;
@@ -27,9 +27,53 @@ void Logging::addToMainLog(std::string text)
   isLogTextUpdated = true;
 }
 
-void Logging::changeStatusMessage(std::string text)
+void Logging::changeDefaultStatusMessage(std::string text, std::string animation)
 {
-  statusMessage = text;
+  mDefaultStatus = text;
+}
+
+void Logging::addStatusMessage(std::string text, std::string animation)
+{
+  mStatusMessages.push_back(text);
+  mStatusAnimations.push_back(animation);
+
+  while (mStatusMessages.size() > 10)
+  {
+    popStatus();
+  }
+}
+
+std::string Logging::getStatusMessage()
+{
+  if (mStatusMessages.empty())
+  { 
+    return mDefaultStatus;
+  }
+  else 
+  {
+    return mStatusMessages.front();
+  }
+}
+
+std::string Logging::getStatusAnimation()
+{
+  if (mStatusAnimations.empty())
+  {
+    return mDefaultStatus;
+  }
+  else
+  {
+    return mStatusAnimations.front();
+  }
+}
+
+void Logging::popStatus()
+{
+  if (!mStatusMessages.empty())
+  {
+    mStatusMessages.pop_front();
+    mStatusAnimations.pop_front();
+  }
 }
 
 void Logging::addToProgress(std::string text)

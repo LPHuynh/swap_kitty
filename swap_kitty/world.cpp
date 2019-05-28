@@ -477,6 +477,15 @@ std::string World::generateNonce()
   return std::to_string(mNonceCounter);
 }
 
+std::string World::makeSingularNoun(const std::string & noun)
+{
+  switch (noun.at(0))
+  {
+  case 'a': case 'e': case 'i': case 'o': case 'u': case 'A': case 'E': case 'I': case 'O': case 'U': return "An " + noun;
+  default: return "A " + noun;
+  }
+}
+
 uint32_t World::generateHash(const std::string& seed)
 {
   //djb2 Hash Functions 

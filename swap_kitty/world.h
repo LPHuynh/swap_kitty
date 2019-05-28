@@ -97,6 +97,8 @@ public:
   void freeID(uint16_t id);
   std::string generateNonce();
 
+  std::string makeSingularNoun(const std::string& noun);
+
   Logging logging;
   uint16_t currentRulesetVersion;
   uint16_t lastestRulesetVersion;
