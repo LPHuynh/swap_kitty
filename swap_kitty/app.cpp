@@ -28,6 +28,9 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   mWindow.create(sf::VideoMode(mSetting.windowWidth, mSetting.windowHeight), mSetting.windowTitle);
   mWindow.setFramerateLimit(mSetting.frameRate);
   mGui.setTarget(mWindow);
+  sf::Font defaultFont;
+  defaultFont.loadFromFile("Lato-Regular.ttf");
+  mGui.setFont(defaultFont);
 
   if (!mDaemonAPI.init(mSetting.daemonHost, mSetting.daemonPort))
   {
@@ -134,21 +137,33 @@ void App::runMainGameState()
 {
   if (mClock.getElapsedTime().asSeconds() > 1)
   {
-    setWindowTitle();
     mClock.restart();
+    setWindowTitle();
+    runTurns();
+
+    mGui.get<tgui::Label>("LabelStatus")->setText(mWorld.logging.statusMessage);
+
+    if (mWorld.logging.isLogTextUpdated)
+    {
+      std::string text;
+
+      for (auto& element : mWorld.logging.mainLog)
+      {
+        text += element + "\n";
+      }
+      std::stringstream progress;
+      progress << std::setfill(' ') << std::setw(10) << std::left << mWorld.logging.progress;
+      mGui.get<tgui::TextBox>("TextBoxLog")->setText(text + "\t[" + progress.str() + "]");
+      mWorld.logging.isLogTextUpdated = false;
+    }
   }
 
-  loadMainScreenGUI();
-  runTurns();
-}
-
-void App::loadMainScreenGUI()
-{
+  loadGUI();
 }
 
 void App::runLoadingState()
 {
-  loadLoadingScreenGUI();
+  loadGUI();
   if (mClock.getElapsedTime().asSeconds() > 1)
   {
     mClock.restart();
@@ -163,6 +178,7 @@ void App::runLoadingState()
       mCommandProcessor.processCommand();
       mEvent.init();
       mGui.removeAllWidgets();
+      isGUILoaded = false;
       gameState = GameState::mainGame;
     }
     else
@@ -184,6 +200,7 @@ void App::runLoadingState()
           mCommandProcessor.processCommand();
           mEvent.init();
           mGui.removeAllWidgets();
+          isGUILoaded = false;
           gameState = GameState::mainGame;
         }
         else
@@ -221,6 +238,7 @@ void App::runLoadingState()
                   mCommandProcessor.processCommand();
                   mEvent.init();
                   mGui.removeAllWidgets();
+                  isGUILoaded = false;
                   gameState = GameState::mainGame;
                 }
               }
@@ -240,16 +258,6 @@ void App::runLoadingState()
   }
 }
 
-void App::loadLoadingScreenGUI()
-{
-  if (!isGUILoaded)
-  {
-    mGui.loadWidgetsFromFile("gui/loadingscreen.gui");
-    mGui.get<tgui::Button>("ButtonNewCharaCreate")->connect("pressed", &App::createCharacter, this);
-    isGUILoaded = true;
-  }
-}
-
 void App::createCharacter()
 {
   mCommandProcessor.submitCharacterCreationCommand(mSetting.characterName);
@@ -258,26 +266,8 @@ void App::createCharacter()
 
 void App::runTitleState()
 {
-  loadTitleScreenGUI();
+  loadGUI();
   loadNewGameSubWindow();
-}
-
-void App::loadTitleScreenGUI()
-{
-  if (!isGUILoaded)
-  {
-    mGui.loadWidgetsFromFile("gui/titlescreen.gui");
-    mGui.get<tgui::Button>("ButtonNewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::newWallet; });
-    mGui.get<tgui::Button>("ButtonLoadGame")->connect("pressed", [&]() { newGameOption = NewGameOption::loadWallet; });
-    mGui.get<tgui::Button>("ButtonRestoreGame")->connect("pressed", [&]() { newGameOption = NewGameOption::restoreWallet; });
-    mGui.get<tgui::Button>("ButtonViewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::viewWallet; });
-    mGui.get<tgui::Button>("ButtonExitGame")->connect("pressed", [&]() { gameState = GameState::exit; });
-    mGui.get<tgui::Button>("ButtonStartWallet")->connect("pressed", &App::startGame, this);
-    mGui.get<tgui::Button>("ButtonCancelWallet")->connect("pressed", [&]() { newGameOption = NewGameOption::waiting; });
-    mGui.get<tgui::EditBox>("EditBoxCharacterName")->setText(mSetting.characterName);
-    mGui.get<tgui::Button>("ButtonViewGame")->setEnabled("false"); //TODO
-    isGUILoaded = true;
-  }
 }
 
 void App::loadNewGameSubWindow()
@@ -353,6 +343,76 @@ void App::startGame()
   isGUILoaded = false;
   mCommandProcessor.init(mSetting.txAmount, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
   mClock.restart();
+}
+
+void App::loadGUI()
+{
+  if (!isGUILoaded)
+  {
+    if (gameState == GameState::mainGame)
+    {
+      mGui.loadWidgetsFromFile("gui/mainscreen.gui");
+
+      sf::Font monoFont;
+      monoFont.loadFromFile("RobotoMono-Regular.ttf");
+      mGui.get<tgui::TextBox>("TextBoxLog")->setInheritedFont(monoFont);
+
+      //Base Window
+      mGui.get<tgui::Button>("ButtonInteract")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(true); });
+      mGui.get<tgui::Button>("ButtonSetScheduleMain")->connect("pressed", [&]() {  });
+
+      //Character Sub-Window
+      mGui.get<tgui::Button>("ButtonFeed")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(true); });
+      mGui.get<tgui::Button>("ButtonEquip")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(true); });
+      mGui.get<tgui::Button>("ButtonGive")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonShop")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowShop")->setVisible(true); });
+      mGui.get<tgui::Button>("ButtonLibrary")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonExplore")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonSetSchedule")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonStat")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonSetting")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonInteractCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(false); });
+
+      //Feed Menu
+      mGui.get<tgui::Button>("ButtonFeedMenuFeed")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonFeedMenuCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(false); });
+
+      //Equip Menu
+      mGui.get<tgui::Button>("ButtonEquipMenuEquip")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonEquipMenuCancel")->connect("pressed", [&]() {  mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(false); });
+
+      //Shop Menus
+      mGui.get<tgui::Button>("ButtonShopWeapon")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonShopFood")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonShopDress")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonShopBook")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonShopGift")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonShopMenuCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowShop")->setVisible(false); });
+
+
+      isGUILoaded = true;
+    }
+    else if (gameState == GameState::loading)
+    {
+      mGui.loadWidgetsFromFile("gui/loadingscreen.gui");
+      mGui.get<tgui::Button>("ButtonNewCharaCreate")->connect("pressed", &App::createCharacter, this);
+      isGUILoaded = true;
+    }
+    else if (gameState == GameState::titleScreen)
+    {
+      mGui.loadWidgetsFromFile("gui/titlescreen.gui");
+      mGui.get<tgui::Button>("ButtonNewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::newWallet; });
+      mGui.get<tgui::Button>("ButtonLoadGame")->connect("pressed", [&]() { newGameOption = NewGameOption::loadWallet; });
+      mGui.get<tgui::Button>("ButtonRestoreGame")->connect("pressed", [&]() { newGameOption = NewGameOption::restoreWallet; });
+      mGui.get<tgui::Button>("ButtonViewGame")->connect("pressed", [&]() { newGameOption = NewGameOption::viewWallet; });
+      mGui.get<tgui::Button>("ButtonExitGame")->connect("pressed", [&]() { gameState = GameState::exit; });
+      mGui.get<tgui::Button>("ButtonStartWallet")->connect("pressed", &App::startGame, this);
+      mGui.get<tgui::Button>("ButtonCancelWallet")->connect("pressed", [&]() { newGameOption = NewGameOption::waiting; });
+      mGui.get<tgui::EditBox>("EditBoxCharacterName")->setText(mSetting.characterName);
+      mGui.get<tgui::Button>("ButtonViewGame")->setEnabled("false"); //TODO
+      isGUILoaded = true;
+    }
+  }
 }
 
 void App::runTurns()

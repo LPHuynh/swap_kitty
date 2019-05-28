@@ -18,9 +18,11 @@ public:
   void clearProgress();
   void writeToFile(std::string text);
 
-  std::queue<std::string> mainLog;
+  std::deque<std::string> mainLog;
   std::string statusMessage;
   std::string progress;
+
+  bool isLogTextUpdated;
 private:
 };
 

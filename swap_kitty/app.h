@@ -50,17 +50,15 @@ private:
   World mWorld;
 
   void runMainGameState();
-  void loadMainScreenGUI();
 
   void runLoadingState();
-  void loadLoadingScreenGUI();
   void createCharacter();
 
   void runTitleState();
-  void loadTitleScreenGUI();
   void loadNewGameSubWindow();
   void startGame();
 
+  void loadGUI();
   void runTurns();
   void loadGraphics();
   void setWindowTitle();
