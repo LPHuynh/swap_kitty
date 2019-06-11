@@ -606,7 +606,7 @@ void Weapon::loadQuality()
   WeaponQuality quality;
 
   quality = prototype;
-  quality.name = "A Worned";
+  quality.name = "Worned";
   quality.costMultplier = 5;
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = -3;
@@ -617,7 +617,7 @@ void Weapon::loadQuality()
   mQualities.push_back(quality);
 
   quality = prototype;
-  quality.name = "An Inferior";
+  quality.name = "Inferior";
   quality.costMultplier = 10;
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = -2;
@@ -627,7 +627,7 @@ void Weapon::loadQuality()
   mQualities.push_back(quality);
 
   quality = prototype;
-  quality.name = "A Normal";
+  quality.name = "Normal";
   quality.costMultplier = 14;
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = 0;
@@ -636,7 +636,7 @@ void Weapon::loadQuality()
   mQualities.push_back(quality);
 
   quality = prototype;
-  quality.name = "A Superior";
+  quality.name = "Superior";
   quality.costMultplier = 18;
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = 1;
@@ -647,7 +647,7 @@ void Weapon::loadQuality()
   mQualities.push_back(quality);
 
   quality = prototype;
-  quality.name = "A Miracle";
+  quality.name = "Miracle";
   quality.costMultplier = 30;
   quality.bonusDice.face = 0;
   quality.bonusDice.roll = 1;
@@ -660,7 +660,7 @@ void Weapon::loadQuality()
   mQualities.push_back(quality);
 
   quality = prototype;
-  quality.name = "The"; //Artifact Qually
+  quality.name = "Legendary";
   quality.costMultplier = 75;
   quality.bonusDice.face = 1;
   quality.bonusDice.roll = 3;
