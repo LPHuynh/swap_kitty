@@ -22,8 +22,8 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, c
   currentEyeColour = naturalEyeColour;
   currentSkinTone = naturalSkinTone;
 
-  species = "Catgirl";
-  gender = "Female";
+  species = Species::catgirl;
+  gender = Gender::female;
   age = 10;
   ageCounter = 0;
   weight = 26000 + world.getRandomNumber(seed, 0, 4000);
@@ -32,6 +32,14 @@ void Cosmetic::init(World::Element firstElement, World::Element secondElement, c
 
 std::string Cosmetic::generateNaturalHairColour(World::Element firstElement, World::Element secondElement)
 {
+  switch (species)
+  {
+  case Species::catgirl: return "Colourful"; break;
+  default: return "Colourful"; break;
+  }
+
+  //Requires implementation of paper doll graphics
+  /*
   switch (firstElement)
   {
   case World::Element::fire:
@@ -113,10 +121,19 @@ std::string Cosmetic::generateNaturalHairColour(World::Element firstElement, Wor
     }
   default: return "Dark Violet";
   }
+  */
 }
 
 std::string Cosmetic::generateNaturalEyeColour(World::Element element)
 {
+  switch (species)
+  {
+  case Species::catgirl: return "Turquiose"; break;
+  default: return "Turquiose"; break;
+  }
+
+  //Requires implementation of paper doll graphics
+  /*
   switch (element) 
   {
   case World::Element::fire: return "Red";
@@ -128,6 +145,7 @@ std::string Cosmetic::generateNaturalEyeColour(World::Element element)
   case World::Element::dark: return "Black";
   default: return "Black";
   }
+  */
 }
 
 int16_t Cosmetic::generateNaturalSkinTone(World::Element element)
@@ -157,7 +175,26 @@ std::string Cosmetic::randomizeTailStyle(const std::string& seed)
 
 std::string Cosmetic::randomizeEyeStyle(const std::string& seed)
 {
-  return "Large, Round,";
+  return "Large";
+}
+
+std::string Cosmetic::getSpecies()
+{
+  switch (species)
+  {
+  case Species::catgirl: return "Catgirl"; break;
+  default: return "Catgirl"; break;
+  }
+}
+
+std::string Cosmetic::getGender()
+{
+  switch (gender)
+  {
+  case Gender::female: return "Female"; break;
+  case Gender::male: return "Male"; break;
+  default: return "Female"; break;
+  }
 }
 
 std::string Cosmetic::getSkinToneDescription(int16_t skinTone)

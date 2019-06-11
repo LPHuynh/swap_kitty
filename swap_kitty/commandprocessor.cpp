@@ -27,9 +27,9 @@ void CommandProcessor::init(uint64_t txAmount, uint16_t txPriority, uint16_t mix
   mIsBetaVersion = isBetaVersion;
 }
 
-void CommandProcessor::submitCharacterCreationCommand(const std::string& characterName)
+void CommandProcessor::submitCharacterCreationCommand(const std::string& characterName, uint8_t characterOption)
 {
-  //Specification(Param): 24 byte Character Name, 2 byte Clock Offset
+  //Specification(Param): 23 byte Character Name, 1 byte Character Option, 2 byte Clock Offset
 
   Command command;
   command.rulesetVersion = mWorld.currentRulesetVersion;
@@ -55,7 +55,7 @@ void CommandProcessor::submitCharacterCreationCommand(const std::string& charact
   uint16_t blockOffset = blockHeightTime - adjustedBlock;
   ////
 
-  command.param = convertStringToHex(characterName) + convertIntToHex(blockOffset);
+  command.param = convertStringToHex(characterName) + convertIntToHex(characterOption) + convertIntToHex(blockOffset);
 
   std::string commandHex = convertCommandToHex(command);
   mWorld.logging.changeDefaultStatusMessage("Submitted Character Creation Command", "none");
@@ -372,7 +372,26 @@ void CommandProcessor::processCommand()
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
-        mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 48)));
+        mCharacter.generateNewCharacter(getBlockHash(), convertHexToString(commands.front().param.substr(0, 46)));
+
+        uint8_t characterOption = std::stoi(commands.front().param.substr(46, 2), 0, 16);
+
+        if (characterOption < 128)
+        {
+          mCharacter.profile.cosmetic.gender = Cosmetic::Gender::female;
+        }
+        else
+        {
+          mCharacter.profile.cosmetic.gender = Cosmetic::Gender::male;
+          characterOption -= 128;
+        }
+
+        switch (characterOption)
+        {
+        case 0: mCharacter.profile.cosmetic.species = Cosmetic::Species::catgirl; break;
+        default: mCharacter.profile.cosmetic.species = Cosmetic::Species::catgirl; break;
+        }
+        
         mIsCharacterLoaded = true;
         mWorld.logging.addToMainLog("..::New Character Created::..\n" + mCharacter.fluffText);
       }

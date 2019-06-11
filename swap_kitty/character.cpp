@@ -279,8 +279,8 @@ void Character::updateFluffText()
     domesticationText = "She is fully domesticated.";
   }
 
-  fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.gender + " " + profile.cosmetic.species + " "
-    + "with " + profile.cosmetic.currentHairStyle + " " + profile.cosmetic.currentHairColour + " hair and a " + profile.cosmetic.getSkinToneDescription(profile.cosmetic.currentSkinTone) + " complexion.\n"
+  fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.getGender() + " " + profile.cosmetic.getSpecies() + " "
+    + "with " + profile.cosmetic.currentHairStyle + " " + profile.cosmetic.currentHairColour + " hair.\n"
     + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall. "
     + "She have a " + profile.cosmetic.naturalTailStyle + " tail. "
     + "Her eyes are " + profile.cosmetic.naturalEyeStyle + " and " + profile.cosmetic.currentEyeColour + "\n\n"

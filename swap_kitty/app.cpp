@@ -266,7 +266,7 @@ void App::runLoadingState()
 
 void App::createCharacter()
 {
-  mCommandProcessor.submitCharacterCreationCommand(mSetting.characterName);
+  mCommandProcessor.submitCharacterCreationCommand(mSetting.characterName, 0);
   mIsCharacterCreated = true;
 }
 

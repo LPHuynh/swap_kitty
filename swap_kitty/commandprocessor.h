@@ -19,7 +19,7 @@ public:
     std::string param;
   };
 
-  void submitCharacterCreationCommand(const std::string& characterName);
+  void submitCharacterCreationCommand(const std::string& characterName, uint8_t characterOption);
   void submitResyncGameClock(uint16_t offset);
   void submitAssignScheduleCommand(uint8_t activity[24]);
   void submitAddBookCommand(uint16_t ID[13]);
