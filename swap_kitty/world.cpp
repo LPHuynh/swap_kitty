@@ -439,7 +439,7 @@ uint16_t World::rollDie(const std::string& seed, uint16_t numOfDie, uint16_t num
 
 uint16_t World::getRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber)
 {
-  seed += generateNonce() + seed;
+  seed += generateNonce(seed);
   return (generateHash(seed) % (maxNumber - minNumber + 1)) + minNumber;
 }
 
@@ -471,9 +471,11 @@ void World::freeID(uint16_t id)
   mRecoveredID.push(id);
 }
 
-std::string World::generateNonce()
+std::string World::generateNonce(std::string seed)
 {
-  mNonceCounter++;
+  uint16_t position = mNonceCounter % 60;
+  mNonceCounter += std::stoi (seed.substr(position, 4), 0, 16);
+
   return std::to_string(mNonceCounter);
 }
 

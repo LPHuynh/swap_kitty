@@ -95,7 +95,7 @@ public:
   uint16_t getNoncelessRandomNumber(std::string seed, uint16_t minNumber, uint16_t maxNumber);
   uint16_t generateID();
   void freeID(uint16_t id);
-  std::string generateNonce();
+  std::string generateNonce(std::string seed);
 
   std::string makeSingularNoun(const std::string& noun);
 

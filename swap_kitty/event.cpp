@@ -929,7 +929,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       if (element.dishLevel == 0)
       {
         mCharacter.food.randomizeCookedFood(seed, element);
-        mWorld.logging.addStatusMessage(mCharacter.profile.name + " is cooking " + mWorld.makeSingularNoun(element.name) + ".", "cook");
+        mWorld.logging.addStatusMessage(mCharacter.profile.name + " is cooking " + element.name + ".", "cook");
         mFoundItem.push_back(element.name);
         break;
       }
