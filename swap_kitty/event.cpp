@@ -326,6 +326,11 @@ void Event::processHourlyEvent(const std::string& seed)
       mFoundItem.push_back(caughtVermin.name);
       mCharacter.profile.domesticated -= 10;
 
+      if (mCharacter.profile.domesticated < 2500)
+      {
+        mCharacter.profile.happiness += 20;
+      }
+
       switch (mCharacter.currentActivity.id)
       {
       case 0: 
@@ -614,6 +619,13 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       mWorld.logging.addStatusMessage(mCharacter.profile.name + " caught " + mWorld.makeSingularNoun(caughtVermin.nameRaw + "."), "catch_" + caughtVermin.nameRaw);
       mWorld.logging.addStatusMessage(mCharacter.profile.name + " is eating " + mWorld.makeSingularNoun(caughtVermin.nameRaw + "."), "eat_" + caughtVermin.nameRaw);
       mCharacter.consumeFood(caughtVermin.id, false);
+      mCharacter.profile.domesticated -= 50;
+
+      if (mCharacter.profile.domesticated < 2500)
+      {
+        mCharacter.profile.happiness += 20;
+      }
+
       failedRoll = 100;
     }
     else
