@@ -61,6 +61,8 @@ public:
   template<class T> bool transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id, bool isBuying);
 
   void updateFluffText();
+  void updatestatBarText();
+  void updateScheduleBoxText(uint8_t timeHour);
 
   Profile profile;
   Residence residence;
@@ -86,6 +88,8 @@ public:
   Job::ActivityType favouriteActivityType;
 
   std::string fluffText;
+  std::string statBarText;
+  std::string scheduleBoxText;
 
   Weapon weapon;
   Dress dress;

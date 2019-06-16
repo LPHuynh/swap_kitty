@@ -1,0 +1,432 @@
+Renderer.1 {
+    backgroundcolor = rgba(180, 180, 180, 215);
+    backgroundcolordown = rgba(150, 150, 150, 215);
+    backgroundcolorhover = rgba(190, 190, 190, 215);
+    bordercolor = rgba(240, 240, 240, 215);
+    borders = (1, 1, 1, 1);
+    textcolor = rgba(255, 255, 255, 215);
+    textcolordown = rgba(255, 255, 255, 235);
+    textcolorhover = rgba(255, 255, 255, 235);
+    texture = None;
+    texturedisabled = None;
+    texturedown = None;
+    texturefocused = None;
+    texturehover = None;
+}
+
+Renderer.2 {
+    textcolor = rgba(255, 255, 255, 215);
+
+    scrollbar {
+        arrowbackgroundcolor = rgba(160, 160, 160, 215);
+        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
+        arrowcolor = rgba(200, 200, 200, 215);
+        arrowcolorhover = rgba(225, 225, 225, 215);
+        thumbcolor = rgba(185, 185, 185, 215);
+        thumbcolorhover = rgba(195, 195, 195, 215);
+        trackcolor = rgba(160, 160, 160, 215);
+        trackcolorhover = rgba(170, 170, 170, 215);
+    }
+}
+
+Renderer.3 {
+    backgroundcolor = rgba(180, 180, 180, 215);
+    bordercolor = rgba(240, 240, 240, 215);
+    borders = (1, 1, 1, 1);
+    distancetoside = 3;
+    maximizebutton = {
+backgroundcolor = rgba(180, 180, 180, 215);
+backgroundcolordown = rgba(150, 150, 150, 215);
+backgroundcolorhover = rgba(190, 190, 190, 215);
+bordercolor = rgba(240, 240, 240, 215);
+borders = (1, 1, 1, 1);
+textcolor = rgba(255, 255, 255, 215);
+textcolordown = rgba(255, 255, 255, 235);
+textcolorhover = rgba(255, 255, 255, 235);
+};
+    minimizebutton = {
+backgroundcolor = rgba(180, 180, 180, 215);
+backgroundcolordown = rgba(150, 150, 150, 215);
+backgroundcolorhover = rgba(190, 190, 190, 215);
+bordercolor = rgba(240, 240, 240, 215);
+borders = (1, 1, 1, 1);
+textcolor = rgba(255, 255, 255, 215);
+textcolordown = rgba(255, 255, 255, 235);
+textcolorhover = rgba(255, 255, 255, 235);
+};
+    paddingbetweenbuttons = 1;
+    showtextontitlebuttons = true;
+    texturetitlebar = None;
+    titlebarcolor = rgba(170, 170, 170, 215);
+    titlecolor = rgba(255, 255, 255, 215);
+
+    closebutton {
+        backgroundcolor = rgba(180, 180, 180, 215);
+        backgroundcolordown = rgba(150, 150, 150, 215);
+        backgroundcolorhover = rgba(190, 190, 190, 215);
+        bordercolor = rgba(240, 240, 240, 215);
+        borders = (1, 1, 1, 1);
+        textcolor = rgba(255, 255, 255, 215);
+        textcolordown = rgba(255, 255, 255, 235);
+        textcolorhover = rgba(255, 255, 255, 235);
+    }
+}
+
+Renderer.4 {
+    backgroundcolor = rgba(180, 180, 180, 215);
+    backgroundcolorhover = rgba(190, 190, 190, 215);
+    bordercolor = rgba(240, 240, 240, 215);
+    borders = (1, 1, 1, 1);
+    selectedbackgroundcolor = rgba(0, 110, 200, 130);
+    selectedtextcolor = rgba(255, 255, 255, 245);
+    textcolor = rgba(255, 255, 255, 215);
+    textcolorhover = rgba(255, 255, 255, 235);
+    texturebackground = None;
+
+    scrollbar {
+        arrowbackgroundcolor = rgba(160, 160, 160, 215);
+        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
+        arrowcolor = rgba(200, 200, 200, 215);
+        arrowcolorhover = rgba(225, 225, 225, 215);
+        thumbcolor = rgba(185, 185, 185, 215);
+        thumbcolorhover = rgba(195, 195, 195, 215);
+        trackcolor = rgba(160, 160, 160, 215);
+        trackcolorhover = rgba(170, 170, 170, 215);
+    }
+}
+
+Picture.PictureBackground {
+    Size = (800, 600);
+
+    Renderer {
+        texture = "graphics/bg/day.png";
+        transparenttexture = false;
+    }
+}
+
+Label.LabelSchduleBox {
+    Enabled = false;
+    Position = (0, 40);
+    ScrollbarPolicy = Never;
+    Size = (267.2, 361.548);
+    Text = "Schedule:";
+    TextSize = 13;
+    renderer = &2;
+}
+
+TextBox.TextBoxLog {
+    HorizontalScrollbarPolicy = Never;
+    MaximumCharacters = 0;
+    Position = (0, 400);
+    ReadOnly = true;
+    Size = (800, 200);
+    Text = "";
+    TextSize = 13;
+    VerticalScrollbarPolicy = Always;
+
+    Renderer {
+        backgroundcolor = rgba(180, 180, 180, 215);
+        bordercolor = rgba(240, 240, 240, 215);
+        borders = (1, 1, 1, 1);
+        caretcolor = rgba(255, 255, 255, 215);
+        selectedtextbackgroundcolor = rgba(0, 110, 200, 130);
+        selectedtextcolor = rgba(255, 255, 255, 245);
+        textcolor = rgba(255, 255, 255, 215);
+        texturebackground = None;
+
+        scrollbar {
+            arrowbackgroundcolor = rgba(160, 160, 160, 215);
+            arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
+            arrowcolor = rgba(200, 200, 200, 215);
+            arrowcolorhover = rgba(225, 225, 225, 215);
+            thumbcolor = rgba(185, 185, 185, 215);
+            thumbcolorhover = rgba(195, 195, 195, 215);
+            trackcolor = rgba(160, 160, 160, 215);
+            trackcolorhover = rgba(170, 170, 170, 215);
+        }
+    }
+}
+
+Button.ButtonInteract {
+    Position = (670, 360);
+    Size = (130, 40);
+    Text = Interact;
+    TextSize = 13;
+    renderer = &1;
+}
+
+ChildWindow.ChildWindowInteract {
+    MaximumSize = (600, 400);
+    MinimumSize = (600, 400);
+    Position = (110, 70);
+    Size = (600, 400);
+    Title = Interact;
+    TitleAlignment = Center;
+    TitleButtons = None;
+    Visible = false;
+    renderer = &3;
+
+    Picture.PictureCharaBackground {
+        Size = (600, 400);
+
+        Renderer {
+            texture = "graphics/bg/wood.png";
+            transparenttexture = false;
+        }
+    }
+
+    Picture.PictureAvatar {
+        Position = (0.950012, 0);
+        Size = (234, 400);
+
+        Renderer {
+            texture = "graphics/avatar/simple_dress.png";
+            transparenttexture = false;
+        }
+    }
+
+    Button.ButtonFeed {
+        Position = (490, 0);
+        Size = (110, 33);
+        Text = Feed;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonEquip {
+        Position = (490, 31.6667);
+        Size = (110, 33);
+        Text = Equip;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonGive {
+        Position = (490, 61.6667);
+        Size = (110, 33);
+        Text = Give;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonShop {
+        Position = (490, 291.667);
+        Size = (110, 33);
+        Text = Shop;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonExplore {
+        Position = (490, 321.667);
+        Size = (110, 33);
+        Text = Explore;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonStat {
+        Position = (490, 141.667);
+        Size = (110, 33);
+        Text = Stats;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonLibrary {
+        Position = (490, 91.667);
+        Size = (110, 33);
+        Text = Library;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonSetSchedule {
+        Position = (490, 171.667);
+        Size = (110, 33);
+        Text = "Set Schedule";
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    Button.ButtonInteractCancel {
+        Position = (490, 370);
+        Size = (110, 33);
+        Text = Back;
+        TextSize = 13;
+        renderer = &1;
+    }
+
+    ChildWindow.ChildWindowFeed {
+        MaximumSize = (400, 300);
+        MinimumSize = (400, 300);
+        Position = (0, 10);
+        Size = (400, 300);
+        Title = Feed;
+        TitleAlignment = Center;
+        TitleButtons = None;
+        Visible = false;
+        renderer = &3;
+
+        ListBox.ListBoxFood {
+            ItemHeight = 20;
+            MaximumItems = 0;
+            Position = (10, 0);
+            Size = (180, 248.625);
+            TextSize = 13;
+            renderer = &4;
+        }
+
+        ListBox.ListBoxPotion {
+            ItemHeight = 20;
+            MaximumItems = 0;
+            Position = (210, 0);
+            Size = (180, 248.625);
+            TextSize = 13;
+            renderer = &4;
+        }
+
+        Button.ButtonFeedMenuFeed {
+            Position = (300, 259);
+            Size = (90, 33);
+            Text = Feed;
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonFeedMenuCancel {
+            Position = (10, 259);
+            Size = (90, 33);
+            Text = Cancel;
+            TextSize = 13;
+            renderer = &1;
+        }
+    }
+
+    ChildWindow.ChildWindowEquip {
+        MaximumSize = (400, 300);
+        MinimumSize = (400, 300);
+        Position = (10, 10);
+        Size = (400, 300);
+        Title = Equip;
+        TitleAlignment = Center;
+        TitleButtons = None;
+        Visible = false;
+        renderer = &3;
+
+        ListBox.ListBoxWeapon {
+            ItemHeight = 20;
+            MaximumItems = 0;
+            Position = (10, 0);
+            Size = (180, 248.625);
+            TextSize = 13;
+            renderer = &4;
+        }
+
+        ListBox.ListBoxDress {
+            ItemHeight = 20;
+            MaximumItems = 0;
+            Position = (210, 0);
+            Size = (180, 248.625);
+            TextSize = 13;
+            renderer = &4;
+        }
+
+        Button.ButtonEquipMenuEquip {
+            Position = (300, 259);
+            Size = (90, 33);
+            Text = Feed;
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonEquipMenuCancel {
+            Position = (10, 259);
+            Size = (90, 33);
+            Text = Cancel;
+            TextSize = 13;
+            renderer = &1;
+        }
+    }
+
+    ChildWindow.ChildWindowShop {
+        MaximumSize = (400, 300);
+        MinimumSize = (400, 300);
+        Position = (20, 30);
+        Size = (400, 300);
+        Title = Town;
+        TitleAlignment = Center;
+        TitleButtons = None;
+        Visible = false;
+        renderer = &3;
+
+        Button.ButtonShopWeapon {
+            Position = (70, 39);
+            Size = (110, 33);
+            Text = "Weapon Shop";
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonShopMenuCancel {
+            Position = (10, 259);
+            Size = (90, 33);
+            Text = Back;
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonShopFood {
+            Position = (40, 119);
+            Size = (110, 33);
+            Text = "Food Shop";
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonShopGift {
+            Position = (140, 199);
+            Size = (110, 33);
+            Text = "Gift Shop";
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonShopDress {
+            Position = (230, 69);
+            Size = (110, 33);
+            Text = Tailor;
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonShopBook {
+            Position = (220, 129);
+            Size = (110, 33);
+            Text = "Book Shop";
+            TextSize = 13;
+            renderer = &1;
+        }
+    }
+}
+
+Label.LabelStat {
+    AutoSize = true;
+    Enabled = false;
+    ScrollbarPolicy = Never;
+    Size = (29.2, 18);
+    Text = Stat;
+    TextSize = 13;
+    renderer = &2;
+}
+
+Label.LabelStatus {
+    AutoSize = true;
+    Enabled = false;
+    Position = (0, 20);
+    ScrollbarPolicy = Never;
+    Size = (44.2, 18);
+    Text = Status;
+    TextSize = 13;
+    renderer = &2;
+}

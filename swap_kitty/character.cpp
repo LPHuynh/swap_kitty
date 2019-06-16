@@ -18,6 +18,7 @@ void Character::generateNewCharacter(const std::string& seed, const std::string&
   generateStartingStats(seed);
   generateStartingItems(seed);
   updateFluffText();
+  updatestatBarText();
 
   shop.refreshInventory(seed);
 }
@@ -288,6 +289,76 @@ void Character::updateFluffText()
     + activityText + weaponText + "\n\n"
     + elementText + " "
     + domesticationText + "\n";
+}
+
+void Character::updatestatBarText()
+{
+  statBarText =
+    "STR:" + std::to_string((profile.stat.str + profile.tempStat.str + equipedWeapon.bonusStat.str + equipedDress.bonusStat.str) / 100) +
+    " CON:" + std::to_string((profile.stat.con + profile.tempStat.con + equipedWeapon.bonusStat.con + equipedDress.bonusStat.con) / 100) +
+    " DEX:" + std::to_string((profile.stat.dex + profile.tempStat.dex + equipedWeapon.bonusStat.dex + equipedDress.bonusStat.dex) / 100) +
+    " PER:" + std::to_string((profile.stat.per + profile.tempStat.per + equipedWeapon.bonusStat.per + equipedDress.bonusStat.per) / 100) +
+    " LRN:" + std::to_string((profile.stat.lrn + profile.tempStat.lrn + equipedWeapon.bonusStat.lrn + equipedDress.bonusStat.lrn) / 100) +
+    " WIL:" + std::to_string((profile.stat.wil + profile.tempStat.wil + equipedWeapon.bonusStat.wil + equipedDress.bonusStat.wil) / 100) +
+    " MAG:" + std::to_string((profile.stat.mag + profile.tempStat.mag + equipedWeapon.bonusStat.mag + equipedDress.bonusStat.mag) / 100) +
+    " CHR:" + std::to_string((profile.stat.chr + profile.tempStat.chr + equipedWeapon.bonusStat.chr + equipedDress.bonusStat.chr) / 100);
+}
+
+void Character::updateScheduleBoxText(uint8_t timeHour)
+{
+  scheduleBoxText = "[Schedule]\n";// +std::to_string(timeHour) + ":00 " + currentActivity.name + "\n";
+
+  //Display 5 activity before current activity
+  if (timeHour < 5)
+  {
+    timeHour += 24;
+  }
+  timeHour -= 5;
+  for (int i = 0; i < 20; i++)
+  {
+    std::string timeSuffix = "AM";
+    uint8_t displayedHour = timeHour;
+    std::string displayedTime = "";
+
+    if (timeHour > 11)
+    {
+      displayedHour = timeHour - 12;
+      timeSuffix = "PM";
+    }
+    if (displayedHour == 0)
+    {
+      displayedHour = 12;
+    }
+
+    if (displayedHour < 10)
+    {
+      displayedTime += " ";
+    }
+
+    displayedTime += std::to_string(displayedHour) + ":00" + timeSuffix;
+
+    if (i == 5)
+    {
+      if (currentActivity.name == dailySchedule[timeHour].name)
+      {
+        scheduleBoxText += " <<" + displayedTime + "\t" + currentActivity.name + ">>\n";
+      }
+      else
+      {
+        scheduleBoxText += " <<" + displayedTime + "\t" + currentActivity.name + "*>>\n";
+      }
+    }
+    else
+    {
+      scheduleBoxText += "   " + displayedTime + "\t" + dailySchedule[timeHour].name + "\n";
+    }
+
+    timeHour++;
+    if (timeHour == 24)
+    {
+      timeHour = 0;
+    }
+  }
 }
 
 void Character::generateStartingStats(const std::string& seed)

@@ -145,7 +145,11 @@ void App::runMainGameState()
     if (mClockStatus.getElapsedTime().asSeconds() > 5)
     {
       mClockStatus.restart();
-      mGui.get<tgui::Label>("LabelStatus")->setText(mWorld.logging.getStatusMessage());
+      mCharacter.updatestatBarText();
+      mCharacter.updateScheduleBoxText(mEvent.time.hour);
+      mGui.get<tgui::Label>("LabelStat")->setText("[HP:" + std::to_string(mCharacter.profile.health / 100) + "/" + std::to_string(mCharacter.profile.maxHealth / 100) + "]\t" + mCharacter.statBarText);
+      mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" + mWorld.logging.getStatusMessage());
+      mGui.get<tgui::Label>("LabelSchduleBox")->setText(mCharacter.scheduleBoxText);
       mWorld.logging.popStatus();
     }
 
@@ -238,7 +242,8 @@ void App::runLoadingState()
               if (mIsCharacterCreated)
               {
                 mGui.get<tgui::Button>("ButtonNewCharaCreate")->setEnabled(false);
-                mGui.get<tgui::Label>("LabelBottom")->setText("New Being generated. This process may take a few minute...");
+                mGui.get<tgui::Label>("LabelBottom")->setText("New Character being generated. This process may take a few minute...");
+                mGui.get<tgui::Button>("ButtonNewCharaCreate")->setText("Generating New Character...");
                 if (mCommandProcessor.scanForCharacterCreationCommand())
                 {
                   mCommandProcessor.processCommand();
@@ -251,6 +256,7 @@ void App::runLoadingState()
               else if (mSwapBalance.unlockedBalance > 100000000)
               {
                 mGui.get<tgui::Button>("ButtonNewCharaCreate")->setEnabled(true);
+                mGui.get<tgui::Button>("ButtonNewCharaCreate")->setText("Create New Character");
               }
             }
 
@@ -361,11 +367,13 @@ void App::loadGUI()
 
       sf::Font monoFont;
       monoFont.loadFromFile("RobotoMono-Regular.ttf");
+      mGui.get<tgui::Label>("LabelStat")->setInheritedFont(monoFont);
+      mGui.get<tgui::Label>("LabelStatus")->setInheritedFont(monoFont);
+      mGui.get<tgui::Label>("LabelSchduleBox")->setInheritedFont(monoFont);
       mGui.get<tgui::TextBox>("TextBoxLog")->setInheritedFont(monoFont);
 
       //Base Window
       mGui.get<tgui::Button>("ButtonInteract")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(true); });
-      mGui.get<tgui::Button>("ButtonSetScheduleMain")->connect("pressed", [&]() {  });
 
       //Character Sub-Window
       mGui.get<tgui::Button>("ButtonFeed")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(true); });
@@ -376,7 +384,6 @@ void App::loadGUI()
       mGui.get<tgui::Button>("ButtonExplore")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonSetSchedule")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonStat")->connect("pressed", [&]() {});
-      mGui.get<tgui::Button>("ButtonSetting")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonInteractCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(false); });
 
       //Feed Menu

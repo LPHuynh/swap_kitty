@@ -86,12 +86,12 @@ void Event::init()
     mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Cleaning the house...", mCharacter.currentActivity.name);
     break;
   case 2:
-    mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library..."); 
-    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
-    break;
-  case 3:
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing...");
     mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Playing in the toyroom...", mCharacter.currentActivity.name);
+    break;
+  case 3:
+    mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library...");
+    mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
     break;
   case 4: 
     mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing...");
@@ -185,7 +185,7 @@ void Event::incrementTime()
         {
           time.day = 1;
           time.month++;
-          if (time.month == 4)
+          if (time.month > 4)
           {
             time.month = 1;
             time.year++;
