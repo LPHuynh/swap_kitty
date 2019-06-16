@@ -55,7 +55,7 @@ void CommandProcessor::submitCharacterCreationCommand(const std::string& charact
   uint16_t blockOffset = blockHeightTime - adjustedBlock;
   ////
 
-  command.param = convertStringToHex(characterName) + convertIntToHex(characterOption) + convertIntToHex(blockOffset);
+  command.param = convertStringToHex(characterName) + convertInt8ToHex(characterOption) + convertIntToHex(blockOffset);
 
   std::string commandHex = convertCommandToHex(command);
   mWorld.logging.changeDefaultStatusMessage("Submitted Character Creation Command", "none");
@@ -725,6 +725,14 @@ std::string CommandProcessor::convertStringToHex(const std::string& textString)
     output.push_back(lut[c & 15]);
   }
   return output;
+}
+
+std::string CommandProcessor::convertInt8ToHex(uint8_t integer)
+{
+  //workaround for uint8_t being treated as a char
+  std::stringstream stream;
+  stream << std::setfill('0') << std::setw(2) << std::hex << uint16_t(integer);
+  return stream.str();
 }
 
 std::string CommandProcessor::getBlockHash()
