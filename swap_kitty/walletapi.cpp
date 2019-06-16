@@ -23,9 +23,9 @@ WalletAPI::~WalletAPI()
 {
 #ifdef _WIN32
   // Close the RPC Wallet executable
+  WaitForSingleObject(pi.hProcess, INFINITE);
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
-  std::this_thread::sleep_for(std::chrono::seconds(5));
 #endif
 }
 
@@ -412,7 +412,7 @@ WalletAPI::TransferReceipt WalletAPI::transfer(const std::string& walletAddress,
   httpPost["id"] = "0";
   httpPost["jsonrpc"] = "2.0";
   httpPost["method"] = "transfer";
-  httpPost["params"]["destinations"] = { destination, destination }; //TODO: Workaround for now since nlohmann::json does not generate arrays in the proper format with only 1 element, and windows version of swap daemon cannot read it...
+  httpPost["params"]["destinations"] = destination;
   httpPost["params"]["payment_id"] = paymentID;
   httpPost["params"]["mixin"] = mixin;
   httpPost["params"]["priority"] = priority;
@@ -420,7 +420,17 @@ WalletAPI::TransferReceipt WalletAPI::transfer(const std::string& walletAddress,
   easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_URL, mWalletJsonHttp));
   easy.add(curl::curl_pair<CURLoption, curl::curl_header>(CURLOPT_HTTPHEADER, mHeader));
   easy.add<CURLOPT_SSL_VERIFYPEER>(false);
-  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_POSTFIELDS, httpPost.dump()));
+
+  //Workaround since nlohmann::json does not generate square brackets for array of 1
+  std::string modifiedHttpPost = httpPost.dump();
+  std::string toReplace= "{\"address\"";
+  size_t pos = modifiedHttpPost.find(toReplace);
+  modifiedHttpPost.replace(pos, toReplace.length(), "[{\"address\"");
+  toReplace = "\"amount\":" + std::to_string(amount) + "}";
+  pos = modifiedHttpPost.find(toReplace);
+  modifiedHttpPost.replace(pos, toReplace.length(), "\"amount\":" + std::to_string(amount) + "}]");
+
+  easy.add(curl::curl_pair<CURLoption, std::string>(CURLOPT_POSTFIELDS, modifiedHttpPost));
 
   try
   {

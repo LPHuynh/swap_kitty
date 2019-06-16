@@ -101,7 +101,7 @@ App::~App()
   outFile << std::setw(2) << jsonDatabase << std::endl;
   outFile.close();
 
-  mWalletAPI.closeWallet();
+  mWalletAPI.stopWallet();
 }
 
 void App::run()
