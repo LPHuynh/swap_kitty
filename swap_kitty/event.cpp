@@ -692,6 +692,27 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     }
   }
 
+  //Happiness check
+  if (mCharacter.profile.cleanliness < 1000)
+  {
+    mCharacter.profile.happiness -= mCharacter.profile.domesticated / 1000;
+    mCharacter.profile.domesticated -= 100;
+  }
+  if (mCharacter.currentActivity.activityType == Job::ActivityType::self && mCharacter.residence.cleanliness < 1000)
+  {
+    mCharacter.profile.happiness -= mCharacter.profile.domesticated / 1000;
+    mCharacter.profile.domesticated -= 100;
+    mCharacter.profile.cleanliness -= 100;
+  }
+  if (mCharacter.profile.happiness < 2500)
+  {
+    failedRoll++;
+    if (mCharacter.profile.happiness < 1000)
+    {
+      failedRoll++;
+    }
+  }
+
   //Process activity
   for (int i = 0; i < 11; i++)
   {

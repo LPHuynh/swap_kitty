@@ -448,13 +448,17 @@ void Character::updateHouseBoxText()
 {
   std::string cleanslinessText;
 
-  if (residence.cleanliness < 2500)
+  if (residence.cleanliness < 1000)
   {
     cleanslinessText = "Filthy";
   }
-  else if (residence.cleanliness < 5000)
+  else if (residence.cleanliness < 2500)
   {
     cleanslinessText = "Dirty";
+  }
+  else if (residence.cleanliness < 5000)
+  {
+    cleanslinessText = "Messy";
   }
   else if (residence.cleanliness < 7500)
   {
