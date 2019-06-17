@@ -36,9 +36,9 @@ public:
     int16_t quench;
     int16_t toxicity;
     int16_t domesticated;
-    int16_t cleaniness;
+    int16_t cleanliness;
     int16_t happiness;
-    int16_t obidence;
+    int16_t obedience;
     World::Stat stat;
     World::Stat tempStat;
     World::Skill skill;
@@ -46,7 +46,7 @@ public:
 
   struct Residence
   {
-    int16_t cleaniness;
+    int16_t cleanliness;
     int16_t houseLevel;
     int16_t kitchenLevel;
     int16_t libraryLevel;
@@ -61,8 +61,11 @@ public:
   template<class T> bool transferItem(std::vector<T>& source, std::vector<T>& destination, uint16_t id, bool isBuying);
 
   void updateFluffText();
-  void updatestatBarText();
+  void updateStatBarText();
+  void updateStatusBarText();
   void updateScheduleBoxText(uint8_t timeHour);
+  void updateHouseBoxText();
+  void updateCharacterSheetText();
 
   Profile profile;
   Residence residence;
@@ -89,7 +92,11 @@ public:
 
   std::string fluffText;
   std::string statBarText;
+  std::string statusBarText;
   std::string scheduleBoxText;
+  std::string houseBoxText;
+  std::string characterSheetText;
+  bool isCharacterSheetFluff;
 
   Weapon weapon;
   Dress dress;

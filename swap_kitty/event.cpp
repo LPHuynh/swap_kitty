@@ -312,7 +312,7 @@ void Event::processDailyEvent(const std::string& seed)
 void Event::processHourlyEvent(const std::string& seed)
 {
   //Update Stats
-  mCharacter.residence.cleaniness -= 100 + mCharacter.residence.houseLevel;
+  mCharacter.residence.cleanliness -= 100 + mCharacter.residence.houseLevel;
   mCharacter.profile.domesticated += 10;
   mWorld.shiftStat(mCharacter.profile.tempStat, -1);
 
@@ -429,9 +429,9 @@ void Event::processHourlyEvent(const std::string& seed)
     }
   }
 
-  if (mCharacter.profile.toxicity > 100)
+  if (mCharacter.profile.toxicity > 1000)
   {
-    if (mCharacter.profile.toxicity - 100 > mWorld.getRandomNumber(seed, 0, 100))
+    if (mCharacter.profile.toxicity - 1000 > mWorld.getRandomNumber(seed, 0, 10000))
     {
       mCommonColdCoolDown = mWorld.getRandomNumber(seed, 1, 3);
       mCharacter.profile.toxicity /= 2;
@@ -675,20 +675,20 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   //Obedience check
   if (mCharacter.currentActivity.activityType == Job::ActivityType::self)
   {
-    mCharacter.profile.obidence += 50;
+    mCharacter.profile.obedience += 50;
   }
   else
   {
-    if (mCharacter.profile.obidence < mWorld.getRandomNumber(seed, 0, 1000 * mCharacter.currentActivity.workLevel))
+    if (mCharacter.profile.obedience < mWorld.getRandomNumber(seed, 0, 1000 * mCharacter.currentActivity.workLevel))
     {
       mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " refused to work.");
       mWorld.logging.addStatusMessage(mCharacter.profile.name + " is refusing to work.", "refuse_work");
-      mCharacter.profile.obidence += 10;
+      mCharacter.profile.obedience += 10;
       failedRoll = 100;
     }
     else
     {
-      mCharacter.profile.obidence -= 10;
+      mCharacter.profile.obedience -= 10;
     }
   }
 
@@ -749,13 +749,13 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     if (mCharacter.currentActivity.id == 0)
     {
       //Cooking
-      mCharacter.residence.cleaniness -= 50;
+      mCharacter.residence.cleanliness -= 50;
       mCookingProgress += 4;
     }
     else if (mCharacter.currentActivity.id == 1)
     {
       //Cleaning
-      mCharacter.residence.cleaniness += 250;
+      mCharacter.residence.cleanliness += 250;
     }
     else if (mCharacter.currentActivity.id == 2)
     {
@@ -816,7 +816,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       }
       else
       {
-        mCharacter.profile.cleaniness += 150;
+        mCharacter.profile.cleanliness += 150;
         mCharacter.profile.stamina += 50;
       }
 
@@ -862,13 +862,13 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     if (mCharacter.currentActivity.id == 0)
     {
       //Cooking
-      mCharacter.residence.cleaniness -= 100;
+      mCharacter.residence.cleanliness -= 100;
       mCookingProgress++;
     }
     else if (mCharacter.currentActivity.id == 1)
     {
       //Cleaning
-      mCharacter.residence.cleaniness += 100;
+      mCharacter.residence.cleanliness += 100;
     }
     else if (mCharacter.currentActivity.id == 14)
     {
@@ -896,7 +896,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     if (mCharacter.currentActivity.id == 0)
     {
       //Cooking
-      mCharacter.residence.cleaniness -= 400;
+      mCharacter.residence.cleanliness -= 400;
     }
     else if (mCharacter.currentActivity.id == 2)
     {
@@ -1016,21 +1016,21 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   {
     mCharacter.profile.stamina -= (mCharacter.profile.stamina - 10000) / 2;
   }
-  if (mCharacter.profile.cleaniness > 10000)
+  if (mCharacter.profile.cleanliness > 10000)
   {
-    mCharacter.profile.cleaniness -= (mCharacter.profile.cleaniness - 10000) / 2;
+    mCharacter.profile.cleanliness -= (mCharacter.profile.cleanliness - 10000) / 2;
   }
   if (mCharacter.profile.happiness > 10000)
   {
     mCharacter.profile.happiness -= (mCharacter.profile.happiness - 10000) / 2;
   }
-  if (mCharacter.profile.obidence > 10000)
+  if (mCharacter.profile.obedience > 10000)
   {
-    mCharacter.profile.obidence -= (mCharacter.profile.obidence - 10000) / 2;
+    mCharacter.profile.obedience -= (mCharacter.profile.obedience - 10000) / 2;
   }
-  if (mCharacter.residence.cleaniness > 10000)
+  if (mCharacter.residence.cleanliness > 10000)
   {
-    mCharacter.residence.cleaniness -= (mCharacter.profile.cleaniness - 10000) / 2;
+    mCharacter.residence.cleanliness -= (mCharacter.profile.cleanliness - 10000) / 2;
   }
 }
 

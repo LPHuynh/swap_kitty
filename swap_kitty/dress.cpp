@@ -12,7 +12,7 @@ Dress::~Dress()
 
 Dress::DressItem Dress::randomizeDress(const std::string & seed)
 {
-  Dress::DressItem dress = mDresses.at(mWorld.getRandomNumber(seed, 0, 10));
+  Dress::DressItem dress = mDresses.at(mWorld.getRandomNumber(seed, 0, 2));
 
   if (mWorld.rollDie(seed, 1, 3) > 1)
   {
@@ -24,16 +24,16 @@ Dress::DressItem Dress::randomizeDress(const std::string & seed)
     case 1: dress.name = "Pretty " + dress.baseName; dress.bonusStat.chr += 2000; dress.price *= 2;; break;
     case 2: dress.name = "Cute " + dress.baseName; dress.bonusStat.chr += 1000; break;
     case 3: dress.name = "Brutish " + dress.baseName; dress.bonusStat.str += 1000; break;
-    case 4: dress.name = "Light Weight " + dress.baseName; dress.bonusStat.dex += 1000; break;
+    case 4: dress.name = "Lightweight " + dress.baseName; dress.bonusStat.dex += 1000; break;
     case 5: dress.name = "Silky " + dress.baseName; dress.bonusStat.per += 1000; break;
-    case 6: dress.name = "Comfy  " + dress.baseName; dress.bonusStat.lrn += 1000; break;
+    case 6: dress.name = "Comfy " + dress.baseName; dress.bonusStat.lrn += 1000; break;
     case 7: dress.name = "Tight " + dress.baseName; dress.bonusStat.wil += 1000; break;
     case 8: dress.name = "Magical " + dress.baseName; dress.bonusStat.mag += 1000; break;
     case 9: dress.name = "Stuffy " + dress.baseName; dress.bonusSkill.fire += 1000; dress.isWinterEquip = true; break;
     case 10: dress.name = "Cool " + dress.baseName; dress.bonusSkill.water += 1000; dress.isSummerEquip = true; break;
     case 11: dress.name = "Plain " + dress.baseName; dress.bonusSkill.earth += 1000; break;
     case 12: dress.name = "Frilly " + dress.baseName; dress.bonusSkill.air += 1000; break;
-    case 13: dress.name = "Bright " + dress.baseName; dress.bonusSkill.lightning += 1000; break;
+    case 13: dress.name = "Conspicuous " + dress.baseName; dress.bonusSkill.lightning += 1000; break;
     case 14: dress.name = "Fluffy " + dress.baseName; dress.bonusSkill.holy += 1000; break;
     case 15: dress.name = "Cuddly " + dress.baseName; dress.bonusSkill.dark += 1000; break;
     }
@@ -85,9 +85,9 @@ void Dress::loadDress()
 
   DressItem dress;
 
-  //Ruleset v1: dress slot 0-10
+  //Ruleset v1: dress slot 0-2
   dress = prototype;
-  dress.baseName = "Basic Dress";
+  dress.baseName = "Simple Dress";
   dress.name = dress.baseName;
   dress.price = 100000;
   mDresses.push_back(dress);
@@ -99,6 +99,15 @@ void Dress::loadDress()
   dress.dailySkillGain.cleaning = 200;
   mDresses.push_back(dress);
 
+  dress = prototype;
+  dress.baseName = "Sun Dress";
+  dress.name = dress.baseName;
+  dress.price = 150000;
+  prototype.isSummerEquip = true;
+  dress.dailyStatGain.dex = 100;
+  mDresses.push_back(dress);
+
+  /*
   dress = prototype;
   dress.baseName = "Apron Dress";
   dress.name = dress.baseName;
@@ -143,14 +152,6 @@ void Dress::loadDress()
   mDresses.push_back(dress);
 
   dress = prototype;
-  dress.baseName = "Summer Dress";
-  dress.name = dress.baseName;
-  dress.price = 150000;
-  prototype.isSummerEquip = true;
-  dress.dailyStatGain.dex = 100;
-  mDresses.push_back(dress);
-
-  dress = prototype;
   dress.baseName = "Fur Coat";
   dress.name = dress.baseName;
   prototype.isWinterEquip = true;
@@ -165,4 +166,5 @@ void Dress::loadDress()
   dress.price = 200000;
   dress.dailySkillGain.crafting = 200;
   mDresses.push_back(dress);
+  */
 }

@@ -78,7 +78,7 @@ public:
     int16_t dark;
     int16_t machine;
     int16_t poison;
-    int16_t choas;
+    int16_t chaos;
     Skill operator+(const Skill& rhs);
     Skill operator-(const Skill& rhs);
   };

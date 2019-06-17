@@ -63,6 +63,8 @@ private:
   void loadGraphics();
   void setWindowTitle();
 
+  void toggleFluffText();
+
   AppSetting mSetting;
   sf::RenderWindow mWindow;
   sf::Event mWindowEvent;

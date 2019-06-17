@@ -89,7 +89,7 @@ World::Skill World::Skill::operator+(const Skill& rhs)
   skill.dark = this->dark + rhs.dark;
   skill.machine = this->machine + rhs.machine;
   skill.poison = this->poison + rhs.poison;
-  skill.choas = this->choas + rhs.choas;
+  skill.chaos = this->chaos + rhs.chaos;
 
   return skill;
 }
@@ -144,7 +144,7 @@ World::Skill World::Skill::operator-(const Skill& rhs)
   skill.dark = this->dark - rhs.dark;
   skill.machine = this->machine - rhs.machine;
   skill.poison = this->poison - rhs.poison;
-  skill.choas = this->choas - rhs.choas;
+  skill.chaos = this->chaos - rhs.chaos;
 
   return skill;
 }
@@ -199,7 +199,7 @@ uint16_t World::getSkillByID(World::Skill skill, uint8_t id)
   case 26: return skill.dark; 
   case 27: return skill.machine; 
   case 28: return skill.poison; 
-  case 29: return skill.choas; 
+  case 29: return skill.chaos; 
   default: return 0;
   }
 }
@@ -386,7 +386,7 @@ World::Skill World::shiftSkill(const Skill& skill, int8_t bitwiseShift)
     shiftedSkill.dark = skill.dark << bitwiseShift;
     shiftedSkill.machine = skill.machine << bitwiseShift;
     shiftedSkill.poison = skill.poison << bitwiseShift;
-    shiftedSkill.choas = skill.choas << bitwiseShift;
+    shiftedSkill.chaos = skill.chaos << bitwiseShift;
   }
   else
   {
@@ -419,7 +419,7 @@ World::Skill World::shiftSkill(const Skill& skill, int8_t bitwiseShift)
     shiftedSkill.dark = skill.dark >> bitwiseShift;
     shiftedSkill.machine = skill.machine >> bitwiseShift;
     shiftedSkill.poison = skill.poison >> bitwiseShift;
-    shiftedSkill.choas = skill.choas >> bitwiseShift;
+    shiftedSkill.chaos = skill.chaos >> bitwiseShift;
   }
 
   return shiftedSkill;

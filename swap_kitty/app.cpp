@@ -145,11 +145,16 @@ void App::runMainGameState()
     if (mClockStatus.getElapsedTime().asSeconds() > 5)
     {
       mClockStatus.restart();
-      mCharacter.updatestatBarText();
+      mCharacter.updateStatBarText();
+      mCharacter.updateStatusBarText();
       mCharacter.updateScheduleBoxText(mEvent.time.hour);
+      mCharacter.updateHouseBoxText();
+      mCharacter.updateCharacterSheetText();
       mGui.get<tgui::Label>("LabelStat")->setText("[HP:" + std::to_string(mCharacter.profile.health / 100) + "/" + std::to_string(mCharacter.profile.maxHealth / 100) + "]\t" + mCharacter.statBarText);
-      mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" + mWorld.logging.getStatusMessage());
+      mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" + mWorld.logging.getStatusMessage() + mCharacter.statusBarText);
       mGui.get<tgui::Label>("LabelSchduleBox")->setText(mCharacter.scheduleBoxText);
+      mGui.get<tgui::Label>("LabelHouseBox")->setText(mCharacter.houseBoxText);
+      mGui.get<tgui::Label>("LabelCharacterSheet")->setText(mCharacter.characterSheetText);
       mWorld.logging.popStatus();
     }
 
@@ -369,8 +374,11 @@ void App::loadGUI()
       monoFont.loadFromFile("RobotoMono-Regular.ttf");
       mGui.get<tgui::Label>("LabelStat")->setInheritedFont(monoFont);
       mGui.get<tgui::Label>("LabelStatus")->setInheritedFont(monoFont);
+      mGui.get<tgui::Label>("LabelHouseBox")->setInheritedFont(monoFont);
       mGui.get<tgui::Label>("LabelSchduleBox")->setInheritedFont(monoFont);
+      mGui.get<tgui::Label>("LabelCharacterSheet")->setInheritedFont(monoFont);
       mGui.get<tgui::TextBox>("TextBoxLog")->setInheritedFont(monoFont);
+      mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setTitle(mCharacter.profile.name);
 
       //Base Window
       mGui.get<tgui::Button>("ButtonInteract")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(true); });
@@ -383,7 +391,7 @@ void App::loadGUI()
       mGui.get<tgui::Button>("ButtonLibrary")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonExplore")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonSetSchedule")->connect("pressed", [&]() {});
-      mGui.get<tgui::Button>("ButtonStat")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonStat")->connect("pressed", &App::toggleFluffText, this);
       mGui.get<tgui::Button>("ButtonInteractCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(false); });
 
       //Feed Menu
@@ -459,4 +467,21 @@ void App::setWindowTitle()
   statusText += "          " + mEvent.time.dateString + ", " + mEvent.time.timeString;
   statusText += "          (Balance: " + std::to_string(mSwapBalance.unlockedBalance / pow(10, 12)) + " / " + std::to_string(mSwapBalance.totalBalance / pow(10, 12)) + "XWP )";
   mWindow.setTitle(mSetting.windowTitle + statusText);
+}
+
+void App::toggleFluffText()
+{
+  if (mCharacter.isCharacterSheetFluff)
+  {
+    mCharacter.isCharacterSheetFluff = false;
+    mGui.get<tgui::Button>("ButtonStat")->setText("Fluffs");
+  }
+  else
+  {
+    mCharacter.isCharacterSheetFluff = true;
+    mGui.get<tgui::Button>("ButtonStat")->setText("Stats");
+  }
+
+  mCharacter.updateCharacterSheetText();
+  mGui.get<tgui::Label>("LabelCharacterSheet")->setText(mCharacter.characterSheetText);
 }

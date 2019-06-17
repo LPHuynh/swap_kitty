@@ -301,7 +301,7 @@ void Job::loadActivity()
   activity.workStat.lrn = 50;
   activity.workStat.wil = 70;
   activity.workSkill.sword = 60;
-  activity.workSkill.choas = 20;
+  activity.workSkill.chaos = 20;
   activity.staminaUsed = 200;
   activity.quenchUsed = 150;
   mActivity.push_back(activity);
@@ -314,7 +314,7 @@ void Job::loadActivity()
   activity.activityType = ActivityType::agriculture;
   activity.workStat.per = 90;
   activity.workStat.wil = 90;
-  activity.workSkill.choas = 40;
+  activity.workSkill.chaos = 40;
   activity.workSkill.evasion = 80;
   activity.staminaUsed = 200;
   activity.quenchUsed = 150;

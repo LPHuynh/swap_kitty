@@ -18,7 +18,11 @@ void Character::generateNewCharacter(const std::string& seed, const std::string&
   generateStartingStats(seed);
   generateStartingItems(seed);
   updateFluffText();
-  updatestatBarText();
+  updateStatBarText();
+  updateScheduleBoxText(0);
+  updateHouseBoxText();
+  isCharacterSheetFluff = false;
+  updateCharacterSheetText();
 
   shop.refreshInventory(seed);
 }
@@ -222,14 +226,31 @@ void Character::updateFluffText()
   default: secondaryElementText = ""; break;
   }
 
-  if (primaryElementText == secondaryElementText)
+  if (profile.primaryElement == profile.secondaryElement)
   {
-    elementText = "She is shrouded in an aura of pure " + primaryElementText;
+    switch (profile.primaryElement)
+    {
+    case World::Element::fire: secondaryElementText = "Brimstone"; break;
+    case World::Element::water: primaryElementText = "Ice"; break;
+    case World::Element::earth: secondaryElementText = "Nature"; break;
+    case World::Element::air: primaryElementText = "Wind"; break;
+    case World::Element::lightning: primaryElementText = "Thunder"; break;
+    case World::Element::holy: primaryElementText = "Light"; break;
+    case World::Element::dark: secondaryElementText = "Decay"; break;
+    default: break;
+    }
   }
-  else
+  else if (profile.primaryElement == World::Element::holy && profile.secondaryElement == World::Element::dark)
   {
-    elementText = "She is shrouded in an aura of " + primaryElementText + " and " + secondaryElementText + ".";
+    primaryElementText = "Light";
   }
+  else if (profile.primaryElement == World::Element::dark && profile.secondaryElement == World::Element::holy)
+  {
+    primaryElementText = "Defiance";
+  }
+  else;
+
+  elementText = "She is shrouded in an aura of " + primaryElementText + " and " + secondaryElementText + ".";
 
   std::string activityText;
 
@@ -257,11 +278,10 @@ void Character::updateFluffText()
   if (profile.domesticated < 1000)
   {
     domesticationText = "She is a salvage hunter.";
-
   }
   else if (profile.domesticated < 2500)
   {
-    domesticationText = "Her hunting instincts are strong.";
+    domesticationText = "Her hunting instincts are very strong.";
   }
   else if (profile.domesticated < 5000)
   {
@@ -281,32 +301,95 @@ void Character::updateFluffText()
   }
 
   fluffText = profile.name + " is a " + std::to_string(profile.cosmetic.age) + " year old " + profile.cosmetic.getGender() + " " + profile.cosmetic.getSpecies() + " "
-    + "with " + profile.cosmetic.currentHairStyle + " " + profile.cosmetic.currentHairColour + " hair.\n"
+    + "with " + profile.cosmetic.currentHairStyle + " " + profile.cosmetic.currentHairColour + " hair. "
     + "She weighs " + std::to_string(profile.cosmetic.weight / 1000) + "kg and stands " + std::to_string(profile.cosmetic.height / 10) + "cm tall. "
     + "She have a " + profile.cosmetic.naturalTailStyle + " tail. "
-    + "Her eyes are " + profile.cosmetic.naturalEyeStyle + " and " + profile.cosmetic.currentEyeColour + "\n\n"
-    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.name + ", and " + favouriteJunkFood.nameRaw + ".\n"
+    + "Her eyes are " + profile.cosmetic.naturalEyeStyle + " and " + profile.cosmetic.currentEyeColour + ".\n\n"
+    + "Her favourite food are " + favouriteVegatable.nameRaw + ", " + favouriteFruitDish.name + ", and " + favouriteJunkFood.nameRaw + ". "
     + activityText + weaponText + "\n\n"
-    + elementText + " "
-    + domesticationText + "\n";
+    + domesticationText + "\n\n"
+    + elementText + "\n";
 }
 
-void Character::updatestatBarText()
+void Character::updateStatBarText()
 {
-  statBarText =
-    "STR:" + std::to_string((profile.stat.str + profile.tempStat.str + equipedWeapon.bonusStat.str + equipedDress.bonusStat.str) / 100) +
-    " CON:" + std::to_string((profile.stat.con + profile.tempStat.con + equipedWeapon.bonusStat.con + equipedDress.bonusStat.con) / 100) +
-    " DEX:" + std::to_string((profile.stat.dex + profile.tempStat.dex + equipedWeapon.bonusStat.dex + equipedDress.bonusStat.dex) / 100) +
-    " PER:" + std::to_string((profile.stat.per + profile.tempStat.per + equipedWeapon.bonusStat.per + equipedDress.bonusStat.per) / 100) +
-    " LRN:" + std::to_string((profile.stat.lrn + profile.tempStat.lrn + equipedWeapon.bonusStat.lrn + equipedDress.bonusStat.lrn) / 100) +
-    " WIL:" + std::to_string((profile.stat.wil + profile.tempStat.wil + equipedWeapon.bonusStat.wil + equipedDress.bonusStat.wil) / 100) +
-    " MAG:" + std::to_string((profile.stat.mag + profile.tempStat.mag + equipedWeapon.bonusStat.mag + equipedDress.bonusStat.mag) / 100) +
-    " CHR:" + std::to_string((profile.stat.chr + profile.tempStat.chr + equipedWeapon.bonusStat.chr + equipedDress.bonusStat.chr) / 100);
+  statBarText = "STR:" + std::to_string((profile.stat.str + profile.tempStat.str + equipedWeapon.bonusStat.str + equipedDress.bonusStat.str) / 100) 
+    + " CON:" + std::to_string((profile.stat.con + profile.tempStat.con + equipedWeapon.bonusStat.con + equipedDress.bonusStat.con) / 100)
+    + " DEX:" + std::to_string((profile.stat.dex + profile.tempStat.dex + equipedWeapon.bonusStat.dex + equipedDress.bonusStat.dex) / 100)
+    + " PER:" + std::to_string((profile.stat.per + profile.tempStat.per + equipedWeapon.bonusStat.per + equipedDress.bonusStat.per) / 100)
+    + " LRN:" + std::to_string((profile.stat.lrn + profile.tempStat.lrn + equipedWeapon.bonusStat.lrn + equipedDress.bonusStat.lrn) / 100)
+    + " WIL:" + std::to_string((profile.stat.wil + profile.tempStat.wil + equipedWeapon.bonusStat.wil + equipedDress.bonusStat.wil) / 100)
+    + " MAG:" + std::to_string((profile.stat.mag + profile.tempStat.mag + equipedWeapon.bonusStat.mag + equipedDress.bonusStat.mag) / 100)
+    + " CHR:" + std::to_string((profile.stat.chr + profile.tempStat.chr + equipedWeapon.bonusStat.chr + equipedDress.bonusStat.chr) / 100)
+    + " ACC:" + std::to_string((profile.stat.acc + profile.tempStat.acc + equipedWeapon.bonusStat.acc + equipedDress.bonusStat.acc) / 100)
+    + " CRI:" + std::to_string((profile.stat.cri + profile.tempStat.cri + equipedWeapon.bonusStat.cri + equipedDress.bonusStat.cri) / 100);    
+}
+
+void Character::updateStatusBarText()
+{
+  statusBarText = "\t";
+
+  if (profile.toxicity > 1000)
+  {
+    statusBarText += "[Intoxicated]";
+  }
+
+  if (profile.satiation < 1000)
+  {
+    statusBarText += "[Starving]";
+  }
+  else if (profile.satiation < 2500)
+  {
+    statusBarText += "[Hungry]";
+  }
+  else if (profile.satiation > 7500)
+  {
+    statusBarText += "[Satiated]";
+  }
+  else if (profile.satiation > 10000)
+  {
+    statusBarText += "[Stuffed]";
+  }
+  else;
+
+  if (profile.quench < 1000)
+  {
+    statusBarText += "[Dehydrated]";
+  }
+  else if (profile.quench < 2500)
+  {
+    statusBarText += "[Thristy]";
+  }
+  else if (profile.quench > 10000)
+  {
+    statusBarText += "[Bloated]";
+  }
+  else;
+
+  if (profile.cleanliness < 1000)
+  {
+    statusBarText += "[Filthy]";
+  }
+  else if (profile.cleanliness < 2500)
+  {
+    statusBarText += "[Dirty]";
+  }
+  else;
+
+  if (profile.happiness < 1000)
+  {
+    statusBarText += "[Miserable]";
+  }
+  else if (profile.happiness < 2500)
+  {
+    statusBarText += "[Unhappy]";
+  }
+  else;
 }
 
 void Character::updateScheduleBoxText(uint8_t timeHour)
 {
-  scheduleBoxText = "[Schedule]\n";// +std::to_string(timeHour) + ":00 " + currentActivity.name + "\n";
+  scheduleBoxText = "[Schedule]\n";
 
   //Display 5 activity before current activity
   if (timeHour < 5)
@@ -361,6 +444,91 @@ void Character::updateScheduleBoxText(uint8_t timeHour)
   }
 }
 
+void Character::updateHouseBoxText()
+{
+  std::string cleanslinessText;
+
+  if (residence.cleanliness < 2500)
+  {
+    cleanslinessText = "Filthy";
+  }
+  else if (residence.cleanliness < 5000)
+  {
+    cleanslinessText = "Dirty";
+  }
+  else if (residence.cleanliness < 7500)
+  {
+    cleanslinessText = "Tidy";
+  }
+  else if (residence.cleanliness < 10000)
+  {
+    cleanslinessText = "Clean";
+  }
+  else
+  {
+    cleanslinessText = "Spotless";
+  }
+
+  houseBoxText = 
+    "Money: " + std::to_string(profile.money / 100) + "G\n" +
+    "House: " + cleanslinessText;
+}
+
+void Character::updateCharacterSheetText()
+{
+  std::stringstream ss;
+
+  ss << "Equipment:\n";
+  ss << "  " + mWorld.makeSingularNoun(equipedWeapon.name) + "\n";
+  ss << "  " + mWorld.makeSingularNoun(equipedDress.name) + "\n\n";
+
+  characterSheetText = "";
+  if (isCharacterSheetFluff)
+  {
+    updateFluffText();
+    characterSheetText = ss.str() + fluffText;
+  }
+  else
+  {
+    ss << std::left << std::setw(15) << "Level: " + std::to_string(profile.level);
+    ss << "Exp: " + std::to_string(profile.exp) + "\n";
+    ss << std::left << std::setw(15) << "Health: " + std::to_string(profile.health / 100) + "/" + std::to_string(profile.maxHealth / 100);
+    ss << "Mana: " << std::to_string(profile.mana / 100) + "/" + std::to_string(profile.maxMana / 100) + "\n\n";
+
+    ss << std::left << std::setw(15) << "sword:     " + std::to_string((profile.skill.sword + equipedWeapon.bonusSkill.sword + equipedDress.bonusSkill.sword) / 100);
+    ss << "literacy:  " + std::to_string((profile.skill.literacy + equipedWeapon.bonusSkill.literacy + equipedDress.bonusSkill.literacy) / 100) + "\n";
+    ss << std::left << std::setw(15) << "axe:       " + std::to_string((profile.skill.axe + equipedWeapon.bonusSkill.axe + equipedDress.bonusSkill.axe) / 100);
+    ss << "cooking:   " + std::to_string((profile.skill.cooking + equipedWeapon.bonusSkill.cooking + equipedDress.bonusSkill.cooking) / 100) + "\n";
+    ss << std::left << std::setw(15) << "bludgeon:  " + std::to_string((profile.skill.bludgeon + equipedWeapon.bonusSkill.bludgeon + equipedDress.bonusSkill.bludgeon) / 100);
+    ss << "cleaning:  " + std::to_string((profile.skill.cleaning + equipedWeapon.bonusSkill.cleaning + equipedDress.bonusSkill.cleaning) / 100) + "\n";
+    ss << std::left << std::setw(15) << "stave:     " + std::to_string((profile.skill.stave + equipedWeapon.bonusSkill.stave + equipedDress.bonusSkill.stave) / 100);
+    ss << "service:   " + std::to_string((profile.skill.service + equipedWeapon.bonusSkill.service + equipedDress.bonusSkill.service) / 100) + "\n";
+    ss << std::left << std::setw(15) << "polearm:   " + std::to_string((profile.skill.polearm + equipedWeapon.bonusSkill.polearm + equipedDress.bonusSkill.polearm) / 100);
+    ss << "music:     " + std::to_string((profile.skill.music + equipedWeapon.bonusSkill.music + equipedDress.bonusSkill.music) / 100) + "\n";
+    ss << std::left << std::setw(15) << "evasion:   " + std::to_string((profile.skill.evasion + equipedWeapon.bonusSkill.evasion + equipedDress.bonusSkill.evasion) / 100);
+    ss << "art:       " + std::to_string((profile.skill.art + equipedWeapon.bonusSkill.art + equipedDress.bonusSkill.art) / 100) + "\n";   
+    ss << std::left << std::setw(15) << "fire:      " + std::to_string((profile.skill.fire + equipedWeapon.bonusSkill.fire + equipedDress.bonusSkill.fire) / 100);
+    ss << "tailor:    " + std::to_string((profile.skill.tailor + equipedWeapon.bonusSkill.tailor + equipedDress.bonusSkill.tailor) / 100) + "\n";
+    ss << std::left << std::setw(15) << "water:     " + std::to_string((profile.skill.water + equipedWeapon.bonusSkill.water + equipedDress.bonusSkill.water) / 100);
+    ss << "stonework: " + std::to_string((profile.skill.stoneWorking + equipedWeapon.bonusSkill.stoneWorking + equipedDress.bonusSkill.stoneWorking) / 100) + "\n";
+    ss << std::left << std::setw(15) << "earth:     " + std::to_string((profile.skill.earth + equipedWeapon.bonusSkill.earth + equipedDress.bonusSkill.earth) / 100);
+    ss << "woodwork:  " + std::to_string((profile.skill.woodWorking + equipedWeapon.bonusSkill.woodWorking + equipedDress.bonusSkill.woodWorking) / 100) + "\n";
+    ss << std::left << std::setw(15) << "air:       " + std::to_string((profile.skill.air + equipedWeapon.bonusSkill.air + equipedDress.bonusSkill.air) / 100);
+    ss << "metalwork: " + std::to_string((profile.skill.metalworking + equipedWeapon.bonusSkill.metalworking + equipedDress.bonusSkill.metalworking) / 100) + "\n";
+    ss << std::left << std::setw(15) << "lightning: " + std::to_string((profile.skill.lightning + equipedWeapon.bonusSkill.lightning + equipedDress.bonusSkill.lightning) / 100);
+    ss << "farming:   " + std::to_string((profile.skill.farming + equipedWeapon.bonusSkill.farming + equipedDress.bonusSkill.farming) / 100) + "\n";
+    ss << std::left << std::setw(15) << "holy:      " + std::to_string((profile.skill.holy + equipedWeapon.bonusSkill.holy + equipedDress.bonusSkill.holy) / 100);
+    ss << "fishing:   " + std::to_string((profile.skill.fishing + equipedWeapon.bonusSkill.fishing + equipedDress.bonusSkill.fishing) / 100) + "\n";
+    ss << std::left << std::setw(15) << "dark:      " + std::to_string((profile.skill.dark + equipedWeapon.bonusSkill.dark + equipedDress.bonusSkill.dark) / 100);
+    ss << "crafting:  " + std::to_string((profile.skill.crafting + equipedWeapon.bonusSkill.crafting + equipedDress.bonusSkill.crafting) / 100) + "\n";
+    ss << "machine:   " + std::to_string((profile.skill.machine + equipedWeapon.bonusSkill.machine + equipedDress.bonusSkill.machine) / 100) + "\n";
+    ss << "poison:    " + std::to_string((profile.skill.poison + equipedWeapon.bonusSkill.poison + equipedDress.bonusSkill.poison) / 100) + "\n";
+    ss << "chaos:     " + std::to_string((profile.skill.chaos + equipedWeapon.bonusSkill.chaos + equipedDress.bonusSkill.chaos) / 100);
+
+    characterSheetText = ss.str();
+  }
+}
+
 void Character::generateStartingStats(const std::string& seed)
 {
   profile.money = 100000;
@@ -376,9 +544,9 @@ void Character::generateStartingStats(const std::string& seed)
   profile.quench = 10000;
   profile.toxicity = 0;
   profile.domesticated = mWorld.getRandomNumber(seed, 0, 2500);
-  profile.cleaniness = 10000;
+  profile.cleanliness = 10000;
   profile.happiness = mWorld.getRandomNumber(seed, 2500, 5000);
-  profile.obidence = mWorld.getRandomNumber(seed, 0, 2500);
+  profile.obedience = mWorld.getRandomNumber(seed, 0, 2500);
 
   profile.stat.str = mWorld.getRandomNumber(seed, 0, 2000);
   profile.stat.con = mWorld.getRandomNumber(seed, 0, 2000);
@@ -418,11 +586,11 @@ void Character::generateStartingStats(const std::string& seed)
   profile.skill.dark = mWorld.getRandomNumber(seed, 0, 2000);
   profile.skill.machine = mWorld.getRandomNumber(seed, 0, 2000);
   profile.skill.poison = mWorld.getRandomNumber(seed, 0, 2000);
-  profile.skill.choas = mWorld.getRandomNumber(seed, 0, 2000);
+  profile.skill.chaos = mWorld.getRandomNumber(seed, 0, 2000);
 
   updateSecondaryStats();
 
-  residence.cleaniness = 10000;
+  residence.cleanliness = 10000;
   residence.houseLevel = 1;
   residence.kitchenLevel = 1;
   residence.libraryLevel = 1;

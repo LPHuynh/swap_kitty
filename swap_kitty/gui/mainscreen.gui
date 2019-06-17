@@ -1,5 +1,28 @@
 Renderer.1 {
     backgroundcolor = rgba(180, 180, 180, 215);
+    backgroundcolorhover = rgba(190, 190, 190, 215);
+    bordercolor = rgba(240, 240, 240, 215);
+    borders = (1, 1, 1, 1);
+    selectedbackgroundcolor = rgba(0, 110, 200, 130);
+    selectedtextcolor = rgba(255, 255, 255, 245);
+    textcolor = rgba(255, 255, 255, 215);
+    textcolorhover = rgba(255, 255, 255, 235);
+    texturebackground = None;
+
+    scrollbar {
+        arrowbackgroundcolor = rgba(160, 160, 160, 215);
+        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
+        arrowcolor = rgba(200, 200, 200, 215);
+        arrowcolorhover = rgba(225, 225, 225, 215);
+        thumbcolor = rgba(185, 185, 185, 215);
+        thumbcolorhover = rgba(195, 195, 195, 215);
+        trackcolor = rgba(160, 160, 160, 215);
+        trackcolorhover = rgba(170, 170, 170, 215);
+    }
+}
+
+Renderer.2 {
+    backgroundcolor = rgba(180, 180, 180, 215);
     backgroundcolordown = rgba(150, 150, 150, 215);
     backgroundcolorhover = rgba(190, 190, 190, 215);
     bordercolor = rgba(240, 240, 240, 215);
@@ -12,21 +35,6 @@ Renderer.1 {
     texturedown = None;
     texturefocused = None;
     texturehover = None;
-}
-
-Renderer.2 {
-    textcolor = rgba(255, 255, 255, 215);
-
-    scrollbar {
-        arrowbackgroundcolor = rgba(160, 160, 160, 215);
-        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
-        arrowcolor = rgba(200, 200, 200, 215);
-        arrowcolorhover = rgba(225, 225, 225, 215);
-        thumbcolor = rgba(185, 185, 185, 215);
-        thumbcolorhover = rgba(195, 195, 195, 215);
-        trackcolor = rgba(160, 160, 160, 215);
-        trackcolorhover = rgba(170, 170, 170, 215);
-    }
 }
 
 Renderer.3 {
@@ -73,15 +81,7 @@ textcolorhover = rgba(255, 255, 255, 235);
 }
 
 Renderer.4 {
-    backgroundcolor = rgba(180, 180, 180, 215);
-    backgroundcolorhover = rgba(190, 190, 190, 215);
-    bordercolor = rgba(240, 240, 240, 215);
-    borders = (1, 1, 1, 1);
-    selectedbackgroundcolor = rgba(0, 110, 200, 130);
-    selectedtextcolor = rgba(255, 255, 255, 245);
     textcolor = rgba(255, 255, 255, 215);
-    textcolorhover = rgba(255, 255, 255, 235);
-    texturebackground = None;
 
     scrollbar {
         arrowbackgroundcolor = rgba(160, 160, 160, 215);
@@ -104,14 +104,23 @@ Picture.PictureBackground {
     }
 }
 
+Label.LabelHouseBox {
+    Position = (680, 0);
+    ScrollbarPolicy = Never;
+    Size = (117.2, 38);
+    Text = "Money:\nHouse:";
+    TextSize = 13;
+    renderer = &4;
+}
+
 Label.LabelSchduleBox {
     Enabled = false;
     Position = (0, 40);
     ScrollbarPolicy = Never;
     Size = (267.2, 361.548);
-    Text = "Schedule:";
+    Text = "[Schedule]";
     TextSize = 13;
-    renderer = &2;
+    renderer = &4;
 }
 
 TextBox.TextBoxLog {
@@ -148,11 +157,11 @@ TextBox.TextBoxLog {
 }
 
 Button.ButtonInteract {
-    Position = (670, 360);
-    Size = (130, 40);
+    Position = (680, 370);
+    Size = (120, 30);
     Text = Interact;
     TextSize = 13;
-    renderer = &1;
+    renderer = &2;
 }
 
 ChildWindow.ChildWindowInteract {
@@ -175,6 +184,15 @@ ChildWindow.ChildWindowInteract {
         }
     }
 
+    Label.LabelCharacterSheet {
+        Position = (230, 0);
+        ScrollbarPolicy = Never;
+        Size = (257.2, 394.452);
+        Text = "Character Sheet";
+        TextSize = 13;
+        renderer = &4;
+    }
+
     Picture.PictureAvatar {
         Position = (0.950012, 0);
         Size = (234, 400);
@@ -190,7 +208,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Feed;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonEquip {
@@ -198,7 +216,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Equip;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonGive {
@@ -206,7 +224,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Give;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonShop {
@@ -214,7 +232,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Shop;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonExplore {
@@ -222,15 +240,15 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Explore;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonStat {
         Position = (490, 141.667);
         Size = (110, 33);
-        Text = Stats;
+        Text = Fluffs;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonLibrary {
@@ -238,7 +256,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Library;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonSetSchedule {
@@ -246,7 +264,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = "Set Schedule";
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     Button.ButtonInteractCancel {
@@ -254,7 +272,7 @@ ChildWindow.ChildWindowInteract {
         Size = (110, 33);
         Text = Back;
         TextSize = 13;
-        renderer = &1;
+        renderer = &2;
     }
 
     ChildWindow.ChildWindowFeed {
@@ -274,7 +292,7 @@ ChildWindow.ChildWindowInteract {
             Position = (10, 0);
             Size = (180, 248.625);
             TextSize = 13;
-            renderer = &4;
+            renderer = &1;
         }
 
         ListBox.ListBoxPotion {
@@ -283,7 +301,7 @@ ChildWindow.ChildWindowInteract {
             Position = (210, 0);
             Size = (180, 248.625);
             TextSize = 13;
-            renderer = &4;
+            renderer = &1;
         }
 
         Button.ButtonFeedMenuFeed {
@@ -291,7 +309,7 @@ ChildWindow.ChildWindowInteract {
             Size = (90, 33);
             Text = Feed;
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonFeedMenuCancel {
@@ -299,7 +317,7 @@ ChildWindow.ChildWindowInteract {
             Size = (90, 33);
             Text = Cancel;
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
     }
 
@@ -320,7 +338,7 @@ ChildWindow.ChildWindowInteract {
             Position = (10, 0);
             Size = (180, 248.625);
             TextSize = 13;
-            renderer = &4;
+            renderer = &1;
         }
 
         ListBox.ListBoxDress {
@@ -329,15 +347,15 @@ ChildWindow.ChildWindowInteract {
             Position = (210, 0);
             Size = (180, 248.625);
             TextSize = 13;
-            renderer = &4;
+            renderer = &1;
         }
 
         Button.ButtonEquipMenuEquip {
             Position = (300, 259);
             Size = (90, 33);
-            Text = Feed;
+            Text = Equip;
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonEquipMenuCancel {
@@ -345,7 +363,7 @@ ChildWindow.ChildWindowInteract {
             Size = (90, 33);
             Text = Cancel;
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
     }
 
@@ -365,7 +383,7 @@ ChildWindow.ChildWindowInteract {
             Size = (110, 33);
             Text = "Weapon Shop";
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonShopMenuCancel {
@@ -373,7 +391,7 @@ ChildWindow.ChildWindowInteract {
             Size = (90, 33);
             Text = Back;
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonShopFood {
@@ -381,7 +399,7 @@ ChildWindow.ChildWindowInteract {
             Size = (110, 33);
             Text = "Food Shop";
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonShopGift {
@@ -389,7 +407,7 @@ ChildWindow.ChildWindowInteract {
             Size = (110, 33);
             Text = "Gift Shop";
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonShopDress {
@@ -397,7 +415,7 @@ ChildWindow.ChildWindowInteract {
             Size = (110, 33);
             Text = Tailor;
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
 
         Button.ButtonShopBook {
@@ -405,7 +423,7 @@ ChildWindow.ChildWindowInteract {
             Size = (110, 33);
             Text = "Book Shop";
             TextSize = 13;
-            renderer = &1;
+            renderer = &2;
         }
     }
 }
@@ -414,10 +432,10 @@ Label.LabelStat {
     AutoSize = true;
     Enabled = false;
     ScrollbarPolicy = Never;
-    Size = (29.2, 18);
-    Text = Stat;
+    Size = (39.2, 18);
+    Text = "[Stat]";
     TextSize = 13;
-    renderer = &2;
+    renderer = &4;
 }
 
 Label.LabelStatus {
@@ -425,8 +443,8 @@ Label.LabelStatus {
     Enabled = false;
     Position = (0, 20);
     ScrollbarPolicy = Never;
-    Size = (44.2, 18);
-    Text = Status;
+    Size = (54.2, 18);
+    Text = "[Status]";
     TextSize = 13;
-    renderer = &2;
+    renderer = &4;
 }

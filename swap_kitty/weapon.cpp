@@ -72,7 +72,18 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
   WeaponItem weaponItem;
 
   weaponItem.id = mWorld.generateID();
-  weaponItem.name = quality.name + " " + statBonus.name + " " + material.name + " " + base.name + " " + ability.name;
+
+  weaponItem.name = quality.name;
+  if (statBonus.name != "none")
+  {
+    weaponItem.name += " " + statBonus.name;
+  }
+  weaponItem.name += " " + material.name + " " + base.name;
+  if (ability.name != "none")
+  {
+    weaponItem.name += " " + ability.name;
+  }
+
   weaponItem.type = type;
   weaponItem.price = base.baseCost * quality.costMultplier * statBonus.costMultplier * material.costMultplier * ability.costMultplier;
   weaponItem.baseDice = base.bonusDice + quality.bonusDice + statBonus.bonusDice + material.bonusDice;
@@ -693,7 +704,7 @@ void Weapon::loadAbility()
   WeaponAbility ability;
 
   ability = prototype;
-  ability.name = "\b"; //No Attribute
+  ability.name = "none";
   ability.costMultplier = 10;
   ability.bonusDice.face = 0;
   ability.bonusDice.roll = 0;
@@ -810,7 +821,7 @@ void Weapon::loadStatBonus()
   WeaponStatBonus statBonus;
 
   statBonus = prototype;
-  statBonus.name = "\b"; //No Extra Stats
+  statBonus.name = "none";
   statBonus.costMultplier = 10;
   mStatBonuses.push_back(statBonus);
 

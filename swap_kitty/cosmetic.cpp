@@ -34,8 +34,8 @@ std::string Cosmetic::generateNaturalHairColour(World::Element firstElement, Wor
 {
   switch (species)
   {
-  case Species::catgirl: return "Colourful"; break;
-  default: return "Colourful"; break;
+  case Species::catgirl: return "Tropical Blue"; break;
+  default: return "Tropical Blue"; break;
   }
 
   //Requires implementation of paper doll graphics
@@ -128,8 +128,8 @@ std::string Cosmetic::generateNaturalEyeColour(World::Element element)
 {
   switch (species)
   {
-  case Species::catgirl: return "Turquiose"; break;
-  default: return "Turquiose"; break;
+  case Species::catgirl: return "Turquoise"; break;
+  default: return "Turquoise"; break;
   }
 
   //Requires implementation of paper doll graphics
