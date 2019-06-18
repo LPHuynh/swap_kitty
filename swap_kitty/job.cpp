@@ -83,7 +83,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Play";
+  activity.name = "Playing";
   activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::self;
@@ -97,7 +97,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Read Book";
+  activity.name = "Reading";
   activity.isNightActivity = true;
   activity.payment = 0;
   activity.activityType = ActivityType::self;
@@ -252,7 +252,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Plant Gatherer";
+  activity.name = "Plant Gathering";
   activity.isOutdoorActivity = true;
   activity.payment = 0;
   activity.workLevel = 1;
@@ -280,7 +280,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Farm";
+  activity.name = "Farmer";
   activity.isOutdoorActivity = true;
   activity.payment = 150;
   activity.workLevel = 2;
@@ -307,7 +307,7 @@ void Job::loadActivity()
   mActivity.push_back(activity);
 
   activity = prototype;
-  activity.name = "Hunting";
+  activity.name = "Hunter";
   activity.isOutdoorActivity = true;
   activity.payment = 200;
   activity.workLevel = 3;

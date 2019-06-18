@@ -38,6 +38,21 @@ Renderer.2 {
 }
 
 Renderer.3 {
+    textcolor = rgba(255, 255, 255, 215);
+
+    scrollbar {
+        arrowbackgroundcolor = rgba(160, 160, 160, 215);
+        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
+        arrowcolor = rgba(200, 200, 200, 215);
+        arrowcolorhover = rgba(225, 225, 225, 215);
+        thumbcolor = rgba(185, 185, 185, 215);
+        thumbcolorhover = rgba(195, 195, 195, 215);
+        trackcolor = rgba(160, 160, 160, 215);
+        trackcolorhover = rgba(170, 170, 170, 215);
+    }
+}
+
+Renderer.4 {
     backgroundcolor = rgba(180, 180, 180, 215);
     bordercolor = rgba(240, 240, 240, 215);
     borders = (1, 1, 1, 1);
@@ -80,21 +95,6 @@ textcolorhover = rgba(255, 255, 255, 235);
     }
 }
 
-Renderer.4 {
-    textcolor = rgba(255, 255, 255, 215);
-
-    scrollbar {
-        arrowbackgroundcolor = rgba(160, 160, 160, 215);
-        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
-        arrowcolor = rgba(200, 200, 200, 215);
-        arrowcolorhover = rgba(225, 225, 225, 215);
-        thumbcolor = rgba(185, 185, 185, 215);
-        thumbcolorhover = rgba(195, 195, 195, 215);
-        trackcolor = rgba(160, 160, 160, 215);
-        trackcolorhover = rgba(170, 170, 170, 215);
-    }
-}
-
 Picture.PictureBackground {
     Size = (800, 600);
 
@@ -110,7 +110,7 @@ Label.LabelHouseBox {
     Size = (117.2, 38);
     Text = "Money:\nHouse:";
     TextSize = 13;
-    renderer = &4;
+    renderer = &3;
 }
 
 Label.LabelSchduleBox {
@@ -120,7 +120,7 @@ Label.LabelSchduleBox {
     Size = (267.2, 361.548);
     Text = "[Schedule]";
     TextSize = 13;
-    renderer = &4;
+    renderer = &3;
 }
 
 TextBox.TextBoxLog {
@@ -164,6 +164,25 @@ Button.ButtonInteract {
     renderer = &2;
 }
 
+Label.LabelStat {
+    Enabled = false;
+    ScrollbarPolicy = Never;
+    Size = (679.2, 18);
+    Text = "[Stat]";
+    TextSize = 13;
+    renderer = &3;
+}
+
+Label.LabelStatus {
+    Enabled = false;
+    Position = (0, 20);
+    ScrollbarPolicy = Never;
+    Size = (674.2, 18);
+    Text = "[Status]";
+    TextSize = 13;
+    renderer = &3;
+}
+
 ChildWindow.ChildWindowInteract {
     MaximumSize = (600, 400);
     MinimumSize = (600, 400);
@@ -173,7 +192,7 @@ ChildWindow.ChildWindowInteract {
     TitleAlignment = Center;
     TitleButtons = None;
     Visible = false;
-    renderer = &3;
+    renderer = &4;
 
     Picture.PictureCharaBackground {
         Size = (600, 400);
@@ -190,7 +209,7 @@ ChildWindow.ChildWindowInteract {
         Size = (257.2, 394.452);
         Text = "Character Sheet";
         TextSize = 13;
-        renderer = &4;
+        renderer = &3;
     }
 
     Picture.PictureAvatar {
@@ -284,7 +303,7 @@ ChildWindow.ChildWindowInteract {
         TitleAlignment = Center;
         TitleButtons = None;
         Visible = false;
-        renderer = &3;
+        renderer = &4;
 
         ListBox.ListBoxFood {
             ItemHeight = 20;
@@ -330,7 +349,7 @@ ChildWindow.ChildWindowInteract {
         TitleAlignment = Center;
         TitleButtons = None;
         Visible = false;
-        renderer = &3;
+        renderer = &4;
 
         ListBox.ListBoxWeapon {
             ItemHeight = 20;
@@ -376,7 +395,7 @@ ChildWindow.ChildWindowInteract {
         TitleAlignment = Center;
         TitleButtons = None;
         Visible = false;
-        renderer = &3;
+        renderer = &4;
 
         Button.ButtonShopWeapon {
             Position = (70, 39);
@@ -426,25 +445,4 @@ ChildWindow.ChildWindowInteract {
             renderer = &2;
         }
     }
-}
-
-Label.LabelStat {
-    AutoSize = true;
-    Enabled = false;
-    ScrollbarPolicy = Never;
-    Size = (39.2, 18);
-    Text = "[Stat]";
-    TextSize = 13;
-    renderer = &4;
-}
-
-Label.LabelStatus {
-    AutoSize = true;
-    Enabled = false;
-    Position = (0, 20);
-    ScrollbarPolicy = Never;
-    Size = (54.2, 18);
-    Text = "[Status]";
-    TextSize = 13;
-    renderer = &4;
 }

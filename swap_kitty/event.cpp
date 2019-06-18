@@ -531,8 +531,17 @@ void Event::processHourlyEvent(const std::string& seed)
       mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
       break;
     case 3:
-      mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing...");
-      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Playing in the toyroom...", mCharacter.currentActivity.name);
+      if (mCharacter.profile.stamina > 5000)
+      {
+        mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing...");
+        mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Playing in the toyroom...", mCharacter.currentActivity.name);
+      }
+      else
+      {
+        mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Napping in the toyroom...");
+        mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Napping in the toyroom...", mCharacter.currentActivity.name);
+        mCharacter.currentActivity = mCharacter.job.getActivity("Nap");
+      }
       break;
     case 4:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing...");
@@ -777,6 +786,18 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     {
       //Cleaning
       mCharacter.residence.cleanliness += 250;
+      if (mCharacter.residence.cleanliness < 5000)
+      {
+        mCharacter.residence.cleanliness += 100;
+        if (mCharacter.residence.cleanliness < 2500)
+        {
+          mCharacter.residence.cleanliness += 50;
+          if (mCharacter.residence.cleanliness < 1000)
+          {
+            mCharacter.residence.cleanliness += 25;
+          }
+        }
+      }
     }
     else if (mCharacter.currentActivity.id == 2)
     {
@@ -838,6 +859,19 @@ void Event::processTenthHourlyEvent(const std::string& seed)
       else
       {
         mCharacter.profile.cleanliness += 150;
+        if (mCharacter.profile.cleanliness < 5000)
+        {
+          mCharacter.profile.cleanliness += 100;
+          if (mCharacter.profile.cleanliness < 2500)
+          {
+            mCharacter.profile.cleanliness += 50;
+            if (mCharacter.profile.cleanliness < 1000)
+            {
+              mCharacter.profile.cleanliness += 25;
+            }
+          }
+        }
+
         mCharacter.profile.stamina += 50;
       }
 
@@ -855,23 +889,23 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     }
     else if (mCharacter.currentActivity.id == 16)
     {
-    //Industrial Fishing
+      //Industrial Fishing
       mFishingProgress++;
     }
     else if (mCharacter.currentActivity.id == 17)
     {
-    //Farming
+      //Farming
       mGatheringProgress++;
     }
     else if (mCharacter.currentActivity.id == 18)
     {
-    //Butcher
-    mHuntingProgress++;
+      //Butcher
+      mHuntingProgress++;
     }
     else if (mCharacter.currentActivity.id == 19)
     {
-    //Hunting
-    mHuntingProgress++;
+      //Hunting
+      mHuntingProgress++;
     }
 
     mEarning += mCharacter.currentActivity.payment;
@@ -890,6 +924,18 @@ void Event::processTenthHourlyEvent(const std::string& seed)
     {
       //Cleaning
       mCharacter.residence.cleanliness += 100;
+      if (mCharacter.residence.cleanliness < 5000)
+      {
+        mCharacter.residence.cleanliness += 50;
+        if (mCharacter.residence.cleanliness < 2500)
+        {
+          mCharacter.residence.cleanliness += 25;
+          if (mCharacter.residence.cleanliness < 1000)
+          {
+            mCharacter.residence.cleanliness += 10;
+          }
+        }
+      }
     }
     else if (mCharacter.currentActivity.id == 14)
     {

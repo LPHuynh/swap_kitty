@@ -327,11 +327,24 @@ void Character::updateStatBarText()
 
 void Character::updateStatusBarText()
 {
-  statusBarText = "\t";
+  statusBarText = "  ";
 
   if (profile.toxicity > 1000)
   {
     statusBarText += "[Intoxicated]";
+  }
+
+  if (profile.stamina < 0)
+  {
+    statusBarText += "[Exhausted]";
+  }
+  else if (profile.stamina < 1000)
+  {
+    statusBarText += "[Exerted]";
+  }
+  else if (profile.stamina < 2500)
+  {
+    statusBarText += "[Tired]";
   }
 
   if (profile.satiation < 1000)
@@ -603,20 +616,20 @@ void Character::generateStartingStats(const std::string& seed)
   dailySchedule[0] = job.getActivity("Sleep");
   dailySchedule[1] = job.getActivity("Sleep");
   dailySchedule[2] = job.getActivity("Sleep");
-  dailySchedule[3] = job.getActivity("Cooking");
-  dailySchedule[4] = job.getActivity("Cleaning");
-  dailySchedule[5] = job.getActivity("Read Book");
+  dailySchedule[3] = job.getActivity("Sleep");
+  dailySchedule[4] = job.getActivity("Cooking");
+  dailySchedule[5] = job.getActivity("Cleaning");
   dailySchedule[6] = job.getActivity("Waitress");
   dailySchedule[7] = job.getActivity("Waitress");
-  dailySchedule[8] = job.getActivity("Nap");
-  dailySchedule[9] = job.getActivity("Playing");
+  dailySchedule[8] = job.getActivity("Playing");
+  dailySchedule[9] = job.getActivity("Nap");
   dailySchedule[10] = job.getActivity("Read Book");
   dailySchedule[11] = job.getActivity("Fishing");
   dailySchedule[12] = job.getActivity("Fishing");
   dailySchedule[13] = job.getActivity("Nap");
-  dailySchedule[14] = job.getActivity("Plant Gatherer");
-  dailySchedule[15] = job.getActivity("Plant Gatherer");
-  dailySchedule[16] = job.getActivity("Cooking");
+  dailySchedule[14] = job.getActivity("Plant Gathering");
+  dailySchedule[15] = job.getActivity("Plant Gathering");
+  dailySchedule[16] = job.getActivity("Nap");
   dailySchedule[17] = job.getActivity("Cleaning");
   dailySchedule[18] = job.getActivity("Playing");
   dailySchedule[19] = job.getActivity("Bath");

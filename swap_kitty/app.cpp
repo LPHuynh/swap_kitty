@@ -465,7 +465,7 @@ void App::setWindowTitle()
 
 
   statusText += "          " + mEvent.time.dateString + ", " + mEvent.time.timeString;
-  statusText += "          (Balance: " + std::to_string(mSwapBalance.unlockedBalance / pow(10, 12)) + " / " + std::to_string(mSwapBalance.totalBalance / pow(10, 12)) + "XWP )";
+  statusText += "          ( Balance: " + std::to_string(mSwapBalance.unlockedBalance / pow(10, 12)) + " / " + std::to_string(mSwapBalance.totalBalance / pow(10, 12)) + "XWP )";
   mWindow.setTitle(mSetting.windowTitle + statusText);
 }
 
