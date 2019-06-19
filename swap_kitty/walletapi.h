@@ -25,12 +25,6 @@ public:
     uint64_t txFee;
   };
 
-  struct PaymentID
-  {
-    uint64_t height;
-    std::string paymentID;
-  };
-
   bool createWallet(const std::string& walletName, const std::string& password, const std::string& language);
   bool openWallet(const std::string& walletName, const std::string& password);
   bool restoreWallet(const std::string& walletName, const std::string& password, const std::string& seed, const std::string& language, uint64_t restoreHeight);
@@ -41,7 +35,7 @@ public:
   std::string getAddress();
   int64_t getBlockHeight();
   Balance getBalance();
-  std::vector<PaymentID> getIncomingPaymentID(uint64_t minHeight, uint64_t maxHeight);
+  std::vector<std::pair<uint64_t, std::string>> getIncomingPaymentID(uint64_t minHeight, uint64_t maxHeight);
 
   TransferReceipt transfer(const std::string& walletAddress, const std::string& paymentID, uint64_t amount, uint16_t priority, uint16_t mixin);
   TransferReceipt sweepAll(const std::string& walletAddress, const std::string& paymentID, uint16_t priority, uint16_t mixin);

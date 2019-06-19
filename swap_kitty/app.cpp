@@ -68,8 +68,10 @@ App::App() : mDaemonAPI(DaemonAPI()), mWalletAPI(WalletAPI()), mWorld(World()), 
   mWorld.lastestRulesetVersion = mSetting.lastestRulesetVersion;
   gameState = GameState::titleScreen;
   newGameOption = NewGameOption::waiting;
-  isGUILoaded = false;
+  mIsGUILoaded = false;
   mIsCharacterCreated = false;
+  mIsFullySync = false;
+  mLastKnownDaemonHeight = mDaemonAPI.getBlockCount();
 }
 
 App::~App()
@@ -155,7 +157,17 @@ void App::runMainGameState()
       mGui.get<tgui::Label>("LabelSchduleBox")->setText(mCharacter.scheduleBoxText);
       mGui.get<tgui::Label>("LabelHouseBox")->setText(mCharacter.houseBoxText);
       mGui.get<tgui::Label>("LabelCharacterSheet")->setText(mCharacter.characterSheetText);
-      mWorld.logging.popStatus();
+
+      if (mIsFullySync)
+      {
+        mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" + mWorld.logging.getStatusMessage() + mCharacter.statusBarText);
+        mWorld.logging.popStatus();
+      }
+      else
+      {
+        mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" +
+        "Syncing Wallet..." + std::to_string(mWorld.currentWorldHeight) + "/" + std::to_string(mLastKnownDaemonHeight));
+      }
     }
 
     if (mWorld.logging.isLogTextUpdated)
@@ -193,7 +205,7 @@ void App::runLoadingState()
       mCommandProcessor.processCommand();
       mEvent.init();
       mGui.removeAllWidgets();
-      isGUILoaded = false;
+      mIsGUILoaded = false;
       gameState = GameState::mainGame;
     }
     else
@@ -215,7 +227,7 @@ void App::runLoadingState()
           mCommandProcessor.processCommand();
           mEvent.init();
           mGui.removeAllWidgets();
-          isGUILoaded = false;
+          mIsGUILoaded = false;
           gameState = GameState::mainGame;
         }
         else
@@ -254,7 +266,7 @@ void App::runLoadingState()
                   mCommandProcessor.processCommand();
                   mEvent.init();
                   mGui.removeAllWidgets();
-                  isGUILoaded = false;
+                  mIsGUILoaded = false;
                   gameState = GameState::mainGame;
                 }
               }
@@ -357,14 +369,14 @@ void App::startGame()
   mSetting.characterName = characterName;
   gameState = GameState::loading;
   mGui.removeAllWidgets();
-  isGUILoaded = false;
+  mIsGUILoaded = false;
   mCommandProcessor.init(mSetting.txAmount, mSetting.txPriority, mSetting.mixin, mSetting.restoreHeight, mSetting.isBetaVersion);
   mClockMain.restart();
 }
 
 void App::loadGUI()
 {
-  if (!isGUILoaded)
+  if (!mIsGUILoaded)
   {
     if (gameState == GameState::mainGame)
     {
@@ -384,8 +396,8 @@ void App::loadGUI()
       mGui.get<tgui::Button>("ButtonInteract")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(true); });
 
       //Character Sub-Window
-      mGui.get<tgui::Button>("ButtonFeed")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(true); });
-      mGui.get<tgui::Button>("ButtonEquip")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(true); });
+      mGui.get<tgui::Button>("ButtonFeed")->connect("pressed", &App::openFeedMenu, this);
+      mGui.get<tgui::Button>("ButtonEquip")->connect("pressed", &App::openEquipMenu, this);
       mGui.get<tgui::Button>("ButtonGive")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonShop")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowShop")->setVisible(true); });
       mGui.get<tgui::Button>("ButtonLibrary")->connect("pressed", [&]() {});
@@ -395,11 +407,13 @@ void App::loadGUI()
       mGui.get<tgui::Button>("ButtonInteractCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowInteract")->setVisible(false); });
 
       //Feed Menu
-      mGui.get<tgui::Button>("ButtonFeedMenuFeed")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonFeedMenuFeed")->connect("pressed", &App::feed, this);
       mGui.get<tgui::Button>("ButtonFeedMenuCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(false); });
+      mGui.get<tgui::Button>("ButtonFeedAddFood")->connect("pressed", &App::addFoodToFeed, this);
+      mGui.get<tgui::Button>("ButtonFeedAddPotion")->connect("pressed", &App::addPotionToFeed, this);
 
       //Equip Menu
-      mGui.get<tgui::Button>("ButtonEquipMenuEquip")->connect("pressed", [&]() {});
+      mGui.get<tgui::Button>("ButtonEquipMenuEquip")->connect("pressed", &App::equip, this);
       mGui.get<tgui::Button>("ButtonEquipMenuCancel")->connect("pressed", [&]() {  mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(false); });
 
       //Shop Menus
@@ -410,14 +424,13 @@ void App::loadGUI()
       mGui.get<tgui::Button>("ButtonShopGift")->connect("pressed", [&]() {});
       mGui.get<tgui::Button>("ButtonShopMenuCancel")->connect("pressed", [&]() { mGui.get<tgui::ChildWindow>("ChildWindowShop")->setVisible(false); });
 
-
-      isGUILoaded = true;
+      mIsGUILoaded = true;
     }
     else if (gameState == GameState::loading)
     {
       mGui.loadWidgetsFromFile("gui/loadingscreen.gui");
       mGui.get<tgui::Button>("ButtonNewCharaCreate")->connect("pressed", &App::createCharacter, this);
-      isGUILoaded = true;
+      mIsGUILoaded = true;
     }
     else if (gameState == GameState::titleScreen)
     {
@@ -431,18 +444,22 @@ void App::loadGUI()
       mGui.get<tgui::Button>("ButtonCancelWallet")->connect("pressed", [&]() { newGameOption = NewGameOption::waiting; });
       mGui.get<tgui::EditBox>("EditBoxCharacterName")->setText(mSetting.characterName);
       mGui.get<tgui::Button>("ButtonViewGame")->setEnabled("false"); //TODO
-      isGUILoaded = true;
+      mIsGUILoaded = true;
     }
   }
 }
 
 void App::runTurns()
 {
-  uint64_t topHeight = mDaemonAPI.getBlockCount();
-  if (!mCommandProcessor.scanForCommands())
+  uint64_t topHeight = mWalletAPI.getBlockHeight();
+
+  if (mCommandProcessor.currentScanHeight < topHeight)
   {
-    //Exit game when scanned commands are critically invalid
-    gameState = GameState::exit;
+    if (!mCommandProcessor.scanForCommands(topHeight))
+    {
+      //Exit game when scanned commands are critically invalid
+      gameState = GameState::exit;
+    }
   }
 
   while (mWorld.currentWorldHeight < topHeight && mClockMain.getElapsedTime().asSeconds() < 1)
@@ -450,6 +467,24 @@ void App::runTurns()
     mCommandProcessor.processCommand();
     mEvent.processEvent();
     mWorld.currentWorldHeight++;
+  }
+
+  if (mIsFullySync == false && mWorld.currentWorldHeight > mLastKnownDaemonHeight - 10)
+  {
+    mLastKnownDaemonHeight = mDaemonAPI.getBlockCount();
+
+    if (mWorld.currentWorldHeight > mLastKnownDaemonHeight - 10)
+    {
+      mGui.get<tgui::Button>("ButtonFeed")->setEnabled(true);
+      mGui.get<tgui::Button>("ButtonEquip")->setEnabled(true);
+      mGui.get<tgui::Button>("ButtonGive")->setEnabled(true);
+      mGui.get<tgui::Button>("ButtonShop")->setEnabled(true);
+      mGui.get<tgui::Button>("ButtonLibrary")->setEnabled(true);
+      mGui.get<tgui::Button>("ButtonExplore")->setEnabled(true);
+      mGui.get<tgui::Button>("ButtonSetSchedule")->setEnabled(true);
+
+      mIsFullySync = true;
+    }
   }
 }
 
@@ -463,9 +498,9 @@ void App::setWindowTitle()
   mSwapBalance = mWalletAPI.getBalance();
   std::string statusText;
 
-
   statusText += "          " + mEvent.time.dateString + ", " + mEvent.time.timeString;
-  statusText += "          ( Balance: " + std::to_string(mSwapBalance.unlockedBalance / pow(10, 12)) + " / " + std::to_string(mSwapBalance.totalBalance / pow(10, 12)) + "XWP )";
+  statusText += "          ( Balance: " + std::to_string(mSwapBalance.unlockedBalance / pow(10, 12)) + " / " + std::to_string(mSwapBalance.totalBalance / pow(10, 12)) + "XWP ; ";
+  statusText += "World Height: " + std::to_string(mWorld.currentWorldHeight) + " )";
   mWindow.setTitle(mSetting.windowTitle + statusText);
 }
 
@@ -485,3 +520,120 @@ void App::toggleFluffText()
   mCharacter.updateCharacterSheetText();
   mGui.get<tgui::Label>("LabelCharacterSheet")->setText(mCharacter.characterSheetText);
 }
+
+void App::openFeedMenu()
+{
+  for (int i = 0; i < 6; i++)
+  {
+    mFeedFoodID[i] = 0;
+    mFeedPotionID[i] = 0;
+  }
+  mFeedFoodID[7] = 0;
+
+  mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(true);
+  mGui.get<tgui::ListBox>("ListBoxFood")->removeAllItems();
+  mGui.get<tgui::ListBox>("ListBoxPotion")->removeAllItems();
+  mGui.get<tgui::ListBox>("ListBoxFeedSelection")->removeAllItems();
+
+  for (auto& element : mCharacter.foodInventory)
+  {
+    mGui.get<tgui::ListBox>("ListBoxFood")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+  }
+  for (auto& element : mCharacter.potionInventory)
+  {
+    mGui.get<tgui::ListBox>("ListBoxPotion")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+  }
+}
+
+void App::openEquipMenu()
+{
+  mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(true);
+  mGui.get<tgui::ListBox>("ListBoxWeapon")->removeAllItems();
+  mGui.get<tgui::ListBox>("ListBoxDress")->removeAllItems();
+
+  for (auto& element : mCharacter.weaponInventory)
+  {
+    mGui.get<tgui::ListBox>("ListBoxWeapon")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+  }
+  for (auto& element : mCharacter.dressInventory)
+  {
+    mGui.get<tgui::ListBox>("ListBoxDress")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+  }
+}
+
+void App::equip()
+{
+  if (mSwapBalance.unlockedBalance > 100000000)
+  {
+    uint16_t weaponID = 0;
+    uint16_t dressID = 0;
+
+    if (mGui.get<tgui::ListBox>("ListBoxWeapon")->getSelectedItemId().toAnsiString() != "")
+    {
+      weaponID = std::stoi(mGui.get<tgui::ListBox>("ListBoxWeapon")->getSelectedItemId().toAnsiString());
+    }
+
+    if (mGui.get<tgui::ListBox>("ListBoxDress")->getSelectedItemId().toAnsiString() != "")
+    {
+      dressID = std::stoi(mGui.get<tgui::ListBox>("ListBoxDress")->getSelectedItemId().toAnsiString());
+    }
+
+    if (weaponID != 0 || dressID != 0)
+    {
+      mCommandProcessor.submitEquipCommand(weaponID, dressID);
+      mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(false);
+      mWorld.logging.addToMainLog("Equipping item...");
+    }
+  }
+  else
+  {
+    mWorld.logging.addToMainLog("Not enough XWP to pay transaction fees... ");
+  }
+}
+
+void App::addFoodToFeed()
+{
+  for (int i = 0; i < 7; i++)
+  {
+    if (mFeedFoodID[i] == 0)
+    {
+      std::string itemName = mGui.get<tgui::ListBox>("ListBoxFood")->getSelectedItem();
+      std::string itemID = mGui.get<tgui::ListBox>("ListBoxFood")->getSelectedItemId();
+      mGui.get<tgui::ListBox>("ListBoxFood")->removeItemById(itemID);
+      mGui.get<tgui::ListBox>("ListBoxFeedSelection")->addItem(itemName, itemID);
+      mFeedFoodID[i] = std::stoi(itemID);
+      return;
+    }
+  }
+}
+
+void App::addPotionToFeed()
+{
+  for (int i = 0; i < 6; i++)
+  {
+    if (mFeedPotionID[i] == 0)
+    {
+      std::string itemName = mGui.get<tgui::ListBox>("ListBoxPotion")->getSelectedItem();
+      std::string itemID = mGui.get<tgui::ListBox>("ListBoxPotion")->getSelectedItemId();
+      mGui.get<tgui::ListBox>("ListBoxPotion")->removeItemById(itemID);
+      mGui.get<tgui::ListBox>("ListBoxFeedSelection")->addItem(itemName, itemID);
+      mFeedPotionID[i] = std::stoi(itemID);
+      return;
+    }
+  }
+}
+
+void App::feed()
+{
+  if (mSwapBalance.unlockedBalance > 100000000)
+  {
+    mCommandProcessor.submitFeedCommand(mFeedFoodID, mFeedPotionID);
+    mGui.get<tgui::ChildWindow>("ChildWindowFeed")->setVisible(false);
+    mWorld.logging.addToMainLog("Feeding " + mCharacter.profile.name + "...");
+  }
+  else
+  {
+    mWorld.logging.addToMainLog("Not enough XWP to pay transaction fees... ");
+  }
+}
+

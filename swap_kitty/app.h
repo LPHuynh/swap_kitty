@@ -65,6 +65,13 @@ private:
 
   void toggleFluffText();
 
+  void openFeedMenu();
+  void openEquipMenu();
+  void equip();
+  void feed();
+  void addFoodToFeed();
+  void addPotionToFeed();
+
   AppSetting mSetting;
   sf::RenderWindow mWindow;
   sf::Event mWindowEvent;
@@ -74,7 +81,11 @@ private:
 
   WalletAPI::Balance mSwapBalance;
   bool mIsCharacterCreated;
+  bool mIsGUILoaded;
+  bool mIsFullySync;
+  uint64_t mLastKnownDaemonHeight;
 
-  bool isGUILoaded;
+  uint16_t mFeedFoodID[7];
+  uint16_t mFeedPotionID[6];
 };
 

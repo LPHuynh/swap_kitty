@@ -3,13 +3,12 @@
 
 CommandProcessor::CommandProcessor(DaemonAPI& daemonAPI, WalletAPI& walletAPI, World& world, Character& character) : mDaemonAPI(daemonAPI), mWalletAPI(walletAPI), mWorld(world), mCharacter(character)
 {
-  mCurrentScanHeight = 0;
+  currentScanHeight = 0;
   mLastTimeResyncRequest = 0;
   mIsCharacterLoaded = false;
   mWalletAddress = "";
   mTxPriority = 0;
   mMixin = 0;
-  mCurrentScanHeight = 0;
   mIsBetaVersion = false;
 }
 
@@ -23,7 +22,7 @@ void CommandProcessor::init(uint64_t txAmount, uint16_t txPriority, uint16_t mix
   mTxAmount = txAmount;
   mTxPriority = txPriority;
   mMixin = mixin;
-  mCurrentScanHeight = startingScanHeight;
+  currentScanHeight = startingScanHeight;
   mIsBetaVersion = isBetaVersion;
 }
 
@@ -234,11 +233,11 @@ void CommandProcessor::submitFeedCommand(uint16_t foodID[7], uint16_t potionID[6
   
   for (int i = 0; i < 7; i++)
   {
-    command.param += convertIntToHex(foodID);
+    command.param += convertIntToHex(foodID[i]);
   }
   for (int i = 0; i < 6; i++)
   {
-    command.param += convertIntToHex(potionID);
+    command.param += convertIntToHex(potionID[i]);
   }
 
   std::string commandHex = convertCommandToHex(command);
@@ -267,18 +266,29 @@ bool CommandProcessor::scanForCharacterCreationCommand()
   command.rulesetVersion = 0;
   command.param = "";
 
-  std::vector<WalletAPI::PaymentID> paymentIDs;
-  paymentIDs = mWalletAPI.getIncomingPaymentID(mCurrentScanHeight, mDaemonAPI.getBlockCount());
+  std::vector<std::pair<uint64_t, std::string>> paymentIDs;
+  paymentIDs = mWalletAPI.getIncomingPaymentID(currentScanHeight - 1, mDaemonAPI.getBlockCount());
+
+  //Sort scanned commands by height
+  std::sort(paymentIDs.begin(), paymentIDs.end());
 
   for (auto& element : paymentIDs)
   {
-    if (convertHexToString(element.paymentID.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.paymentID.substr(0, 4)) == "SB"))
+    //convert any short paymentID to long form
+    if (element.second.length() < 64)
     {
-      if (convertHexToString(element.paymentID.substr(8, 4)) == "NC")
+      std::stringstream ss;
+      ss << std::left << std::setfill('0') << std::setw(64) << element.second;
+      element.second = ss.str();
+    }
+
+    if (convertHexToString(element.second.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.second.substr(0, 4)) == "SB"))
+    {
+      if (convertHexToString(element.second.substr(8, 4)) == "NC")
       {
-        mCurrentScanHeight = element.height + 1;
-        mWorld.currentWorldHeight = (element.height);
-        mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
+        currentScanHeight = element.first + 1;
+        mWorld.currentWorldHeight = element.first;
+        mCommandQueue.push(std::make_pair(element.first, convertHexToCommand(element.second)));
         return true;
       }
     }
@@ -286,38 +296,48 @@ bool CommandProcessor::scanForCharacterCreationCommand()
   return false;
 }
 
-bool CommandProcessor::scanForCommands()
+bool CommandProcessor::scanForCommands(uint64_t topHeight)
 {
-  std::vector<WalletAPI::PaymentID> paymentIDs;
-  paymentIDs = mWalletAPI.getIncomingPaymentID(mCurrentScanHeight, mDaemonAPI.getBlockCount());
+  std::vector<std::pair<uint64_t, std::string>> paymentIDs;
+  if (currentScanHeight <= topHeight)
+  {
+    paymentIDs = mWalletAPI.getIncomingPaymentID(currentScanHeight - 1, topHeight);
+  }
+  else
+  {
+    return true;
+  }
+
+  //Sort scanned commands by height
+  std::sort(paymentIDs.begin(), paymentIDs.end());
 
   for (auto& element : paymentIDs)
   {
-    if (convertHexToString(element.paymentID.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.paymentID.substr(0, 4)) == "SB"))
+    //convert any short paymentID to long form
+    if (element.second.length() < 64)
     {
-      mWorld.logging.writeToFile("Recieved Command: " + element.paymentID);
-      uint16_t ruleset = std::stoi(element.paymentID.substr(4, 4), 0, 16);
+      std::stringstream ss;
+      ss << std::left << std::setfill('0') << std::setw(64) << element.second;
+      element.second = ss.str();
+    }
+
+    if (convertHexToString(element.second.substr(0, 4)) == "SM" || (mIsBetaVersion && convertHexToString(element.second.substr(0, 4)) == "SB"))
+    {
+      mWorld.logging.writeToFile("Recieved Command: " + element.second);
+      uint16_t ruleset = std::stoi(element.second.substr(4, 4), 0, 16);
 
       if (ruleset >= mWorld.currentRulesetVersion)
       {
         if (ruleset <= mWorld.lastestRulesetVersion)
         {
-          if (element.height >= mCurrentScanHeight)
+          if (element.second.substr(8, 4) != "NC")
           {
-            if (element.paymentID.substr(8, 4) != "NC")
-            {
-              mCurrentScanHeight = element.height;
-              mCommandQueue.push(std::make_pair(element.height, convertHexToCommand(element.paymentID)));
-            }
-            else
-            {
-              mWorld.logging.addToMainLog("Duplicate New Character Command detected; Ignoring...");
-            }
+            currentScanHeight = element.first;
+            mCommandQueue.push(std::make_pair(element.first, convertHexToCommand(element.second)));
           }
           else
           {
-            mWorld.logging.addToMainLog("Error: Commands were obtained in the incorrect order.");
-            return false;
+            mWorld.logging.addToMainLog("Duplicate New Character Command detected; Ignoring...");
           }
         }
         else
@@ -332,7 +352,7 @@ bool CommandProcessor::scanForCommands()
       }
     }
   }
-  mCurrentScanHeight++;
+  currentScanHeight = topHeight + 1;
   return true;
 }
 
@@ -369,6 +389,7 @@ void CommandProcessor::processCommand()
 
     while (!commands.empty())
     {
+      mWorld.logging.writeToFile("Processing Command: " + commands.front().commandCode + "(v" + std::to_string(commands.front().rulesetVersion) + "): " + commands.front().param);
       if (commands.front().commandCode == "NC" && !mIsCharacterLoaded)
       {
         mWorld.localTimeOffset = std::stoi(commands.front().param.substr(48, 4), 0, 16);
@@ -606,16 +627,20 @@ void CommandProcessor::processCommand()
       }
       else if (commands.front().commandCode == "FD")
       {
-        mWorld.logging.addToMainLog("..::Feed Some Food/Drink to " + mCharacter.profile.name + "::..");
+        mWorld.logging.addToMainLog("..::Fed Some Food/Drink to " + mCharacter.profile.name + "::..");
         for (int i = 0; i < 13; i++)
         {
-          if (i < 8)
+          uint16_t itemID = std::stoi(commands.front().param.substr(i * 4, 4), 0, 16);
+          if (itemID != 0)
           {
-            mCharacter.consumeFood(std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
-          }
-          else
-          {
-            mCharacter.consumePotion(std::stoi(commands.front().param.substr(i * 4, 4), 0, 16), true);
+            if (i < 8)
+            {
+              mCharacter.consumeFood(itemID, true);
+            }
+            else
+            {
+              mCharacter.consumePotion(itemID, true);
+            }
           }
         }
       }
@@ -632,7 +657,7 @@ void CommandProcessor::processCommand()
             if (element.id = weaponID)
             {
               mCharacter.equipedWeapon = element;
-              mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " equipped " + mCharacter.equipedWeapon.name);
+              mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " equipped " + mWorld.makeSingularNoun(mCharacter.equipedWeapon.name));
             }
           }
         }
@@ -643,7 +668,7 @@ void CommandProcessor::processCommand()
             if (element.id = dressID)
             {
               mCharacter.equipedWeapon = element;
-              mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " equipped " + mCharacter.equipedDress.name);
+              mWorld.logging.addToMainLog("\t" + mCharacter.profile.name + " equipped " + mWorld.makeSingularNoun(mCharacter.equipedDress.name));
             }
           }
         }

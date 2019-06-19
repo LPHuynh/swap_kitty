@@ -55,8 +55,8 @@ void Character::consumeFood(uint16_t id, bool isLogConsumedItem)
   {
     if (isLogConsumedItem)
     {
-      mWorld.logging.addToMainLog("\t" + profile.name + " ate  " + mWorld.makeSingularNoun(foodInventory.at(id).name));
-      mWorld.logging.addStatusMessage(profile.name + " is eating " + mWorld.makeSingularNoun(foodInventory.at(id).name), "eat");
+      mWorld.logging.addToMainLog("\t" + profile.name + " ate " + mWorld.makeSingularNoun(foodInventory.at(i).name));
+      mWorld.logging.addStatusMessage(profile.name + " is eating " + mWorld.makeSingularNoun(foodInventory.at(i).name), "eat");
     }
 
     if (foodInventory.at(i).type == Food::FoodType::vermin)
@@ -150,8 +150,8 @@ void Character::consumePotion(uint16_t id, bool isLogConsumedItem)
   {
     if (isLogConsumedItem)
     {
-      mWorld.logging.addToMainLog("\t" + profile.name + " drank  " + potionInventory.at(id).name);
-      mWorld.logging.addStatusMessage(profile.name + " is drinking " + potionInventory.at(id).name, "drink");
+      mWorld.logging.addToMainLog("\t" + profile.name + " drank  " + potionInventory.at(i).name);
+      mWorld.logging.addStatusMessage(profile.name + " is drinking " + potionInventory.at(i).name, "drink");
     }
 
     if (potionInventory.at(i).name == "Milk")
@@ -674,11 +674,12 @@ void Character::generateStartingItems(const std::string& seed)
 
   Food::FoodItem junkfood = food.randomizeRawFood(seed, Food::FoodType::junkFood);
   favouriteJunkFood = junkfood;
-  mWorld.freeID(junkfood.id);
+  foodInventory.push_back(junkfood);
 
   for (int i = 0; i < 10; i++)
   {
     Potion::PotionItem startingPotion = potion.randomizePotion(seed, Potion::Rarity::common);
+    potionInventory.push_back(startingPotion);
   }
 
   for (int i = 0; i < 3; i++)

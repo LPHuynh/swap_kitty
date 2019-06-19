@@ -105,9 +105,9 @@ Picture.PictureBackground {
 }
 
 Label.LabelHouseBox {
-    Position = (680, 0);
+    Position = (670, 0);
     ScrollbarPolicy = Never;
-    Size = (117.2, 38);
+    Size = (127.2, 38);
     Text = "Money:\nHouse:";
     TextSize = 13;
     renderer = &3;
@@ -166,8 +166,9 @@ Button.ButtonInteract {
 
 Label.LabelStat {
     Enabled = false;
+    MaximumTextWidth = 670;
     ScrollbarPolicy = Never;
-    Size = (679.2, 18);
+    Size = (670, 18);
     Text = "[Stat]";
     TextSize = 13;
     renderer = &3;
@@ -175,9 +176,10 @@ Label.LabelStat {
 
 Label.LabelStatus {
     Enabled = false;
+    MaximumTextWidth = 670;
     Position = (0, 20);
     ScrollbarPolicy = Never;
-    Size = (674.2, 18);
+    Size = (670, 18);
     Text = "[Status]";
     TextSize = 13;
     renderer = &3;
@@ -223,6 +225,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonFeed {
+        Enabled = false;
         Position = (490, 0);
         Size = (110, 33);
         Text = Feed;
@@ -231,6 +234,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonEquip {
+        Enabled = false;
         Position = (490, 31.6667);
         Size = (110, 33);
         Text = Equip;
@@ -239,6 +243,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonGive {
+        Enabled = false;
         Position = (490, 61.6667);
         Size = (110, 33);
         Text = Give;
@@ -247,6 +252,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonShop {
+        Enabled = false;
         Position = (490, 291.667);
         Size = (110, 33);
         Text = Shop;
@@ -255,6 +261,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonExplore {
+        Enabled = false;
         Position = (490, 321.667);
         Size = (110, 33);
         Text = Explore;
@@ -271,6 +278,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonLibrary {
+        Enabled = false;
         Position = (490, 91.667);
         Size = (110, 33);
         Text = Library;
@@ -279,6 +287,7 @@ ChildWindow.ChildWindowInteract {
     }
 
     Button.ButtonSetSchedule {
+        Enabled = false;
         Position = (490, 171.667);
         Size = (110, 33);
         Text = "Set Schedule";
@@ -294,11 +303,71 @@ ChildWindow.ChildWindowInteract {
         renderer = &2;
     }
 
+    ChildWindow.ChildWindowShop {
+        MaximumSize = (450, 340);
+        MinimumSize = (450, 340);
+        Position = (20, 20);
+        Size = (450, 340);
+        Title = Town;
+        TitleAlignment = Center;
+        TitleButtons = None;
+        Visible = false;
+        renderer = &4;
+
+        Button.ButtonShopWeapon {
+            Position = (100, 49);
+            Size = (110, 33);
+            Text = "Weapon Shop";
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        Button.ButtonShopMenuCancel {
+            Position = (10, 299);
+            Size = (90, 33);
+            Text = Back;
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        Button.ButtonShopFood {
+            Position = (40, 139);
+            Size = (110, 33);
+            Text = "Food Shop";
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        Button.ButtonShopGift {
+            Position = (180, 239);
+            Size = (110, 33);
+            Text = "Gift Shop";
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        Button.ButtonShopDress {
+            Position = (280, 59);
+            Size = (110, 33);
+            Text = Tailor;
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        Button.ButtonShopBook {
+            Position = (290, 169);
+            Size = (110, 33);
+            Text = "Book Shop";
+            TextSize = 13;
+            renderer = &2;
+        }
+    }
+
     ChildWindow.ChildWindowFeed {
-        MaximumSize = (400, 300);
-        MinimumSize = (400, 300);
-        Position = (0, 10);
-        Size = (400, 300);
+        MaximumSize = (450, 340);
+        MinimumSize = (450, 340);
+        Position = (20, 20);
+        Size = (450, 340);
         Title = Feed;
         TitleAlignment = Center;
         TitleButtons = None;
@@ -309,7 +378,7 @@ ChildWindow.ChildWindowInteract {
             ItemHeight = 20;
             MaximumItems = 0;
             Position = (10, 0);
-            Size = (180, 248.625);
+            Size = (200, 141.806);
             TextSize = 13;
             renderer = &1;
         }
@@ -317,14 +386,14 @@ ChildWindow.ChildWindowInteract {
         ListBox.ListBoxPotion {
             ItemHeight = 20;
             MaximumItems = 0;
-            Position = (210, 0);
-            Size = (180, 248.625);
+            Position = (10, 156.819);
+            Size = (200, 131.806);
             TextSize = 13;
             renderer = &1;
         }
 
         Button.ButtonFeedMenuFeed {
-            Position = (300, 259);
+            Position = (350, 299);
             Size = (90, 33);
             Text = Feed;
             TextSize = 13;
@@ -332,19 +401,44 @@ ChildWindow.ChildWindowInteract {
         }
 
         Button.ButtonFeedMenuCancel {
-            Position = (10, 259);
+            Position = (10, 299);
             Size = (90, 33);
             Text = Cancel;
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        ListBox.ListBoxFeedSelection {
+            ItemHeight = 20;
+            MaximumItems = 0;
+            Position = (230.041, 0);
+            Size = (208.959, 288.625);
+            TextSize = 13;
+            renderer = &1;
+        }
+
+        Button.ButtonFeedAddFood {
+            Position = (210, 60);
+            Size = (20, 22);
+            Text = ">";
+            TextSize = 13;
+            renderer = &2;
+        }
+
+        Button.ButtonFeedAddPotion {
+            Position = (210, 220);
+            Size = (20, 22);
+            Text = ">";
             TextSize = 13;
             renderer = &2;
         }
     }
 
     ChildWindow.ChildWindowEquip {
-        MaximumSize = (400, 300);
-        MinimumSize = (400, 300);
-        Position = (10, 10);
-        Size = (400, 300);
+        MaximumSize = (450, 340);
+        MinimumSize = (450, 340);
+        Position = (20, 20);
+        Size = (450, 340);
         Title = Equip;
         TitleAlignment = Center;
         TitleButtons = None;
@@ -355,7 +449,7 @@ ChildWindow.ChildWindowInteract {
             ItemHeight = 20;
             MaximumItems = 0;
             Position = (10, 0);
-            Size = (180, 248.625);
+            Size = (201.719, 288.625);
             TextSize = 13;
             renderer = &1;
         }
@@ -363,14 +457,14 @@ ChildWindow.ChildWindowInteract {
         ListBox.ListBoxDress {
             ItemHeight = 20;
             MaximumItems = 0;
-            Position = (210, 0);
-            Size = (180, 248.625);
+            Position = (228.281, 0);
+            Size = (211.719, 288.625);
             TextSize = 13;
             renderer = &1;
         }
 
         Button.ButtonEquipMenuEquip {
-            Position = (300, 259);
+            Position = (350, 299);
             Size = (90, 33);
             Text = Equip;
             TextSize = 13;
@@ -378,69 +472,9 @@ ChildWindow.ChildWindowInteract {
         }
 
         Button.ButtonEquipMenuCancel {
-            Position = (10, 259);
+            Position = (10, 299);
             Size = (90, 33);
             Text = Cancel;
-            TextSize = 13;
-            renderer = &2;
-        }
-    }
-
-    ChildWindow.ChildWindowShop {
-        MaximumSize = (400, 300);
-        MinimumSize = (400, 300);
-        Position = (20, 30);
-        Size = (400, 300);
-        Title = Town;
-        TitleAlignment = Center;
-        TitleButtons = None;
-        Visible = false;
-        renderer = &4;
-
-        Button.ButtonShopWeapon {
-            Position = (70, 39);
-            Size = (110, 33);
-            Text = "Weapon Shop";
-            TextSize = 13;
-            renderer = &2;
-        }
-
-        Button.ButtonShopMenuCancel {
-            Position = (10, 259);
-            Size = (90, 33);
-            Text = Back;
-            TextSize = 13;
-            renderer = &2;
-        }
-
-        Button.ButtonShopFood {
-            Position = (40, 119);
-            Size = (110, 33);
-            Text = "Food Shop";
-            TextSize = 13;
-            renderer = &2;
-        }
-
-        Button.ButtonShopGift {
-            Position = (140, 199);
-            Size = (110, 33);
-            Text = "Gift Shop";
-            TextSize = 13;
-            renderer = &2;
-        }
-
-        Button.ButtonShopDress {
-            Position = (230, 69);
-            Size = (110, 33);
-            Text = Tailor;
-            TextSize = 13;
-            renderer = &2;
-        }
-
-        Button.ButtonShopBook {
-            Position = (220, 129);
-            Size = (110, 33);
-            Text = "Book Shop";
             TextSize = 13;
             renderer = &2;
         }

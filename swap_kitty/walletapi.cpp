@@ -349,7 +349,7 @@ WalletAPI::Balance WalletAPI::getBalance()
   return balance;
 }
 
-std::vector<WalletAPI::PaymentID> WalletAPI::getIncomingPaymentID(uint64_t minHeight, uint64_t maxHeight)
+std::vector<std::pair<uint64_t, std::string>> WalletAPI::getIncomingPaymentID(uint64_t minHeight, uint64_t maxHeight)
 {
   std::ostringstream str;
   curl::curl_ios<std::ostringstream> writer(str);
@@ -382,15 +382,15 @@ std::vector<WalletAPI::PaymentID> WalletAPI::getIncomingPaymentID(uint64_t minHe
   nlohmann::json httpReponse;
   httpReponse = nlohmann::json::parse(str.str());
 
-  std::vector<PaymentID> result;
+  std::vector<std::pair<uint64_t, std::string>> result;
 
   if (!httpReponse["result"]["out"].is_null())
   {
     for (auto& element : httpReponse["result"]["out"])
     {
-      PaymentID paymentID;
-      paymentID.height = element["height"];
-      paymentID.paymentID = element["payment_id"].get<std::string>();
+      std::pair<uint64_t, std::string> paymentID;
+      paymentID.first = element["height"];
+      paymentID.second = element["payment_id"].get<std::string>();
       result.push_back(paymentID);
     }
   }

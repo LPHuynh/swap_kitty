@@ -29,7 +29,7 @@ public:
   void submitFeedCommand(uint16_t foodID[7], uint16_t potionID[6]);
   void submitEquipCommand(uint16_t weaponID, uint16_t dressID);
   bool scanForCharacterCreationCommand();
-  bool scanForCommands();
+  bool scanForCommands(uint64_t topHeight);
   bool static sortCommand(Command i, Command j);
   void processCommand();
 
@@ -42,6 +42,8 @@ public:
 
   std::string getBlockHash();
 
+  uint64_t currentScanHeight;
+
 private:
   DaemonAPI& mDaemonAPI;
   WalletAPI& mWalletAPI;
@@ -50,7 +52,6 @@ private:
 
   uint8_t lookupItemTable(World::ItemType itemType);
    
-  uint64_t mCurrentScanHeight;
   std::queue<std::pair<uint64_t,Command>> mCommandQueue;
   uint64_t mLastTimeResyncRequest;
   std::string mWalletAddress;
