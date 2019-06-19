@@ -71,8 +71,6 @@ Weapon::WeaponItem Weapon::randomizeWeapon(const std::string& seed, int64_t maxC
 
   WeaponItem weaponItem;
 
-  weaponItem.id = mWorld.generateID();
-
   weaponItem.name = quality.name;
   if (statBonus.name != "none")
   {
