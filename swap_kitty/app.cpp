@@ -152,21 +152,35 @@ void App::runMainGameState()
       mCharacter.updateScheduleBoxText(mEvent.time.hour);
       mCharacter.updateHouseBoxText();
       mCharacter.updateCharacterSheetText();
-      mGui.get<tgui::Label>("LabelStat")->setText("[HP:" + std::to_string(mCharacter.profile.health / 100) + "/" + std::to_string(mCharacter.profile.maxHealth / 100) + "]\t" + mCharacter.statBarText);
-      mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" + mWorld.logging.getStatusMessage() + mCharacter.statusBarText);
+
+      std::stringstream statlabel;
+      statlabel << std::left << std::setw(15) << "[HP:" + std::to_string(mCharacter.profile.health / 100) + "/" + std::to_string(mCharacter.profile.maxHealth / 100) + "]";
+      statlabel << mCharacter.statBarText;
+      mGui.get<tgui::Label>("LabelStat")->setText(statlabel.str());
+
+      std::stringstream statuslabel;
+      statuslabel << std::left << std::setw(15) << "[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]";
+      statuslabel << mCharacter.statusBarText;
+      mGui.get<tgui::Label>("LabelStatus")->setText(statuslabel.str());
+
       mGui.get<tgui::Label>("LabelSchduleBox")->setText(mCharacter.scheduleBoxText);
       mGui.get<tgui::Label>("LabelHouseBox")->setText(mCharacter.houseBoxText);
       mGui.get<tgui::Label>("LabelCharacterSheet")->setText(mCharacter.characterSheetText);
 
       if (mIsFullySync)
       {
-        mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" + mWorld.logging.getStatusMessage() + mCharacter.statusBarText);
+        std::stringstream statuslabel;
+        statuslabel << std::left << std::setw(15) << "[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]";
+        statuslabel << mWorld.logging.getStatusMessage() << mCharacter.statusBarText;
+        mGui.get<tgui::Label>("LabelStatus")->setText(statuslabel.str());
         mWorld.logging.popStatus();
       }
       else
       {
-        mGui.get<tgui::Label>("LabelStatus")->setText("[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]\t" +
-        "Syncing Wallet..." + std::to_string(mWorld.currentWorldHeight) + "/" + std::to_string(mLastKnownDaemonHeight));
+        std::stringstream statuslabel;
+        statuslabel << std::left << std::setw(15) << "[MP:" + std::to_string(mCharacter.profile.mana / 100) + "/" + std::to_string(mCharacter.profile.maxMana / 100) + "]";
+        statuslabel << "Syncing Wallet..." + std::to_string(mWorld.currentWorldHeight) + "/" + std::to_string(mLastKnownDaemonHeight);
+        mGui.get<tgui::Label>("LabelStatus")->setText(statuslabel.str());        
       }
     }
 
@@ -537,11 +551,11 @@ void App::openFeedMenu()
 
   for (auto& element : mCharacter.foodInventory)
   {
-    mGui.get<tgui::ListBox>("ListBoxFood")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+    mGui.get<tgui::ListBox>("ListBoxFood")->addItem(element.name, std::to_string(element.id));
   }
   for (auto& element : mCharacter.potionInventory)
   {
-    mGui.get<tgui::ListBox>("ListBoxPotion")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+    mGui.get<tgui::ListBox>("ListBoxPotion")->addItem(element.name, std::to_string(element.id));
   }
 }
 
@@ -553,11 +567,11 @@ void App::openEquipMenu()
 
   for (auto& element : mCharacter.weaponInventory)
   {
-    mGui.get<tgui::ListBox>("ListBoxWeapon")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+    mGui.get<tgui::ListBox>("ListBoxWeapon")->addItem(element.name, std::to_string(element.id));
   }
   for (auto& element : mCharacter.dressInventory)
   {
-    mGui.get<tgui::ListBox>("ListBoxDress")->addItem(element.name + "(" + std::to_string(element.id) + ")", std::to_string(element.id));
+    mGui.get<tgui::ListBox>("ListBoxDress")->addItem(element.name, std::to_string(element.id));
   }
 }
 

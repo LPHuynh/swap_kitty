@@ -437,16 +437,16 @@ void Character::updateScheduleBoxText(uint8_t timeHour)
     {
       if (currentActivity.name == dailySchedule[timeHour].name)
       {
-        scheduleBoxText += " <<" + displayedTime + "\t" + currentActivity.name + ">>\n";
+        scheduleBoxText += " <<" + displayedTime + "     " + currentActivity.name + ">>\n";
       }
       else
       {
-        scheduleBoxText += " <<" + displayedTime + "\t" + currentActivity.name + "*>>\n";
+        scheduleBoxText += " <<" + displayedTime + "     " + currentActivity.name + "*>>\n";
       }
     }
     else
     {
-      scheduleBoxText += "   " + displayedTime + "\t" + dailySchedule[timeHour].name + "\n";
+      scheduleBoxText += "   " + displayedTime + "     " + dailySchedule[timeHour].name + "\n";
     }
 
     timeHour++;
@@ -617,24 +617,24 @@ void Character::generateStartingStats(const std::string& seed)
   dailySchedule[1] = job.getActivity("Sleep");
   dailySchedule[2] = job.getActivity("Sleep");
   dailySchedule[3] = job.getActivity("Sleep");
-  dailySchedule[4] = job.getActivity("Cooking");
-  dailySchedule[5] = job.getActivity("Cleaning");
-  dailySchedule[6] = job.getActivity("Waitress");
+  dailySchedule[4] = job.getActivity("Sleep");
+  dailySchedule[5] = job.getActivity("Cooking");
+  dailySchedule[6] = job.getActivity("Cleaning");
   dailySchedule[7] = job.getActivity("Waitress");
-  dailySchedule[8] = job.getActivity("Playing");
-  dailySchedule[9] = job.getActivity("Nap");
-  dailySchedule[10] = job.getActivity("Read Book");
+  dailySchedule[8] = job.getActivity("Waitress");
+  dailySchedule[9] = job.getActivity("Playing");
+  dailySchedule[10] = job.getActivity("Nap");
   dailySchedule[11] = job.getActivity("Fishing");
   dailySchedule[12] = job.getActivity("Fishing");
   dailySchedule[13] = job.getActivity("Nap");
   dailySchedule[14] = job.getActivity("Plant Gathering");
   dailySchedule[15] = job.getActivity("Plant Gathering");
   dailySchedule[16] = job.getActivity("Nap");
-  dailySchedule[17] = job.getActivity("Cleaning");
-  dailySchedule[18] = job.getActivity("Playing");
-  dailySchedule[19] = job.getActivity("Bath");
-  dailySchedule[20] = job.getActivity("Read Book");
-  dailySchedule[21] = job.getActivity("Sleep");
+  dailySchedule[17] = job.getActivity("Cooking");
+  dailySchedule[18] = job.getActivity("Cleaning");
+  dailySchedule[19] = job.getActivity("Playing");
+  dailySchedule[20] = job.getActivity("Bath");
+  dailySchedule[21] = job.getActivity("Read Book");
   dailySchedule[22] = job.getActivity("Sleep");
   dailySchedule[23] = job.getActivity("Sleep");
 
