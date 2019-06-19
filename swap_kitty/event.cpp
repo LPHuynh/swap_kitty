@@ -175,7 +175,7 @@ void Event::incrementTime()
       //Catch any minutes that rolled over to :00
       std::stringstream timeMinute;
       timeMinute << std::setfill('0') << std::setw(2) << std::to_string(time.minute);
-      time.timeString = std::to_string(timeHour + 1) + ":" + timeMinute.str() + timeSuffix;
+      time.timeString = std::to_string(timeHour) + ":" + timeMinute.str() + timeSuffix;
 
       if (time.hour == 24)
       {
@@ -448,7 +448,7 @@ void Event::processHourlyEvent(const std::string& seed)
   if (mEarning > 0)
   {
     std::stringstream formatedEarning;
-    formatedEarning << std::setfill('0') << std::setw(std::to_string(mEarning).length() + 1) << std::left << (mEarning * 0.01f);
+    formatedEarning << std::fixed << std::setprecision(2) << (mEarning * 0.01f);
     summary += " +" + formatedEarning.str() + "G";
     mCharacter.profile.money += mEarning;
     mEarning = 0;
@@ -459,7 +459,7 @@ void Event::processHourlyEvent(const std::string& seed)
   }
   mFoundItem.clear();
 
-  for (int i = 0; i < 11; i++)
+  for (int i = 0; i < 10; i++)
   {
     if (mWorld.getStatByID(mTotalActivityStatGained, i) > 100)
     {
@@ -527,10 +527,6 @@ void Event::processHourlyEvent(const std::string& seed)
       mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Cleaning the house...", mCharacter.currentActivity.name);
       break;
     case 2:
-      mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library...");
-      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
-      break;
-    case 3:
       if (mCharacter.profile.stamina > 5000)
       {
         mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Playing...");
@@ -542,6 +538,10 @@ void Event::processHourlyEvent(const std::string& seed)
         mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Napping in the toyroom...", mCharacter.currentActivity.name);
         mCharacter.currentActivity = mCharacter.job.getActivity("Nap");
       }
+      break;
+    case 3:
+      mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Reading in the library...");
+      mWorld.logging.changeDefaultStatusMessage(mCharacter.profile.name + " is Reading in the library...", mCharacter.currentActivity.name);
       break;
     case 4:
       mWorld.logging.addToMainLog("[" + time.timeString + "] " + mCharacter.profile.name + " began Bathing...");
@@ -723,7 +723,7 @@ void Event::processTenthHourlyEvent(const std::string& seed)
   }
 
   //Process activity
-  for (int i = 0; i < 11; i++)
+  for (int i = 0; i < 10; i++)
   {
     if (mWorld.getStatByID(mCharacter.currentActivity.workStat, i) > 0)
     {
@@ -1115,7 +1115,7 @@ void Event::updateTime()
 void Event::updateCheckedStat()
 {
 
-  for (int i = 0; i < 11; i++)
+  for (int i = 0; i < 10; i++)
   {
     mEffectiveStat[i] = mWorld.getStatByID(mCharacter.profile.stat, i) + mWorld.getStatByID(mCharacter.profile.tempStat, i) + mWorld.getStatByID(mCharacter.equipedWeapon.bonusStat, i) + mWorld.getStatByID(mCharacter.equipedDress.bonusStat, i);
   }

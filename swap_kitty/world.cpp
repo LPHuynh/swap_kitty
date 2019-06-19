@@ -155,14 +155,14 @@ uint16_t World::getStatByID(World::Stat stat, uint8_t id)
   {
   case 0: return stat.str; 
   case 1: return stat.con; 
-  case 3: return stat.dex; 
-  case 4: return stat.per; 
-  case 5: return stat.lrn; 
-  case 6: return stat.wil; 
-  case 7: return stat.mag; 
-  case 8: return stat.chr; 
-  case 9: return stat.acc; 
-  case 10: return stat.cri; 
+  case 2: return stat.dex; 
+  case 3: return stat.per; 
+  case 4: return stat.lrn; 
+  case 5: return stat.wil; 
+  case 6: return stat.mag; 
+  case 7: return stat.chr; 
+  case 8: return stat.acc; 
+  case 9: return stat.cri; 
   }
   return 0;
 }
@@ -210,14 +210,14 @@ std::string World::getStatNameByID(uint8_t id)
   {
   case 0: return "STR";
   case 1: return "CON";
-  case 3: return "DEX";
-  case 4: return "PER";
-  case 5: return "LRN";
-  case 6: return "WIL";
-  case 7: return "MAG";
-  case 8: return "CHR";
-  case 9: return "ACC";
-  case 10: return "CRI";
+  case 2: return "DEX";
+  case 3: return "PER";
+  case 4: return "LRN";
+  case 5: return "WIL";
+  case 6: return "MAG";
+  case 7: return "CHR";
+  case 8: return "ACC";
+  case 9: return "CRI";
   default: return "";
   }
 }

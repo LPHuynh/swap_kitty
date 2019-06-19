@@ -313,16 +313,13 @@ void Character::updateFluffText()
 
 void Character::updateStatBarText()
 {
-  statBarText = "STR:" + std::to_string((profile.stat.str + profile.tempStat.str + equipedWeapon.bonusStat.str + equipedDress.bonusStat.str) / 100) 
-    + " CON:" + std::to_string((profile.stat.con + profile.tempStat.con + equipedWeapon.bonusStat.con + equipedDress.bonusStat.con) / 100)
-    + " DEX:" + std::to_string((profile.stat.dex + profile.tempStat.dex + equipedWeapon.bonusStat.dex + equipedDress.bonusStat.dex) / 100)
-    + " PER:" + std::to_string((profile.stat.per + profile.tempStat.per + equipedWeapon.bonusStat.per + equipedDress.bonusStat.per) / 100)
-    + " LRN:" + std::to_string((profile.stat.lrn + profile.tempStat.lrn + equipedWeapon.bonusStat.lrn + equipedDress.bonusStat.lrn) / 100)
-    + " WIL:" + std::to_string((profile.stat.wil + profile.tempStat.wil + equipedWeapon.bonusStat.wil + equipedDress.bonusStat.wil) / 100)
-    + " MAG:" + std::to_string((profile.stat.mag + profile.tempStat.mag + equipedWeapon.bonusStat.mag + equipedDress.bonusStat.mag) / 100)
-    + " CHR:" + std::to_string((profile.stat.chr + profile.tempStat.chr + equipedWeapon.bonusStat.chr + equipedDress.bonusStat.chr) / 100)
-    + " ACC:" + std::to_string((profile.stat.acc + profile.tempStat.acc + equipedWeapon.bonusStat.acc + equipedDress.bonusStat.acc) / 100)
-    + " CRI:" + std::to_string((profile.stat.cri + profile.tempStat.cri + equipedWeapon.bonusStat.cri + equipedDress.bonusStat.cri) / 100);    
+  statBarText = "";
+  World::Stat totalStat = profile.stat + profile.tempStat + equipedWeapon.bonusStat + equipedDress.bonusStat;
+
+  for (int i = 0; i < 11; i++)
+  {
+    statBarText += mWorld.getStatNameByID(i) + ":" + std::to_string(mWorld.getStatByID(totalStat, i) / 100) + " ";
+  }
 }
 
 void Character::updateStatusBarText()
@@ -560,7 +557,7 @@ void Character::generateStartingStats(const std::string& seed)
   profile.satiation = 10000;
   profile.quench = 10000;
   profile.toxicity = 0;
-  profile.domesticated = mWorld.getRandomNumber(seed, 0, 2500);
+  profile.domesticated = mWorld.getRandomNumber(seed, 0, 1000);
   profile.cleanliness = 10000;
   profile.happiness = mWorld.getRandomNumber(seed, 2500, 5000);
   profile.obedience = mWorld.getRandomNumber(seed, 0, 2500);

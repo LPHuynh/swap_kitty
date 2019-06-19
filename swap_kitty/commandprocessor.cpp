@@ -612,7 +612,7 @@ void CommandProcessor::processCommand()
           uint16_t itemID = std::stoi(commands.front().param.substr(i * 4, 4), 0, 16);
           if (itemID != 0)
           {
-            if (i < 8)
+            if (i < 7)
             {
               mCharacter.consumeFood(itemID, true);
             }

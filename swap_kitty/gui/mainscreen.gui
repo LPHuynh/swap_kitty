@@ -56,6 +56,28 @@ Renderer.4 {
     backgroundcolor = rgba(180, 180, 180, 215);
     bordercolor = rgba(240, 240, 240, 215);
     borders = (1, 1, 1, 1);
+    caretcolor = rgba(255, 255, 255, 215);
+    selectedtextbackgroundcolor = rgba(0, 110, 200, 130);
+    selectedtextcolor = rgba(255, 255, 255, 245);
+    textcolor = rgba(255, 255, 255, 215);
+    texturebackground = None;
+
+    scrollbar {
+        arrowbackgroundcolor = rgba(160, 160, 160, 215);
+        arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
+        arrowcolor = rgba(200, 200, 200, 215);
+        arrowcolorhover = rgba(225, 225, 225, 215);
+        thumbcolor = rgba(185, 185, 185, 215);
+        thumbcolorhover = rgba(195, 195, 195, 215);
+        trackcolor = rgba(160, 160, 160, 215);
+        trackcolorhover = rgba(170, 170, 170, 215);
+    }
+}
+
+Renderer.5 {
+    backgroundcolor = rgba(180, 180, 180, 215);
+    bordercolor = rgba(240, 240, 240, 215);
+    borders = (1, 1, 1, 1);
     distancetoside = 3;
     maximizebutton = {
 backgroundcolor = rgba(180, 180, 180, 215);
@@ -132,28 +154,7 @@ TextBox.TextBoxLog {
     Text = "";
     TextSize = 13;
     VerticalScrollbarPolicy = Always;
-
-    Renderer {
-        backgroundcolor = rgba(180, 180, 180, 215);
-        bordercolor = rgba(240, 240, 240, 215);
-        borders = (1, 1, 1, 1);
-        caretcolor = rgba(255, 255, 255, 215);
-        selectedtextbackgroundcolor = rgba(0, 110, 200, 130);
-        selectedtextcolor = rgba(255, 255, 255, 245);
-        textcolor = rgba(255, 255, 255, 215);
-        texturebackground = None;
-
-        scrollbar {
-            arrowbackgroundcolor = rgba(160, 160, 160, 215);
-            arrowbackgroundcolorhover = rgba(170, 170, 170, 215);
-            arrowcolor = rgba(200, 200, 200, 215);
-            arrowcolorhover = rgba(225, 225, 225, 215);
-            thumbcolor = rgba(185, 185, 185, 215);
-            thumbcolorhover = rgba(195, 195, 195, 215);
-            trackcolor = rgba(160, 160, 160, 215);
-            trackcolorhover = rgba(170, 170, 170, 215);
-        }
-    }
+    renderer = &4;
 }
 
 Button.ButtonInteract {
@@ -194,7 +195,7 @@ ChildWindow.ChildWindowInteract {
     TitleAlignment = Center;
     TitleButtons = None;
     Visible = false;
-    renderer = &4;
+    renderer = &5;
 
     Picture.PictureCharaBackground {
         Size = (600, 400);
@@ -312,7 +313,7 @@ ChildWindow.ChildWindowInteract {
         TitleAlignment = Center;
         TitleButtons = None;
         Visible = false;
-        renderer = &4;
+        renderer = &5;
 
         Button.ButtonShopWeapon {
             Position = (100, 49);
@@ -372,13 +373,13 @@ ChildWindow.ChildWindowInteract {
         TitleAlignment = Center;
         TitleButtons = None;
         Visible = false;
-        renderer = &4;
+        renderer = &5;
 
         ListBox.ListBoxFood {
             ItemHeight = 20;
             MaximumItems = 0;
             Position = (10, 0);
-            Size = (200, 141.806);
+            Size = (200, 101.806);
             TextSize = 13;
             renderer = &1;
         }
@@ -386,8 +387,8 @@ ChildWindow.ChildWindowInteract {
         ListBox.ListBoxPotion {
             ItemHeight = 20;
             MaximumItems = 0;
-            Position = (10, 156.819);
-            Size = (200, 131.806);
+            Position = (10, 106.819);
+            Size = (200, 101.806);
             TextSize = 13;
             renderer = &1;
         }
@@ -412,13 +413,13 @@ ChildWindow.ChildWindowInteract {
             ItemHeight = 20;
             MaximumItems = 0;
             Position = (230.041, 0);
-            Size = (208.959, 288.625);
+            Size = (208.959, 208.625);
             TextSize = 13;
             renderer = &1;
         }
 
         Button.ButtonFeedAddFood {
-            Position = (210, 60);
+            Position = (210, 50);
             Size = (20, 22);
             Text = ">";
             TextSize = 13;
@@ -426,11 +427,21 @@ ChildWindow.ChildWindowInteract {
         }
 
         Button.ButtonFeedAddPotion {
-            Position = (210, 220);
+            Position = (210, 150);
             Size = (20, 22);
             Text = ">";
             TextSize = 13;
             renderer = &2;
+        }
+
+        TextBox.TextBoxFeedInfo {
+            HorizontalScrollbarPolicy = Never;
+            MaximumCharacters = 0;
+            Position = (10, 228.057);
+            Size = (428, 58.625);
+            Text = "";
+            TextSize = 13;
+            renderer = &4;
         }
     }
 
@@ -443,13 +454,13 @@ ChildWindow.ChildWindowInteract {
         TitleAlignment = Center;
         TitleButtons = None;
         Visible = false;
-        renderer = &4;
+        renderer = &5;
 
         ListBox.ListBoxWeapon {
             ItemHeight = 20;
             MaximumItems = 0;
             Position = (10, 0);
-            Size = (201.719, 288.625);
+            Size = (201.719, 168.625);
             TextSize = 13;
             renderer = &1;
         }
@@ -458,7 +469,7 @@ ChildWindow.ChildWindowInteract {
             ItemHeight = 20;
             MaximumItems = 0;
             Position = (228.281, 0);
-            Size = (211.719, 288.625);
+            Size = (211.719, 168.625);
             TextSize = 13;
             renderer = &1;
         }
@@ -477,6 +488,17 @@ ChildWindow.ChildWindowInteract {
             Text = Cancel;
             TextSize = 13;
             renderer = &2;
+        }
+
+        TextBox.TextBoxEquipInfo {
+            HorizontalScrollbarPolicy = Never;
+            MaximumCharacters = 0;
+            Position = (8.28101, 190);
+            Size = (431.719, 98.625);
+            Text = "";
+            TextSize = 13;
+            VerticalScrollbarPolicy = Never;
+            renderer = &4;
         }
     }
 }

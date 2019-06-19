@@ -68,7 +68,9 @@ private:
   void openFeedMenu();
   void openEquipMenu();
   void equip();
+  void updateEquipInfoBox();
   void feed();
+  void updateFeedInfoBox();
   void addFoodToFeed();
   void addPotionToFeed();
 

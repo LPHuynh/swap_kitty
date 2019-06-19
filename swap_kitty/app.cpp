@@ -429,6 +429,8 @@ void App::loadGUI()
       //Equip Menu
       mGui.get<tgui::Button>("ButtonEquipMenuEquip")->connect("pressed", &App::equip, this);
       mGui.get<tgui::Button>("ButtonEquipMenuCancel")->connect("pressed", [&]() {  mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(false); });
+      mGui.get<tgui::ListBox>("ListBoxWeapon")->connect("ItemSelected", &App::updateEquipInfoBox, this);
+      mGui.get<tgui::ListBox>("ListBoxDress")->connect("ItemSelected", &App::updateEquipInfoBox, this);
 
       //Shop Menus
       mGui.get<tgui::Button>("ButtonShopWeapon")->connect("pressed", [&]() {});
@@ -548,6 +550,7 @@ void App::openFeedMenu()
   mGui.get<tgui::ListBox>("ListBoxFood")->removeAllItems();
   mGui.get<tgui::ListBox>("ListBoxPotion")->removeAllItems();
   mGui.get<tgui::ListBox>("ListBoxFeedSelection")->removeAllItems();
+  mGui.get<tgui::TextBox>("TextBoxFeedInfo")->setText("");
 
   for (auto& element : mCharacter.foodInventory)
   {
@@ -564,6 +567,7 @@ void App::openEquipMenu()
   mGui.get<tgui::ChildWindow>("ChildWindowEquip")->setVisible(true);
   mGui.get<tgui::ListBox>("ListBoxWeapon")->removeAllItems();
   mGui.get<tgui::ListBox>("ListBoxDress")->removeAllItems();
+  mGui.get<tgui::TextBox>("TextBoxEquipInfo")->setText("");
 
   for (auto& element : mCharacter.weaponInventory)
   {
@@ -605,36 +609,183 @@ void App::equip()
   }
 }
 
-void App::addFoodToFeed()
+void App::updateEquipInfoBox()
 {
-  for (int i = 0; i < 7; i++)
-  {
-    if (mFeedFoodID[i] == 0)
-    {
-      std::string itemName = mGui.get<tgui::ListBox>("ListBoxFood")->getSelectedItem();
-      std::string itemID = mGui.get<tgui::ListBox>("ListBoxFood")->getSelectedItemId();
-      mGui.get<tgui::ListBox>("ListBoxFood")->removeItemById(itemID);
-      mGui.get<tgui::ListBox>("ListBoxFeedSelection")->addItem(itemName, itemID);
-      mFeedFoodID[i] = std::stoi(itemID);
-      return;
-    }
-  }
-}
+  std::string infoText = "";
 
-void App::addPotionToFeed()
-{
-  for (int i = 0; i < 6; i++)
+  uint16_t weaponID = 0;
+  uint16_t dressID = 0;
+
+  if (mGui.get<tgui::ListBox>("ListBoxWeapon")->getSelectedItemId().toAnsiString() != "")
   {
-    if (mFeedPotionID[i] == 0)
+    weaponID = std::stoi(mGui.get<tgui::ListBox>("ListBoxWeapon")->getSelectedItemId().toAnsiString());
+  }
+
+  if (mGui.get<tgui::ListBox>("ListBoxDress")->getSelectedItemId().toAnsiString() != "")
+  {
+    dressID = std::stoi(mGui.get<tgui::ListBox>("ListBoxDress")->getSelectedItemId().toAnsiString());
+  }
+
+  if (weaponID != 0)
+  {
+    Weapon::WeaponItem selectedWeapon;
+    int i = 0;
+    for (auto& element : mCharacter.weaponInventory)
     {
-      std::string itemName = mGui.get<tgui::ListBox>("ListBoxPotion")->getSelectedItem();
-      std::string itemID = mGui.get<tgui::ListBox>("ListBoxPotion")->getSelectedItemId();
-      mGui.get<tgui::ListBox>("ListBoxPotion")->removeItemById(itemID);
-      mGui.get<tgui::ListBox>("ListBoxFeedSelection")->addItem(itemName, itemID);
-      mFeedPotionID[i] = std::stoi(itemID);
-      return;
+      if (element.id == weaponID)
+      {
+        selectedWeapon = mCharacter.weaponInventory.at(i);
+        break;
+      }
+      i++;
+    }
+    infoText += selectedWeapon.name + ": " + std::to_string(selectedWeapon.baseDice.roll) + "d" + std::to_string(selectedWeapon.baseDice.face) + "+" + std::to_string(selectedWeapon.baseDice.plus);
+
+    if (selectedWeapon.attribute != World::Element::normal)
+    {
+      infoText += " (" + std::to_string(selectedWeapon.abilityDice.roll) + "d" + std::to_string(selectedWeapon.abilityDice.face) + "+" + std::to_string(selectedWeapon.abilityDice.plus) + ") ";
+    }
+   
+    bool isBonusTextDisplayed = false;
+
+    for (int i = 0; i < 10; i++)
+    {
+      if (mWorld.getStatByID(selectedWeapon.bonusStat, i) != 0)
+      {
+        if (!isBonusTextDisplayed)
+        {
+          infoText += "\n";
+          infoText += "Bonus Stats:";
+          isBonusTextDisplayed = true;
+        }
+
+        if (mWorld.getStatByID(selectedWeapon.bonusStat, i) > 0)
+        {
+          infoText += " +";
+        }
+
+        infoText += std::to_string(mWorld.getStatByID(selectedWeapon.bonusStat, i) / 100) + mWorld.getStatNameByID(i);
+      }
+    }
+
+    isBonusTextDisplayed = false;
+
+    for (int i = 0; i < 30; i++)
+    {
+      if (mWorld.getSkillByID(selectedWeapon.bonusSkill, i) != 0)
+      {
+        if (!isBonusTextDisplayed)
+        {
+          infoText += "\n";
+          infoText += "Bonus Skills:";
+          isBonusTextDisplayed = true;
+        }
+
+        if (mWorld.getSkillByID(selectedWeapon.bonusSkill, i) > 0)
+        {
+          infoText += " +";
+        }
+
+        infoText += std::to_string(mWorld.getSkillByID(selectedWeapon.bonusSkill, i) / 100) + mWorld.getSkillNameByID(i);
+      }
+    }
+    infoText += "\n\n";
+  }
+
+  if (dressID != 0)
+  {
+    Dress::DressItem selectedDress;
+    int i = 0;
+    for (auto& element : mCharacter.dressInventory)
+    {
+      if (element.id == dressID)
+      {
+        selectedDress = mCharacter.dressInventory.at(i);
+        break;
+      }
+      i++;
+    }
+
+    infoText += selectedDress.name;
+
+    bool isBonusTextDisplayed = false;
+
+    for (int i = 0; i < 10; i++)
+    {
+      if (mWorld.getStatByID(selectedDress.bonusStat, i) != 0)
+      {
+        if (!isBonusTextDisplayed)
+        {
+          infoText += "\n";
+          infoText += "Bonus Stats:";
+          isBonusTextDisplayed = true;
+        }
+
+        if (mWorld.getStatByID(selectedDress.bonusStat, i) > 0)
+        {
+          infoText += " +";
+        }
+
+        infoText += std::to_string(mWorld.getStatByID(selectedDress.bonusStat, i) / 100) + mWorld.getStatNameByID(i);
+      }
+      if (mWorld.getStatByID(selectedDress.dailyStatGain, i) != 0)
+      {
+        if (!isBonusTextDisplayed)
+        {
+          infoText += "\n";
+          infoText += "Bonus Stats:";
+          isBonusTextDisplayed = true;
+        }
+
+        if (mWorld.getStatByID(selectedDress.dailyStatGain, i) > 0)
+        {
+          infoText += " +";
+        }
+
+        infoText += std::to_string(mWorld.getStatByID(selectedDress.dailyStatGain, i) / 100) + mWorld.getStatNameByID(i) + "/day";
+      }
+    }
+
+    isBonusTextDisplayed = false;
+
+    for (int i = 0; i < 30; i++)
+    {
+      if (mWorld.getSkillByID(selectedDress.bonusSkill, i) != 0)
+      {
+        if (!isBonusTextDisplayed)
+        {
+          infoText += "\n";
+          infoText += "Bonus Skills:";
+          isBonusTextDisplayed = true;
+        }
+
+        if (mWorld.getSkillByID(selectedDress.bonusSkill, i) > 0)
+        {
+          infoText += " +";
+        }
+
+        infoText += std::to_string(mWorld.getSkillByID(selectedDress.bonusSkill, i) / 100) + mWorld.getSkillNameByID(i);
+      }
+      if (mWorld.getSkillByID(selectedDress.dailySkillGain, i) != 0)
+      {
+        if (!isBonusTextDisplayed)
+        {
+          infoText += "\n";
+          infoText += "Bonus Skills:";
+          isBonusTextDisplayed = true;
+        }
+
+        if (mWorld.getSkillByID(selectedDress.dailySkillGain, i) > 0)
+        {
+          infoText += " +";
+        }
+
+        infoText += std::to_string(mWorld.getSkillByID(selectedDress.dailySkillGain, i) / 100) + mWorld.getSkillNameByID(i) + "/day";
+      }
     }
   }
+
+  mGui.get<tgui::TextBox>("TextBoxEquipInfo")->setText(infoText);
 }
 
 void App::feed()
@@ -648,6 +799,151 @@ void App::feed()
   else
   {
     mWorld.logging.addToMainLog("Not enough XWP to pay transaction fees... ");
+  }
+}
+
+void App::updateFeedInfoBox()
+{
+  int16_t nutrient = 0;
+  int16_t quench = 0;
+  int16_t stamina = 0;
+  World::Stat bonusStat = { 0,0,0,0,0,0,0,0,0,0 };
+  World::Stat bonusTempStat = { 0,0,0,0,0,0,0,0,0,0 };
+
+  for (int i = 0; i < 7; i++)
+  {
+    if (mFeedFoodID[i] != 0)
+    {
+      for (auto& element : mCharacter.foodInventory)
+      {
+        if (element.id == mFeedFoodID[i])
+        {
+          nutrient += element.nutrient;
+          quench += element.quench;
+          stamina += element.stamina;
+          bonusStat = bonusStat + element.bonusStat;
+          break;
+        }
+      }
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  for (int i = 0; i < 6; i++)
+  {
+    if (mFeedPotionID[i] != 0)
+    {
+      for (auto& element : mCharacter.potionInventory)
+      {
+        if (element.id == mFeedPotionID[i])
+        {
+          nutrient += element.nutrient;
+          quench += element.quench;
+          stamina += element.stamina;
+          bonusTempStat = bonusTempStat + element.bonusTempStat;
+          break;
+        }
+      }
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  std::string infoText = "";
+  if (nutrient > 100)
+  {
+  infoText += "Nutrient: +" + std::to_string(nutrient / 100) + " ";
+  }
+  if (quench > 100)
+  {
+    infoText += "Quench: +" + std::to_string(quench / 100) + " ";
+  }
+  if (stamina > 100)
+  {
+    infoText += "Stamina: +" + std::to_string(stamina / 100) + " ";
+  }
+
+  bool isBonusTextDisplayed = false;
+
+  for (int i = 0; i < 10; i++)
+  {
+    if (mWorld.getStatByID(bonusStat, i) != 0)
+    {
+      if (!isBonusTextDisplayed)
+      {
+        infoText += "\n";
+        infoText += "Bonus Stats:";
+        isBonusTextDisplayed = true;
+      }
+      std::stringstream ss;
+      ss << std::fixed << std::setprecision(2) << mWorld.getStatByID(bonusStat, i) * 0.01f;
+      infoText += " +" + ss.str() + mWorld.getStatNameByID(i);
+    }
+  }
+
+  isBonusTextDisplayed = false;
+
+  for (int i = 0; i < 10; i++)
+  {
+    if (mWorld.getStatByID(bonusTempStat, i) != 0)
+    {
+      if (!isBonusTextDisplayed)
+      {
+        infoText += "\n";
+        infoText += "Temp Stat:";
+        isBonusTextDisplayed = true;
+      }
+      std::stringstream ss;
+      ss << std::fixed << std::setprecision(2) << mWorld.getStatByID(bonusTempStat, i) * 0.01f;
+      infoText += " +" + ss.str() + mWorld.getStatNameByID(i);
+    }
+  }
+
+  mGui.get<tgui::TextBox>("TextBoxFeedInfo")->setText(infoText);
+}
+
+void App::addFoodToFeed()
+{
+  for (int i = 0; i < 7; i++)
+  {
+    if (mFeedFoodID[i] == 0)
+    {
+      std::string itemName = mGui.get<tgui::ListBox>("ListBoxFood")->getSelectedItem();
+      std::string itemID = mGui.get<tgui::ListBox>("ListBoxFood")->getSelectedItemId();
+      if (itemID != "")
+      {
+        mGui.get<tgui::ListBox>("ListBoxFood")->removeItemById(itemID);
+        mGui.get<tgui::ListBox>("ListBoxFeedSelection")->addItem(itemName, itemID);
+        mFeedFoodID[i] = std::stoi(itemID);
+        updateFeedInfoBox();
+      }
+      return;
+    }
+  }
+}
+
+void App::addPotionToFeed()
+{
+  for (int i = 0; i < 6; i++)
+  {
+    if (mFeedPotionID[i] == 0)
+    {
+      std::string itemName = mGui.get<tgui::ListBox>("ListBoxPotion")->getSelectedItem();
+      std::string itemID = mGui.get<tgui::ListBox>("ListBoxPotion")->getSelectedItemId();
+      if (itemID != "")
+      {
+        mGui.get<tgui::ListBox>("ListBoxPotion")->removeItemById(itemID);
+        mGui.get<tgui::ListBox>("ListBoxFeedSelection")->addItem(itemName, itemID);
+        mFeedPotionID[i] = std::stoi(itemID);
+        updateFeedInfoBox();
+      }
+      return;
+    }
   }
 }
 
